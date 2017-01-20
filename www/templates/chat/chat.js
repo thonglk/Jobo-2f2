@@ -18,10 +18,6 @@ app.factory("chatMessages", ["$firebaseArray",
 
   .controller("eChatDetailCtrl", ["$scope", "chatMessages", "$stateParams", "Auth", "$ionicActionSheet", "$timeout", "$ionicScrollDelegate", "$firebaseArray", "$ionicPopup", "$http", function ($scope, chatMessages, $stateParams, Auth, $ionicActionSheet, $timeout, $ionicScrollDelegate, $firebaseArray, $ionicPopup, $http) {
     $scope.init = function () {
-      var toTokenRef = firebase.database().ref('token/' + $scope.formId);
-      toTokenRef.on('value', function (snap) {
-        $scope.toToken = snap.val()
-      });
 
       $scope.firebaseUser = firebase.auth().currentUser.uid;
       console.log("Hihi: ", $scope.firebaseUser);
@@ -110,6 +106,11 @@ app.factory("chatMessages", ["$firebaseArray",
 
       });
       // push noti
+      var toTokenRef = firebase.database().ref('token/' + $scope.formId);
+      toTokenRef.on('value', function (snap) {
+        $scope.toToken = snap.val()
+      });
+
 
       FCMPlugin.subscribeToTopic('all'); //subscribe current user to topic
 
@@ -216,10 +217,6 @@ app.factory("chatMessages", ["$firebaseArray",
   ])
   .controller("sChatDetailCtrl", ["$scope", "chatMessages", "$stateParams", "Auth", "$ionicActionSheet", "$timeout", "$ionicScrollDelegate", "$firebaseArray", "$http", function ($scope, chatMessages, $stateParams, Auth, $ionicActionSheet, $timeout, $ionicScrollDelegate, $firebaseArray, $http) {
     $scope.init = function () {
-      var toTokenRef = firebase.database().ref('token/' + $scope.formId);
-      toTokenRef.on('value', function (snap) {
-        $scope.toToken = snap.val()
-      });
 
       $scope.firebaseUser = firebase.auth().currentUser.uid;
       console.log("Hihi: ", $scope.firebaseUser);
@@ -332,6 +329,11 @@ app.factory("chatMessages", ["$firebaseArray",
       });
 
       // push noti
+      var toTokenRef = firebase.database().ref('token/' + $scope.formId);
+      toTokenRef.on('value', function (snap) {
+        $scope.toToken = snap.val()
+      });
+
 
       FCMPlugin.subscribeToTopic('all'); //subscribe current user to topic
 

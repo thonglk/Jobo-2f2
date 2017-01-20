@@ -38,7 +38,8 @@
     "cordova-plugin-velda-devicefeedback@~0.0.2",
     "cordova-plugin-x-toast@~2.5.2",
     "de.appplant.cordova.plugin.local-notification@~0.8.4",
-    "cordova-plugin-media-capture@~1.4.1"
+    "cordova-plugin-media-capture@~1.4.1",
+    "cordova-plugin-fcm"
   ],
   "cordovaPlatforms": []
 }

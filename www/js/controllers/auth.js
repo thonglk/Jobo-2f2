@@ -35,6 +35,7 @@ app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$docum
 
 
     }, function (error) {
+      $ionicLoading.hide();
 
       // An error happened.
       var errorCode = error.code;
@@ -62,7 +63,6 @@ app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$docum
         $cordovaToast(errorMessage);
         return false;
       }
-      $ionicLoading.hide();
 
     });
 
