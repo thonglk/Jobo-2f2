@@ -40,6 +40,8 @@ app.controller('DashCtrl', function ($scope, $state, $cordovaCamera, $firebaseAr
         var userRef = firebase.database().ref('user/jobber/' + $scope.userid);
         userRef.on('value', function (snapshot) {
           $scope.usercurent = snapshot.val();
+          $rootScope.myuser = snapshot.val();
+
           $scope.userdistance = $scope.usercurent.interest.distance;
           $scope.newmes = $scope.usercurent.newmessage;
           $scope.jobin = $scope.usercurent.interest.job;
@@ -100,7 +102,9 @@ app.controller('DashCtrl', function ($scope, $state, $cordovaCamera, $firebaseAr
 
 
   };
-
+  $scope.gotoeprofile = function (id) {
+    window.location.href = "#/eviewprofile/"+ id
+  };
 
   $scope.$back = function () {
     window.history.back();
@@ -242,8 +246,10 @@ app.controller('DashCtrl', function ($scope, $state, $cordovaCamera, $firebaseAr
               "icon": "fcm_push_icon"  //White icon Android resource
             },
             "data": {
-              "param1": "value",  //Any data to be retrieved in the notification callback
-              "param2": "fromSeeker"
+              "param1": "#/sviewprofile/" + $scope.userid,  //Any data to be retrieved in the notification callback
+              "param2": "fromSeeker",
+              "param3": $scope.usercurent.name + " muốn ứng tuyển vào công ty của bạn "
+
             },
             "to": $scope.toToken.tokenId, //Topic or single device
             "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
@@ -299,6 +305,7 @@ app.controller('DashCtrl', function ($scope, $state, $cordovaCamera, $firebaseAr
           for (var prop in obj) {
             if (prop == $scope.matchlike) {
               itsAMatch();
+              pushmatch(uid)
             }
           }
 
@@ -356,8 +363,53 @@ app.controller('DashCtrl', function ($scope, $state, $cordovaCamera, $firebaseAr
   $scope.onRelease = function () {
     $ionicSlideBoxDelegate.enableSlide(true);
     console.log('released');
-  }
+  };
 
+
+  function pushmatch(uid) {
+    var toTokenRef = firebase.database().ref('token/' + uid);
+    toTokenRef.on('value', function (snap) {
+      $scope.toToken = snap.val();
+      console.log("token", $scope.toToken)
+
+    });
+    if ($scope.toToken) {
+      var fcm_server_key = "AAAArk3qIB4:APA91bEWFyuKiFqLt4UIrjUxLbduQCWJB4ACptTtgAovz4CKrMdonsS3jt06cfD9gGOQr3qtymBmKrsHSzGhqyJ_UWrrEbA4YheznlqYjsCBp_12bNPFSBepqg_qrxwdYxX_IcT9ne5z6s02I2mu2boy3VTN3lGPYg";
+
+      $http({
+        method: "POST",
+        dataType: 'jsonp',
+        headers: {'Content-Type': 'application/json', 'Authorization': 'key=' + fcm_server_key},
+        url: "https://fcm.googleapis.com/fcm/send",
+        data: JSON.stringify(
+          {
+            "notification": {
+              "title": "Chúc mừng bạn đã matching ",  //Any value
+              "body": $scope.usercurent.name + " và bạn đã matching với nhau, phỏng vấn đi làm thôi! ",  //Any value
+              "sound": "default", //If you want notification sound
+              "click_action": "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
+              "icon": "fcm_push_icon"  //White icon Android resource
+            },
+            "data": {
+              "param1": "#/echats/" + $scope.userid,  //Any data to be retrieved in the notification callback
+              "param2": "matching",
+              "param3": $scope.usercurent.name + " và bạn đã matching với nhau, phỏng vấn đi làm thôi!"
+
+            },
+            "to": $scope.toToken.tokenId, //Topic or single device
+            "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
+            "restricted_package_name": "" //Optional. Set for application filtering
+          }
+        )
+      }).success(function (data) {
+        console.log("Success: " + JSON.stringify(data));
+      }).error(function (data) {
+        console.log("Error: " + JSON.stringify(data));
+      });
+    }
+
+
+  }
 
   function itsAMatch() {
     $ionicModal.fromTemplateUrl('templates/modals/smatch.html', {

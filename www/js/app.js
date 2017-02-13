@@ -39,24 +39,6 @@ var app = angular.module('starter', ['ionic', 'firebase', 'starter.configs', 'ng
         StatusBar.styleDefault();
       }
 
-
-      FCMPlugin.onNotification(
-        function (data) {
-          if (data.wasTapped) {
-            window.location.href = data.param1;
-            //Notification was received on device tray and tapped by the user.
-          } else {
-            //Notification was received in foreground. Maybe the user needs to be notified.
-            var alertPopup = $ionicPopup.alert({
-              title: 'Thông báo ',
-              template: '<p style="text-align: center">Bạn có một thông báo mới </p>'
-            });
-            alertPopup.then(function (res) {
-              window.location.href = data.param1;
-            });
-          }
-        }
-      );
     });
   })
 
@@ -94,6 +76,8 @@ var app = angular.module('starter', ['ionic', 'firebase', 'starter.configs', 'ng
     $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|cdvfile|file|filesystem|blob):|data:image\//);
     $ionicConfigProvider.backButton.text(null).icon('ion-chevron-left color-white');
   })
+  //
+
 
   .run(function ($rootScope, $ionicLoading) {
     $ionicLoading.show({

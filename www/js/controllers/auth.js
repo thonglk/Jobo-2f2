@@ -151,10 +151,87 @@ app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$docum
         }
       });
 
+    };
+    $timeout(checkFCM, 1000);
+
+    function checkFCM() {
+      if (typeof FCMPlugin != 'undefined') {
+        $timeout(getTheToken, 1000);
+
+        FCMPlugin.onNotification(
+          function (data) {
+            console.log("data", data);
+            if (data.wasTapped) {
+
+              window.location.href = data.param1;
+              //Notification was received on device tray and tapped by the user.
+            } else {
+
+              //chat
+              if (data.param2 == 'chat') {
+
+                //Notification was received in foreground. Maybe the user needs to be notified.
+                var alertPopup = $ionicPopup.alert({
+                  title: 'Tin nhắn mới',
+                  template: data.param3
+                });
+                alertPopup.then(function (res) {
+                  window.location.href = data.param1;
+                });
+              }
+
+              //like
+
+              if (data.param2 == 'fromSeeker') {
+
+                //Notification was received in foreground. Maybe the user needs to be notified.
+                var alertPopup = $ionicPopup.alert({
+                  title: 'Có ứng viên mới ứng tuyển',
+                  template: data.param3
+                });
+                alertPopup.then(function (res) {
+                  window.location.href = data.param1;
+                });
+              }
+
+              if (data.param2 == 'fromEmployer') {
+
+                //Notification was received in foreground. Maybe the user needs to be notified.
+                var alertPopup = $ionicPopup.alert({
+                  title: 'Có nhà tuyển dụng mới thích bạn',
+                  template: data.param3
+                });
+                alertPopup.then(function (res) {
+                  window.location.href = data.param1;
+                });
+              }
+              //liked
+
+
+              if (data.param2 == 'match') {
+
+                //Notification was received in foreground. Maybe the user needs to be notified.
+                var alertPopup = $ionicPopup.alert({
+                  title: 'Chúc mừng, bạn đã "matching"! ',
+                  template: data.param3
+                });
+                alertPopup.then(function (res) {
+                  window.location.href = data.param1;
+                });
+              }
+
+
+            }
+          }
+        );
+
+      } else {
+        console.log("null fcm");
+        $timeout(checkFCM, 1000);
+      }
+
     }
 
-
-    $timeout(getTheToken, 1000);
 
     function getTheToken() {
       FCMPlugin.getToken(
@@ -174,6 +251,7 @@ app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$docum
         }
       );
     }
+
 
 
     $scope.deviceHeight = window.innerHeight;

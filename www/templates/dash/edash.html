@@ -108,7 +108,7 @@
           <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard | limitTo:limit">
             <div class="spacer" style="height: 30px"></div>
             <div class="list card" id="jobo-card24">
-              <ion-item class="item-avatar item-icon-right light" style=" background: -webkit-linear-gradient(to left, #1FBDF1 , #39DFA5); /* Chrome 10-25, Safari 5.1-6 */
+              <ion-item ng-click="gotosprofile(card.userid)" class="item-avatar item-icon-right light" style=" background: -webkit-linear-gradient(to left, #1FBDF1 , #39DFA5); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to left, #1FBDF1 , #39DFA5);"
                         id="jobo-list-item10">
                 <img src='{{card.photourl}}'>
@@ -170,10 +170,14 @@
 
           </ks-swiper-slide>
         </ks-swiper-container>
-
-        <div class="ptinder-buttons">
-          <div class="ptinder-button  animated fadeInRightBig" ng-click="dislike()"></div>
-          <div class="ptinder-button  animated fadeInLeftBig" ng-click="like()"></div>
+        <div class="ptinder-buttons" ng-if="usercard.length != 0">
+          <div class="padding">
+            <button style="margin-top: 0px; margin-bottom: 0px" ng-click="like()" class="jobo-button jobo-button-block jobo-button-calm"><i class="ion-android-checkbox-outline"></i> Tuyển ứng viên này
+            </button>
+            <button style="margin-top: 0px; margin-bottom: 0px" ng-click="dislike()" class="button button-block button-clear button-dark">
+              Xóa
+            </button>
+          </div>
         </div>
       </ion-content>
     </ion-slide>

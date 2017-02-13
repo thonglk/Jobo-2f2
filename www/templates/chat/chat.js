@@ -133,7 +133,9 @@ app.factory("chatMessages", ["$firebaseArray",
             },
             "data": {
               "param1": '#/schats/' + $scope.firebaseUser,  //Any data to be retrieved in the notification callback
-              "param2": $scope.newMessageText
+              "param2": 'chat',
+              "param3": $scope.usercurent.name + ": " + $scope.newMessageText
+
             },
             "to": $scope.toToken.tokenId, //Topic or single device
             "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
@@ -355,7 +357,9 @@ app.factory("chatMessages", ["$firebaseArray",
             },
             "data": {
               "param1": '#/echats/' + $scope.firebaseUser,  //Any data to be retrieved in the notification callback
-              "param2": "fromSeeker"
+              "param2": 'chat',
+              "param3": $scope.usercurent.name + ": " + $scope.newMessageText,
+
             },
             "to": $scope.toToken.tokenId, //Topic or single device
             "priority": "high", //If not set, notification won't be delivered on completely closed iOS app

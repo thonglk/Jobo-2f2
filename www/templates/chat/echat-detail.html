@@ -3,7 +3,7 @@
     <ion-header-bar class="bar-positive">
       <a class="button icon-left ion-chevron-left button-clear" ng-click="$back()"></a>
 
-      <h1 class="title" align="right">{{fromdata.name}}</h1>
+      <h1 class="title" align="right"><a href="#/sviewprofile/{{fromdata.userid}}">{{fromdata.name}}</a></h1>
       <i class="button icon-right ion-android-call button-clear animated shake" ng-click="showphone()"></i>
 
   </ion-header-bar>
@@ -20,7 +20,7 @@
     <div ng-init="clearnewmes()" ng-repeat="message in messages" class="message-wrapper"
          on-hold="onMessageHold($event, $index, message)">
       <div ng-if="firebaseUser === message.to && formId === message.from">
-        <div ><a href="#/sprofile/{{fromdata.userId}}">
+        <div ><a href="#/sviewprofile/{{fromdata.userid}}">
           <img  class="profile-pic left" ng-src="{{fromdata.photourl}}" onerror="onProfilePicError(this)" /></a>
         </div>
 

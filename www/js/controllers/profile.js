@@ -1,5 +1,5 @@
 'use strict';
-app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicModal', '$rootScope', function ($scope, $stateParams, $sce, $ionicModal, $rootScope) {
+app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicModal', '$rootScope','$http', function ($scope, $stateParams, $sce, $ionicModal, $rootScope, $http) {
   $scope.deviceHeight = window.innerHeight;
   $scope.$back = function () {
     window.history.back();
@@ -17,6 +17,9 @@ app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicMod
     return time;
   };
 
+  $scope.schats = function (id) {
+    window.location.href = "#/schats/" + id
+  };
   $scope.calculateAge = function calculateAge(birthday) { // birthday is a date
     var birthdate = new Date(birthday);
     var ageDifMs = Date.now() - birthdate;
@@ -97,7 +100,7 @@ app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicMod
     $scope.matchlike = likewithpost;
     var toTokenRef = firebase.database().ref('token/' + likewithpost);
     toTokenRef.on('value', function (snap) {
-      $scope.toToken = snap.val()
+      $scope.toToken = snap.val();
       console.log("token", $scope.toToken)
     });
     if ($scope.toToken) {
@@ -112,14 +115,16 @@ app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicMod
           {
             "notification": {
               "title": "Lượt thích mới ",  //Any value
-              "body": $scope.usercurent.name + " muốn ứng tuyển vào công ty của bạn ",  //Any value
+              "body": $rootScope.myuser.name + " muốn ứng tuyển vào công ty của bạn ",  //Any value
               "sound": "default", //If you want notification sound
               "click_action": "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
               "icon": "fcm_push_icon"  //White icon Android resource
             },
             "data": {
-              "param1": "value",  //Any data to be retrieved in the notification callback
-              "param2": "fromSeeker"
+              "param1": "#/sviewprofile/" + $scope.userid,  //Any data to be retrieved in the notification callback
+              "param2": "fromSeeker",
+              "param3": $rootScope.myuser.name + " muốn ứng tuyển vào công ty của bạn "
+
             },
             "to": $scope.toToken.tokenId, //Topic or single device
             "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
@@ -216,7 +221,7 @@ app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicMod
 
 }])
 
-  .controller("sViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicModal', '$rootScope', function ($scope, $stateParams, $sce, $ionicModal, $rootScope) {
+  .controller("sViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicModal', '$rootScope','$http', function ($scope, $stateParams, $sce, $ionicModal, $rootScope, $http) {
 
     $scope.$back = function () {
       window.history.back();
@@ -244,6 +249,9 @@ app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicMod
     var userid = firebase.auth().currentUser.uid;
     $scope.userid = userid;
     $scope.profileId = $stateParams.id;
+
+
+
     var ref = firebase.database().ref('user/jobber/' + $scope.profileId);
 // Attach an asynchronous callback to read the data at our posts reference
     ref.on("value", function (snapshotc) {
@@ -328,14 +336,15 @@ app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicMod
             {
               "notification": {
                 "title": "Lượt thích mới ",  //Any value
-                "body": $scope.usercurent.name + " đã thích hồ sơ của bạn, apply vào đây thôi! ",  //Any value
+                "body": $rootScope.myuser.name + " đã thích hồ sơ của bạn, apply vào đây thôi! ",  //Any value
                 "sound": "default", //If you want notification sound
                 "click_action": "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
                 "icon": "fcm_push_icon"  //White icon Android resource
               },
               "data": {
-                "param1": '#/schats/',  //Any data to be retrieved in the notification callback
-                "param2": "fromSeeker"
+                "param1": "#/eviewprofile/" + $scope.userid,  //Any data to be retrieved in the notification callback
+                "param2": "fromEmployer",
+                "param3": $rootScope.myuser.name + " đã thích hồ sơ của bạn "
               },
               "to": $scope.toToken.tokenId, //Topic or single device
               "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
@@ -394,6 +403,9 @@ app.controller("eViewProfileCtrl", ['$scope', '$stateParams', '$sce', '$ionicMod
       });
     }
 
+    $scope.echats = function (id) {
+      window.location.href = "#/echats/" + id
+    };
 
     $scope.dislike = function (likewithpost) {
       $scope.matchlike = likewithpost;

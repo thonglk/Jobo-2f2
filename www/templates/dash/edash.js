@@ -33,7 +33,7 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
         var tokenRef = firebase.database().ref("token/" + $scope.userid);
         tokenRef.on('value', function (snap) {
           $scope.currenttoken = snap.val();
-          if ((!$scope.currenttoken || $scope.currenttoken.tokenId != $rootScope.tokenuser)&& $rootScope.tokenuser ) {
+          if ((!$scope.currenttoken || $scope.currenttoken.tokenId != $rootScope.tokenuser) && $rootScope.tokenuser) {
             $scope.currenttoken.tokenId = $rootScope.tokenuser;
             tokenRef.update({
                 userid: $scope.userid,
@@ -45,6 +45,8 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
         var userRef = firebase.database().ref('user/employer/' + $scope.userid);
         userRef.once('value', function (snapshot) {
           $scope.usercurent = snapshot.val();
+          $rootScope.myuser = snapshot.val();
+
         });
         var filtersRef = firebase.database().ref('filter/' + $scope.userid).on('value', function (snap) {
           $scope.newfilter = snap.val();
@@ -162,7 +164,7 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
     $scope.swiper.update();
 
     console.log($scope.swiper.activeIndex);
-    if ($scope.swiper.activeIndex == $scope.limit - 1){
+    if ($scope.swiper.activeIndex == $scope.limit - 1) {
       $scope.limit = $scope.limit + 5;
     }
   };
@@ -266,7 +268,9 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
       };
     });
   };
-
+  $scope.gotosprofile = function (id) {
+    window.location.href = "#/sviewprofile/"+ id
+  };
 
   $scope.slideHasChanged = function (index) {
     console.log('slideHasChanged');
@@ -342,8 +346,10 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
               "icon": "fcm_push_icon"  //White icon Android resource
             },
             "data": {
-              "param1": '#/schats/',  //Any data to be retrieved in the notification callback
-              "param2": "fromSeeker"
+              "param1": "#/eviewprofile/" + $scope.userid,  //Any data to be retrieved in the notification callback
+              "param2": "fromEmployer",
+              "param3": $scope.usercurent.name + " đã thích hồ sơ của bạn "
+
             },
             "to": $scope.toToken.tokenId, //Topic or single device
             "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
@@ -396,13 +402,13 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
           post.stars[uid] = true;
 
 
-
           console.log("done", uid);
           var obj = $scope.usercurent.stars;
           // Check if user has already liked me
           for (var prop in obj) {
             if (prop == $scope.matchlike) {
               itsAMatch();
+              pushmatch(uid)
             }
           }
 
@@ -451,7 +457,8 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
       return post;
     });
   }
-  $scope.limit= 5;
+
+  $scope.limit = 5;
 
 
   $scope.onTouch = function () {
@@ -463,6 +470,51 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
     $ionicSlideBoxDelegate.enableSlide(true);
     console.log('released');
   };
+
+  function pushmatch(uid) {
+    var toTokenRef = firebase.database().ref('token/' + uid);
+    toTokenRef.on('value', function (snap) {
+      $scope.toToken = snap.val();
+      console.log("token", $scope.toToken)
+
+    });
+    if ($scope.toToken) {
+      var fcm_server_key = "AAAArk3qIB4:APA91bEWFyuKiFqLt4UIrjUxLbduQCWJB4ACptTtgAovz4CKrMdonsS3jt06cfD9gGOQr3qtymBmKrsHSzGhqyJ_UWrrEbA4YheznlqYjsCBp_12bNPFSBepqg_qrxwdYxX_IcT9ne5z6s02I2mu2boy3VTN3lGPYg";
+
+      $http({
+        method: "POST",
+        dataType: 'jsonp',
+        headers: {'Content-Type': 'application/json', 'Authorization': 'key=' + fcm_server_key},
+        url: "https://fcm.googleapis.com/fcm/send",
+        data: JSON.stringify(
+          {
+            "notification": {
+              "title": "Chúc mừng bạn đã matching ",  //Any value
+              "body": $scope.usercurent.name + " và bạn đã matching với nhau, phỏng vấn đi làm thôi! ",  //Any value
+              "sound": "default", //If you want notification sound
+              "click_action": "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
+              "icon": "fcm_push_icon"  //White icon Android resource
+            },
+            "data": {
+              "param1": "#/schats/" + $scope.userid,  //Any data to be retrieved in the notification callback
+              "param2": "matching",
+              "param3": $scope.usercurent.name + " và bạn đã matching với nhau, phỏng vấn đi làm thôi!"
+
+            },
+            "to": $scope.toToken.tokenId, //Topic or single device
+            "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
+            "restricted_package_name": "" //Optional. Set for application filtering
+          }
+        )
+      }).success(function (data) {
+        console.log("Success: " + JSON.stringify(data));
+      }).error(function (data) {
+        console.log("Error: " + JSON.stringify(data));
+      });
+    }
+
+
+  }
 
 
   function itsAMatch() {

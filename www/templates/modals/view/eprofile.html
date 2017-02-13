@@ -40,7 +40,25 @@
 
   </ion-content>
   <div class="ptinder-buttons">
-    <div class="ptinder-button  animated fadeInRightBig" ng-click="dislike(usercurent.userid)"></div>
-    <div class="ptinder-button  animated fadeInLeftBig" ng-click="like(usercurent.userid)"></div>
+    <div class="padding">
+      <button style="margin-top: 0px; margin-bottom: 0px" ng-click="like(usercurent.userid)"
+              class="jobo-button jobo-button-block jobo-button-calm"><i class="ion-android-checkbox-outline"></i> Ứng
+        tuyển
+      </button>
+      <button style="margin-top: 0px; margin-bottom: 0px" ng-click="dislike(usercurent.userid)"
+              class="button button-block button-clear button-dark">
+        Xóa
+      </button>
+    </div>
   </div>
+  <div class="ptinder-buttons" ng-if="usercurent.match[userid]">
+    <div class="padding animated fadeInUp">
+      <button style="margin-top: 0px; margin-bottom: 0px" ng-click="schats(usercurent.userid)"
+              class="jobo-button jobo-button-block jobo-button-calm"><i class="ion-android-checkbox-outline"></i> Liên
+        hệ
+      </button>
+
+    </div>
+  </div>
+
 </ion-modal-view>

@@ -458,11 +458,19 @@ textarea.about-me{
   background-repeat: no-repeat;
 }
 
-.ptinder-buttons {
+.pjobo-buttons {
   position: absolute;
-  left: calc(50% - 100px);
   bottom:   0;
   margin-bottom: 20px;
+  text-align: center;
+}
+
+.ptinder-buttons {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  margin-bottom: 5px;
+  right: inherit;
   text-align: center;
   z-index: 100;
 }
