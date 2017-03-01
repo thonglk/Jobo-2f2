@@ -1,0 +1,160 @@
+<ion-view title="match" hide-nav-bar="true" id="page20" ng-init="init()">
+  <ion-slide-box on-slide-changed="slideHasChanged($index)" active-slide="slideIndex">
+    <ion-slide>
+      <ion-header-bar class="bar-light">
+
+        <div id="match-button-bar7" class="button-bar">
+          <button ng-click="swiperto(0)" id="match-button50"
+                  class="button button-positive  button-block button-clear {{swiper.activeIndex == 0 ? 'color-red' : 'color-gray'}}">
+            Ứng tuyển
+          </button>
+          <button ng-click="swiperto(1)" id="match-button51"
+                  class="button button-positive  button-block button-clear {{swiper.activeIndex == 1 ? 'color-red' : 'color-gray'}}">
+            Tương hợp
+          </button>
+        </div>
+      </ion-header-bar>
+      <ion-content padding="false" class="manual-ios-statusbar-padding">
+
+        <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)">
+          <ks-swiper-slide class="swiper-slide">
+            <ion-list id="match-list32" ng-repeat="like in reactList">
+              <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
+                <img src="{{like.photourl}}">
+                <h2>{{like.name}}</h2>
+                <p style="white-space:normal;">Vị trí:
+                <p ng-repeat="(key,value) in like.job">{{dataJob[key]}}</p></p>
+                <i class="icon ion-checkmark-circled" ng-click="like()"></i>
+                <p>{{like.createAt}}</p>
+              </ion-item>
+
+            </ion-list>
+          </ks-swiper-slide>
+          <ks-swiper-slide class="swiper-slide">
+            <ion-list id="match-list32" ng-repeat="like in reactList">
+              <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
+                <img src="{{like.photourl}}">
+                <h2>{{like.name}}</h2>
+                <p style="white-space:normal;">Vị trí:
+                <p ng-repeat="(key,value) in like.job">{{dataJob[key]}}</p></p>
+                <i class="icon ion-chatbubbles" ng-click="chatTo(like)"></i>
+                <p>{{like.createAt}}</p>
+              </ion-item>
+            </ion-list>
+          </ks-swiper-slide>
+        </ks-swiper-container>
+      </ion-content>
+    </ion-slide>
+    <ion-slide>
+      <ion-header-bar class="bar-light">
+        <i class="button icon-left ion-chevron-left button-clear" ng-click="slideTo(0)"></i>
+
+        <h1 class="title" ng-click="viewProfile(chatUser.userid)" style="text-align: center">{{chatUser.name}}</h1>
+        <i class="button icon-right ion-ios-calendar button-clear animated shake"
+           style="position: absolute;right: 40px" ion-datetime-picker ng-model="timeInterview"
+           ng-change="setInterview(timeInterview)"></i>
+        <i class="button icon-right ion-android-call button-clear animated shake" ng-click="showphone()"></i>
+
+      </ion-header-bar>
+      <ion-item class="item item-body" id="activity-list-item54" ng-if="messages.interview" style="margin-top: 44px">
+        <p style="margin-top:0px;color:#000000;">Bạn và {{chatUser.name}} sẽ có buổi phỏng vấn lúc
+          <strong>{{messages.interview.interview | date: "H:mm dd-MM-yyyy"}}</strong> tại
+          <strong>{{messages.interview.place}}</strong>
+        </p></ion-item>
+
+      <ion-content has-bouncing="true" class="has-footer"
+                   delegate-handle="userMessageScroll">
+
+        <div class="list card" id="page3-card25" style=>
+          <div class="item item-body" id="page3-list-item-container18">
+            <div id="page3-markdown20" style="text-align:center;" class="show-list-numbers-and-dots">
+              <p style="margin-top:0px;">{{chatUser.name}} rất phù hợp với vị trí <span
+                ng-repeat="(key,value) in chatUser.job">{{dataJob[key]}}</span> Tips: Hãy bắt đầu trò chuyện với
+                {{chatUser.name}} và đặt lịch phỏng vấn!
+              </p>
+            </div>
+          </div>
+        </div>
+        <div ng-repeat="message in messages" class="message-wrapper"
+             on-hold="onMessageHold($event, $index, message)">
+
+          <div ng-if="chatUser.userid === message.sender">
+            <div ng-if="Status[message.key]" style="color: darkgrey;
+    font-size: xx-small;
+text-align: center;">{{timeConverter(message.createdAt)}}
+            </div>
+            <div>
+              <img ng-click="viewProfile(chatUser.userid)" class="profile-pic left"
+                   ng-src="{{chatUser.photourl}}" onerror="onProfilePicError(this)"/>
+            </div>
+
+            <div class="chat-bubble left" ng-click="showStatus(message.key)">
+
+              <div class="message" ng-bind-html="message.text"></div>
+
+            </div>
+          </div>
+          <div ng-if="Status[message.key]" style="
+    position: absolute;
+    right: 10px;
+    bottom: -20px;
+    color: darkgrey;
+    font-size: xx-small;
+">{{CONFIG.StatusChat[message.status]}}
+          </div>
+
+          <div ng-if="storeIdCurrent === message.sender && message.type == 0">
+            <div ng-if="Status[message.key]" style="color: darkgrey;
+    font-size: xx-small;
+text-align: center;">{{timeConverter(message.createdAt)}}
+            </div>
+
+            <div>
+              <img ng-click="showProfile()" class="profile-pic right"
+                   ng-src="{{storeDataCurrent.photourl}}" onerror="onProfilePicError(this)"/>
+            </div>
+
+            <div class="chat-bubble right" ng-click="showStatus(message.key)">
+
+              <div class="message" ng-bind-html="message.text">
+              </div>
+            </div>
+            <div ng-if="Status[message.key]" style="
+    position: absolute;
+    right: 10px;
+    bottom: -20px;
+    color: darkgrey;
+    font-size: xx-small;
+">{{CONFIG.StatusChat[message.status]}}
+            </div>
+          </div>
+
+
+          <div class="cf"></div>
+
+        </div>
+      </ion-content>
+
+      <form name="sendMessageForm" ng-submit="sendMessage(sendMessageForm)" novalidate>
+        <ion-footer-bar class="item-input-inset message-footer" keyboard-attach>
+          <label class="item-input-wrapper message-box">
+            <textarea ng-model="input.message" class="message-box" value=""
+                      placeholder="Send {{chatUser.name}} a message..." required minlength="1" maxlength="1500"
+                      msd-elastic></textarea>
+          </label>
+          <div class="footer-btn-wrap">
+            <button class="button button-clear button-small footer-btn" type="submit"
+                    ng-disabled="!input.message || input.message === ''">Send
+            </button>
+          </div>
+        </ion-footer-bar>
+      </form>
+
+
+    </ion-slide>
+
+  </ion-slide-box>
+
+  </ion-content>
+</ion-view>
+

@@ -130,32 +130,44 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
   //end tinh khoang cach
 
   $scope.doRefresh = function () {
-
     $scope.mylat = $scope.usercurent.location.location.lat;
     $scope.mylng = $scope.usercurent.location.location.lng;
-    $scope.usercard = [];
-    angular.forEach($scope.Objcards, function (card) {
-      if (card.location && card.location.location) {
-        var yourlat = card.location.location.lat;
-        var yourlng = card.location.location.lng;
-        var distance = getDistanceFromLatLonInKm($scope.mylat, $scope.mylng, yourlat, yourlng);
+
+    $http({
+      method: 'GET',
+      url: 'https://joboserver.herokuapp.com/api/users?userid='+$scope.userid +'&mylng='+$scope.mylng+'&mylat='+ $scope.mylat +'&job='+ $scope.newfilter.job +'&time=' + $scope.newfilter.time +'&distance='+ $scope.userdistance + '&onlydistance=' +    $scope.newfilter.onlydistance,
+    }).then(function successCallback(response) {
+      console.log("respond", response.data);
+      $scope.usercard = response.data
+      $ionicLoading.hide()
+    })
 
 
-        if ((card.stars && !card.stars[$scope.userid]) && (card.disstars && !card.disstars[$scope.userid]) && distance < $scope.userdistance) {
-          card.distance = distance;
-          if ($scope.newfilter && $scope.newfilter.onlydistance === true) {
-            $scope.usercard.push(card)
-
-          } else {
-            if (card.interest && card.interest.time && card.interest.time[$scope.newfilter.time] && card.interest.job && card.interest.job[$scope.newfilter.job]) {
-              $scope.usercard.push(card)
-
-            }
-          }
-        }
-      }
-    });
-    console.log("array", $scope.usercard);
+    // $scope.mylat = $scope.usercurent.location.location.lat;
+    // $scope.mylng = $scope.usercurent.location.location.lng;
+    // $scope.usercard = [];
+    // angular.forEach($scope.Objcards, function (card) {
+    //   if (card.location && card.location.location) {
+    //     var yourlat = card.location.location.lat;
+    //     var yourlng = card.location.location.lng;
+    //     var distance = getDistanceFromLatLonInKm($scope.mylat, $scope.mylng, yourlat, yourlng);
+    //
+    //
+    //     if ((card.stars && !card.stars[$scope.userid]) && (card.disstars && !card.disstars[$scope.userid]) && distance < $scope.userdistance) {
+    //       card.distance = distance;
+    //       if ($scope.newfilter && $scope.newfilter.onlydistance === true) {
+    //         $scope.usercard.push(card)
+    //
+    //       } else {
+    //         if (card.interest && card.interest.time && card.interest.time[$scope.newfilter.time] && card.interest.job && card.interest.job[$scope.newfilter.job]) {
+    //           $scope.usercard.push(card)
+    //
+    //         }
+    //       }
+    //     }
+    //   }
+    // });
+    // console.log("array", $scope.usercard);
     $scope.swiper.update();
   };
 
@@ -232,7 +244,10 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
           } else {
             console.log('You are not sure');
           }
+
         });
+
+
       };
       $scope.showtime = function () {
         $scope.selecttime = function (selectedtime) {

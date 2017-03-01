@@ -1,0 +1,87 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-stable">
+    <h1 class="title">Thêm công việc</h1>
+    <div class="buttons">
+      <button class="button" ng-click="cancel()">Hủy</button>
+    </div>
+  </ion-header-bar>
+  <ion-content class="has-header">
+
+    <div class="padding">
+      <div class="list card" id="profile-card215">
+        <ion-item class="item-icon-left" id="profile-list-item34">
+          <i class="icon ion-ios-briefcase"></i>Vị trí cần tuyển
+        </ion-item>
+        <ion-item class="item-icon-right" ng-click="showjob()">
+          <span class="gotham-book" ng-if="!newHospital.job">Nhấn để thêm công việc</span>
+          <span class="gotham-book" ng-repeat="(key,value) in newHospital.job">{{dataJob[key]}} </span>
+          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+        </ion-item>
+      </div>
+    </div>
+
+    <div class="list card" id="profile-card215" ng-repeat="(key,value) in newHospital.job">
+      <ion-item class="item-icon-left" id="profile-list-item34">
+        <i class="icon ion-compose"></i> Vị trí: {{dataJob[key]}}
+      </ion-item>
+
+      <form id="job-form14" class="list">
+        <ion-item class="item-divider" id="job-list-item-divider16"> Chi tiết</ion-item>
+
+        <label class="item item-input" id="job-input9">
+          <span class="input-label">Lương (đơn vị: VND)</span>
+          <input ng-model="Hospital[key].salary" type="number" placeholder="">
+        </label>
+        <label class="item item-select" id="job-select3">
+          <span class="input-label">Tính theo</span>
+          <select ng-model="Hospital[key].type">
+            <option>VND/giờ</option>
+            <option>VND/tháng</option>
+          </select>
+        </label>
+        <a class="item item-icon-left" style="padding-left: 18px" ng-click="showShift(key)">
+          <span>Ca</span>
+          <span class="item-note" ng-if="!Hospital[key].shift">Nhấn để thêm</span>
+
+          <span class="item-note" ng-repeat="(key,value) in Hospital[key].shift ">
+      {{time[key]}},
+    </span>
+        </a>
+
+        <label class="item item-input" id="job-input15">
+          <span class="input-label">Số lượng</span>
+          <input ng-model="Hospital[key].unit" type="number" placeholder="">
+        </label>
+        <label class="item item-input" id="job-input15">
+          <span class="input-label">Hạn chót</span>
+          <input ng-model="Hospital[key].deadline" type="date" placeholder="">
+        </label>
+        <ion-item class="item-divider" id="job-list-item-divider16"> Yêu cầu khác <p>(không bắt buộc)</p></ion-item>
+        <label class="item item-select" id="job-select6">
+          <span class="input-label">Giới tính</span>
+          <select ng-model="Hospital[key].sex">
+            <option></option>
+            <option>Nam</option>
+            <option>Nữ</option>
+
+          </select>
+        </label>
+        <ion-toggle ng-model="Hospital[key].figure" toggle-class="toggle-positive" id="job-toggle11">Ưu tiên ngoại
+          hình
+        </ion-toggle>
+        <ion-toggle ng-model="Hospital[key].experience" toggle-class="toggle-positive" id="job-toggle12">Đã có kinh
+          nghiệm
+        </ion-toggle>
+        <label class="item item-input" id="job-textarea2">
+          <span class="input-label">Khác</span><textarea ng-model="Hospital[key].other"
+                                                         placeholder="Mô tả về công việc"></textarea></label>
+      </form>
+    </div>
+
+
+    <button ng-disabled="!newHospital.job" ng-click="submitJob(Hospital)"
+            class="jobo-button jobo-button-block jobo-button-calm">Hoàn tất
+    </button>
+
+  </ion-content>
+</ion-modal-view>

@@ -1,0 +1,18 @@
+<ion-view hide-nav-bar="true" ng-init="init()">
+  <ion-content>
+    <button
+      class="button button-block " ng-click="convertStore()">Convert Store
+    </button>
+
+    <button
+      class="button button-block " ng-click="showAna()">Show Job in Employer
+    </button>
+    <div ng-repeat="data in dataEmployer">
+      <div ng-repeat="(key,value) in data.interest.job">{{key}}</div>
+    </div>
+    <label class="item item-input">
+      <input type="" ng-model="userSignup.username" id="cuser_name" placeholder="Email">
+    </label>
+  </ion-content>
+</ion-view>
+

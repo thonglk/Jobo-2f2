@@ -1,6 +1,6 @@
 'use strict';
-app.controller('ssignupController', ['$scope', '$state', '$document', '$firebaseArray', 'CONFIG', '$ionicSlideBoxDelegate', '$http', '$cordovaToast', '$rootScope', '$ionicLoading', '$ionicActionSheet', '$cordovaCamera', '$ionicPlatform', '$ionicPopup','$ionicHistory',
-  function ($scope, $state, $document, $firebaseArray, CONFIG, $ionicSlideBoxDelegate, $http, $cordovaToast, $rootScope, $ionicLoading, $ionicActionSheet, $cordovaCamera, $ionicPlatform, $ionicPopup,$ionicHistory) {
+app.controller('ssignupController', ['$scope', '$state', '$document', '$firebaseArray', 'CONFIG', '$ionicSlideBoxDelegate', '$http', '$cordovaToast', '$rootScope', '$ionicLoading', '$ionicActionSheet', '$cordovaCamera', '$ionicPlatform', '$ionicPopup', '$ionicHistory',
+  function ($scope, $state, $document, $firebaseArray, CONFIG, $ionicSlideBoxDelegate, $http, $cordovaToast, $rootScope, $ionicLoading, $ionicActionSheet, $cordovaCamera, $ionicPlatform, $ionicPopup, $ionicHistory) {
     $ionicPlatform.registerBackButtonAction(function () {
       if ($scope.slideIndex) {
         $ionicSlideBoxDelegate.previous();
@@ -24,18 +24,94 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
     $scope.slideChanged = function (index) {
       $scope.slideIndex = index;
     };
-    $scope.facebookLogin = function () {
-      console.log("button");
-      $cordovaOauth.facebook("295208480879128", ["email"]).then(function (result) {
-        var usersRef = firebase.database().ref('facebook/');
-        usersRef.update(result);
-        console.log(result)
-      }, function (error) {
-        console.log(error);
 
-        // error
+
+    $scope.facebookLogin = function () {
+      $ionicLoading.show({
+        template: '<ion-spinner class="spinner-positive"></ion-spinner>'
       });
-    };
+
+      var facebooklog = true;
+
+      $cordovaOauth.facebook("295208480879128", ["email"]).then(function (result) {
+        console.log(result)
+        console.log(result.access_token)
+
+        var credential = firebase.auth.FacebookAuthProvider.credential(result.access_token);
+        // Sign in with the credential from the Facebook user.
+        console.log(credential)
+
+        firebase.auth().signInWithCredential(credential).then(function (result) {
+          console.log(result);
+          firebase.auth().onAuthStateChanged(function (user) {
+            if (user && facebooklog == true) {
+              console.log(user);
+              var userRef = firebase.database().ref("user/" + user.uid);
+              userRef.once('value', function (snap) {
+                if (snap.val()) {
+                  $state.go('employer.dash')
+                } else {
+                  userRef.update({
+                    type: 1,
+                    name: user.displayName,
+                    userid: user.uid,
+                    email: user.email,
+                    photourl: 'img/macdinh.jpg',
+                    createdAt: new Date().getTime()
+                  });
+                  console.log("create username successful");
+                  $ionicLoading.hide();
+                  $ionicSlideBoxDelegate.next();
+                }
+              })
+
+            } else {
+              // No user is signed in.
+            }
+          });
+        })
+      })
+    }
+    $scope.googleLogin = function () {
+
+      $cordovaOauth.google("748631498782-qt0hmdnb267fh9ltn0aktb7re2fjq944.apps.googleusercontent.com", ["email"]).then(function (result) {
+        console.log("Response Object -> " + JSON.stringify(result.access_token));
+        var credential = firebase.auth.GoogleAuthProvider.credential(result.access_token)
+        // Sign in with the credential from the Facebook user.
+
+        firebase.auth().signInWithCredential(credential).then(function (result) {
+          console.log(result);
+          firebase.auth().onAuthStateChanged(function (user) {
+            if (user && facebooklog == true) {
+              console.log(user);
+              var userRef = firebase.database().ref("user/" + user.uid);
+              userRef.once('value', function (snap) {
+                if (snap.val()) {
+                  $state.go('employer.dash')
+                } else {
+                  userRef.update({
+                    type: 1,
+                    name: user.displayName,
+                    userid: user.uid,
+                    email: user.email,
+                    photourl: 'img/macdinh.jpg',
+                    createdAt: new Date().getTime()
+                  });
+                  console.log("create username successful");
+                  $ionicLoading.hide();
+                  $ionicSlideBoxDelegate.next();
+                }
+              })
+
+            } else {
+              // No user is signed in.
+            }
+          });
+        })
+      }, function (error) {
+        console.log("Error -> " + error);
+      });
+    }
 
     $scope.doSignup = function (userSignup) {
 
@@ -45,25 +121,17 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
           template: '<p>Loading...</p><ion-spinner></ion-spinner>'
         });
 
-        firebase.auth().createUserWithEmailAndPassword(userSignup.cusername, userSignup.cpassword).then(function () {
+        firebase.auth().createUserWithEmailAndPassword(userSignup.username, userSignup.password).then(function (user) {
 
-
-          var user = firebase.auth().currentUser;
-          var db = firebase.database();
-          var ref = db.ref("user");
-          var uid = firebase.auth().currentUser.uid;
-          var usersRef = ref.child('jobber/' + uid);
-          usersRef.update({
-            type: "jobber",
-            userid: uid,
-            email: userSignup.cusername,
-            photourl: "http://www.ppp-alumni.de/fileadmin/user_upload/user_upload/alumni-berichten/platzhalter-leuchtturm.jpg",
-            starCount: 0,
-            stars: {start: "start"},
-            disstarCount: 0,
-            disstars: {start: "start"},
-            interest: {distance: "40"},
-            dateCreated: firebase.database.ServerValue.TIMESTAMP
+          $rootScope.userid = user.uid
+          $scope.usersRef = firebase.database().ref('user/' + user.uid);
+          $scope.usersRef.update({
+            type: 2,
+            name: userSignup.name,
+            userid: user.uid,
+            email: userSignup.username,
+            photourl: "img/macdinh.jpg",
+            createdAt: new Date().getTime()
           });
           console.log("update username successful");
           $ionicLoading.hide();
@@ -101,70 +169,67 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
 
     $scope.doUpdate = function (userSignup) {
       console.log(userSignup);
-      var user = firebase.auth().currentUser;
-      var db = firebase.database();
-      var ref = db.ref("user");
-      var uid = firebase.auth().currentUser.uid;
-      var usersRef = ref.child('jobber/' + uid);
-      usersRef.update({
-        name: userSignup.displayname,
-        mobile: userSignup.mobile,
-        userid: uid
+      $scope.usersRef.update({
+        phone: userSignup.phone,
 
       });
-      console.log("Signupp ok");
+      console.log("phone ok");
       $ionicSlideBoxDelegate.next();
     };
 
-    //$scope.address = {value: ''};
-    /*$scope.$watch('address', function (newValue, oldValue) {
+    $scope.userInfo = {};
+    //find school
 
-     });*/
-    $scope.autocomplete = {text: ''};
-    $scope.searchresult = {text: ''};
-    $scope.setSelectedAddress = function (selectedAddress) {
-      $scope.address = selectedAddress;
-    };
-    $scope.search = function () {
-      $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocomplete.text + '&components=country:VN&sensor=true&key=AIzaSyCly7S-AaWT0UD7eLI2cKq6-DfhS4ex6zc&callback=JSON_CALLBACK';
+    $scope.autocompleteSchool = {text: ''};
+    $scope.searchSchool = function () {
+
+      $scope.URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' + $scope.autocompleteSchool.text + '&language=vi&type=university&components=country:VN&sensor=true&key=' + CONFIG.APIKey;
       $http({
         method: 'GET',
         url: $scope.URL
       }).then(function successCallback(response) {
 
-        $scope.ketquas = response.data.results;
-        console.log($scope.ketquas);
-        var user = firebase.auth().currentUser;
-        var db = firebase.database();
-        var ref = db.ref();
-        var uid = firebase.auth().currentUser.uid;
-        var usersRef = ref.child('/user/jobber/' + uid + '/location');
-        var refdis = ref.child('user/employer/');
-        refdis.on("value", function (snap) {
-          console.log(snap.val());
-          $scope.datadis = snap.val();
-
-        });
-        $scope.saveaddress = function () {
-          $ionicLoading.show({
-            template: '<p>Loading...</p><ion-spinner></ion-spinner>'
-          });
-          console.log($scope.address);
-          usersRef.update({
-            address: $scope.address.formatted_address,
-            location: {
-              lat: $scope.address.geometry.location.lat,
-              lng: $scope.address.geometry.location.lng
-            }
-          });
-          $ionicLoading.hide();
-
-          $scope.next();
-        }
+        $scope.ketquasSchool = response.data.results;
+        console.log($scope.ketquasSchool);
       })
+    };
+
+
+    $scope.setSelectedSchool = function (selected) {
+      $scope.school = selected;
+      console.log($scope.school)
+      $scope.userInfo.school = $scope.school.name
 
     };
 
+
+    //$scope.address = {value: ''};
+    /*$scope.$watch('address', function (newValue, oldValue) {
+
+     });*/
+    $scope.autocompleteAddress = {text: ''};
+    $scope.setSelectedAddress = function (selectedAddress) {
+      $scope.address = selectedAddress;
+      console.log($scope.address);
+
+      $scope.userInfo.address = $scope.address.formatted_address;
+      $scope.userInfo.location = {};
+      $scope.userInfo.location.lat = $scope.address.geometry.location.lat;
+      $scope.userInfo.location.lng = $scope.address.geometry.location.lng;
+    };
+    $scope.searchAddress = function () {
+      $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocompleteAddress.text + '&components=country:VN&sensor=true&key=AIzaSyCly7S-AaWT0UD7eLI2cKq6-DfhS4ex6zc&callback=JSON_CALLBACK';
+      $http({
+        method: 'GET',
+        url: $scope.URL
+      }).then(function successCallback(response) {
+
+        $scope.ketquasAddress = response.data.results;
+        console.log($scope.ketquasAddress);
+      })
+
+    };
+    $scope.avatarimage = 'img/add-button.jpg';
     $scope.updateavatar = function () {
       console.log('update avatar clicked');
       $ionicActionSheet.show({
@@ -236,13 +301,7 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
                   }, function () {
                     console.log(uploadTask.snapshot.metadata);
                     var url = uploadTask.snapshot.metadata.downloadURLs[0];
-                    var db = firebase.database();
-                    var ref = db.ref("user");
-                    var uid = firebase.auth().currentUser.uid;
-                    var usersRef = ref.child('jobber/' + uid);
-                    usersRef.update({
-                      photourl: url
-                    });
+                    $scope.userInfo.photourl = url
                     $cordovaToast.showShortTop("Cập nhật ảnh thành công");
                     $ionicLoading.hide();
                     $scope.next()
@@ -314,13 +373,8 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
                   }, function () {
                     console.log(uploadTask.snapshot.metadata);
                     var url = uploadTask.snapshot.metadata.downloadURLs[0];
-                    var db = firebase.database();
-                    var ref = db.ref("user");
-                    var uid = firebase.auth().currentUser.uid;
-                    var usersRef = ref.child('jobber/' + uid);
-                    usersRef.update({
-                      photourl: url
-                    });
+                    $scope.userInfo.photourl = url
+
                     $ionicLoading.hide();
                     $scope.next()
                   });
@@ -339,31 +393,49 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
       });
     };
 
-    $scope.savejobdes = function (user) {
-      var uid = firebase.auth().currentUser.uid;
-      var usersRef = firebase.database().ref("user").child('jobber/' + uid);
-
-      usersRef.update({
-        school: user.school,
-        birth: user.birth
-      });
+    $scope.saveInfo = function () {
+      $scope.profileRef = firebase.database().ref('profile/' + $rootScope.userid);
+      $scope.userInfo.userid = $rootScope.userid;
+      $scope.profileRef.update($scope.userInfo);
       $scope.next();
       $cordovaToast.showShortTop('Lưu!');
 
     };
 
+
     $scope.newHospital = {};
     $scope.createHospital = function () {
-      var uid = firebase.auth().currentUser.uid;
-      var usersRef = firebase.database().ref("user").child('jobber/' + uid + '/interest');
-      console.log($scope.newHospital);
-      usersRef.update($scope.newHospital);
-      usersRef.update({
-        done: "true"
-      });
+      $scope.profileRef.update($scope.newHospital);
+
       $scope.next();
 
     };
+
+
+    $scope.showShift = function () {
+      $ionicPopup.confirm({
+        title: 'Ca làm việc',
+        scope: $scope,
+        // template: 'Are you sure you want to eat this ice cream?',
+        templateUrl: 'templates/popups/collect-shift.html',
+        cssClass: 'animated bounceInUp dark-popup',
+        okType: 'button-small button-calm bold',
+        okText: 'Done',
+        cancelType: 'button-small'
+      }).then(function (res) {
+        if (res) {
+          for (var obj in $scope.newHospital.shift) {
+            $scope.keyjob = $scope.newHospital.shift[obj];
+            console.log('obj', $scope.keyjob);
+            if ($scope.keyjob == false) {
+              delete $scope.newHospital.shift[obj];
+            }
+          }
+        } else {
+          console.log('You are not sure');
+        }
+      });
+    }
 
     $scope.showjob = function () {
       $ionicPopup.confirm({

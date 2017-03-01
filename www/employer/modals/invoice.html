@@ -1,0 +1,56 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-stable">
+    <h1 class="title">Xác nhận</h1>
+    <div class="buttons">
+      <button class="button" ng-click="cancel()">Hủy</button>
+    </div>
+  </ion-header-bar>
+  <ion-content padding="true" class="has-header">
+    <div ng-if="!done">
+      <div class="list card" id="priceconfrim-card220">
+        <ion-item class="royal" id="priceconfrim-list-item55" ng-if="data.month">Gói thành viên VIP</ion-item>
+        <ion-item class="royal" id="priceconfrim-list-item55" ng-if="data.point">Mua thêm điểm</ion-item>
+
+        <div class="item item-body" id="priceconfrim-list-item-container24">
+          <div id="priceconfrim-markdown28" class="show-list-numbers-and-dots">
+            <p style="margin-top:0px;color:#000000;" ng-if="data.month">
+              <strong>Đơn giá:</strong> 300.000 đ/Tháng</p>
+            <p style="margin-top:0px;color:#000000;" ng-if="data.point">
+              <strong>Đơn giá:</strong> 5.000 đ/Điểm</p>
+          </div>
+          <div id="priceconfrim-markdown31" class="show-list-numbers-and-dots">
+            <p style="margin-top:0px;color:#000000;" ng-if="data.month">
+              <strong>Số lượng:</strong> {{data.month}} tháng</p>
+            <p style="margin-top:0px;color:#000000;" ng-if="data.point">
+              <strong>Số lượng:</strong> {{data.point}} điểm</p>
+          </div>
+        </div>
+        <ion-item class="item-icon-left assertive" id="priceconfrim-list-item60">
+          <i class="icon ion-ios-pricetag"></i>Tổng
+          <span class="item-note">{{totalprice()}}.000đ</span>
+
+
+        </ion-item>
+        <ion-item class="item-divider" id="priceconfrim-list-item-divider17"> Phương thức thanh toán: {{unMethod}}
+        </ion-item>
+        <form id="priceconfrim-form18" class="list">
+          <ion-radio id="priceconfrim-radio1" ng-model="data.method" value='transfer'>Chuyển khoản</ion-radio>
+          <ion-radio id="priceconfrim-radio3" ng-model="data.method" value='direct'>Thanh toán trực tiếp</ion-radio>
+          <ion-radio id="priceconfrim-radio4" ng-model="data.method" value='atm'>Thanh toán qua thẻ ATM nội địa
+          </ion-radio>
+        </form>
+      </div>
+      <button id="priceconfrim-button28" class="button button-positive  button-block" ng-click="submit()">Xác nhận!
+      </button>
+    </div>
+    <div style="text-align: center" class="padding animated fadeIn" ng-if="done">
+      <i class="icon ion-android-cloud-done" style="font-size: 50px; color: #33DD33"></i>
+      <h3>Thành công</h3>
+      <p>Chúng tôi sẽ liên hệ với bạn ngay để hướng dẫn và kích hoạt!</p>
+      <button id="priceconfrim-button28" class="button button-positive  button-block" ui-sref="employer.dash" >Tiếp tục xem hồ sơ!
+      </button>
+    </div>
+
+
+  </ion-content>
+</ion-modal-view>

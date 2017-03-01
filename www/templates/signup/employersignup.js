@@ -1,15 +1,6 @@
 "use strict";
-app.controller('esignupController', ['$scope', '$state', '$document', '$firebaseArray', '$ionicSlideBoxDelegate', '$ionicActionSheet', '$http', '$cordovaCamera', '$rootScope', '$ionicLoading', '$cordovaToast', '$ionicPlatform', '$ionicPopup', '$ionicHistory',
-  function ($scope, $state, $document, $firebaseArray, $ionicSlideBoxDelegate, $ionicActionSheet, $http, $cordovaCamera, $rootScope, $ionicLoading, $cordovaToast, $ionicPlatform, $ionicPopup, $ionicHistory) {
-    $ionicPlatform.registerBackButtonAction(function () {
-      if ($scope.slideIndex) {
-        $ionicSlideBoxDelegate.previous();
-      } else {
-        $ionicHistory.goBack();
-
-      }
-    }, 100);
-
+app.controller('esignupController', ['CONFIG', '$ionicModal', '$cordovaOauth', '$scope', '$state', '$document', '$firebaseArray', '$ionicSlideBoxDelegate', '$ionicActionSheet', '$http', '$cordovaCamera', '$rootScope', '$ionicLoading', '$cordovaToast', '$ionicPlatform', '$ionicPopup', '$ionicHistory',
+  function (CONFIG, $ionicModal, $cordovaOauth, $scope, $state, $document, $firebaseArray, $ionicSlideBoxDelegate, $ionicActionSheet, $http, $cordovaCamera, $rootScope, $ionicLoading, $cordovaToast, $ionicPlatform, $ionicPopup, $ionicHistory) {
     $scope.lockSlide = function () {
       $ionicSlideBoxDelegate.enableSlide(false);
     };
@@ -25,31 +16,124 @@ app.controller('esignupController', ['$scope', '$state', '$document', '$firebase
       $scope.slideIndex = index;
       console.log($scope.slideIndex)
     };
+
+    $scope.slideTo = function (index) {
+      $ionicSlideBoxDelegate.slide(index);
+    };
+
+    $scope.facebookLogin = function () {
+      $ionicLoading.show({
+        template: '<ion-spinner class="spinner-positive"></ion-spinner>'
+      });
+
+      var facebooklog = true;
+
+      $cordovaOauth.facebook("295208480879128", ["email"]).then(function (result) {
+        console.log(result)
+        console.log(result.access_token)
+
+        var credential = firebase.auth.FacebookAuthProvider.credential(result.access_token);
+        // Sign in with the credential from the Facebook user.
+        console.log(credential)
+
+        firebase.auth().signInWithCredential(credential).then(function (result) {
+          console.log(result);
+          firebase.auth().onAuthStateChanged(function (user) {
+            if (user && facebooklog == true) {
+              console.log(user);
+              $scope.userRef = firebase.database().ref("user/" + user.uid);
+              $scope.userRef.once('value', function (snap) {
+                if (snap.val()) {
+                  $state.go('employer.dash')
+                } else {
+                  $scope.userRef.update({
+                    type: 1,
+                    name: user.displayName,
+                    userid: user.uid,
+                    email: user.email,
+                    photourl: 'img/macdinh.jpg',
+                    createdAt: new Date().getTime()
+                  });
+                  console.log("create username successful");
+                  $ionicLoading.hide();
+                  $ionicSlideBoxDelegate.next();
+                }
+              })
+
+            } else {
+              // No user is signed in.
+            }
+          });
+        })
+      })
+    }
+    $scope.googleLogin = function () {
+
+      $cordovaOauth.google("748631498782-qt0hmdnb267fh9ltn0aktb7re2fjq944.apps.googleusercontent.com", ["email"]).then(function (result) {
+        console.log("Response Object -> " + JSON.stringify(result.access_token));
+        var credential = firebase.auth.GoogleAuthProvider.credential(result.access_token)
+        // Sign in with the credential from the Facebook user.
+
+        firebase.auth().signInWithCredential(credential).then(function (result) {
+          console.log(result);
+          firebase.auth().onAuthStateChanged(function (user) {
+            if (user && facebooklog == true) {
+              console.log(user);
+              $scope.userRef = firebase.database().ref("user/" + user.uid);
+              $scope.userRef.once('value', function (snap) {
+                if (snap.val()) {
+                  $state.go('employer.dash')
+                } else {
+                  $scope.userRef.update({
+                    type: 1,
+                    name: user.displayName,
+                    userid: user.uid,
+                    email: user.email,
+                    photourl: 'img/macdinh.jpg',
+                    createdAt: new Date().getTime()
+                  });
+                  console.log("create username successful");
+                  $ionicLoading.hide();
+                  $ionicSlideBoxDelegate.next();
+                }
+              })
+
+            } else {
+              // No user is signed in.
+            }
+          });
+        })
+      }, function (error) {
+        console.log("Error -> " + error);
+      });
+    }
+    $ionicPlatform.registerBackButtonAction(function () {
+      if ($scope.slideIndex) {
+        $ionicSlideBoxDelegate.previous();
+      } else {
+        $ionicHistory.goBack();
+
+      }
+    }, 100);
+
+
     $scope.doSignup = function (userSignup) {
       $rootScope.registering = true;
 
       $ionicLoading.show({
         template: '<ion-spinner class="spinner-positive"></ion-spinner>'
       });
-      firebase.auth().createUserWithEmailAndPassword(userSignup.cusername, userSignup.cpassword).then(function () {
+      firebase.auth().createUserWithEmailAndPassword(userSignup.username, userSignup.password).then(function (user) {
+        $rootScope.userid = user.uid;
 
-
-        var user = firebase.auth().currentUser;
-        var db = firebase.database();
-        var ref = db.ref("user");
-        var uid = firebase.auth().currentUser.uid;
-        var usersRef = ref.child('employer/' + uid);
-        usersRef.update({
-          type: "employer",
-          userid: uid,
-          email: userSignup.cusername,
-          photourl: "https://cdn0.iconfinder.com/data/icons/e-commerce-and-shopping-2/512/shop_store_market_shopping_cafe_retail_sale_trading_trade_products_commerce_marketplace_bar_bistro_grocery_building_service_business_flat_design_icon-512.png",
-          starCount: 0,
-          stars: {start: "start"},
-          disstarCount: 0,
-          disstars: {start: "start"},
-          interest: {distance: "40"},
-          dateCreated: firebase.database.ServerValue.TIMESTAMP
+        $scope.userRef = firebase.database().ref("user/" + user.uid);
+        $scope.userRef.update({
+          type: 1,
+          name: userSignup.name,
+          userid: user.uid,
+          email: user.email,
+          photourl: 'img/restaurant.png',
+          createdAt: new Date().getTime()
         });
         console.log("create username successful");
         $ionicLoading.hide();
@@ -81,69 +165,193 @@ app.controller('esignupController', ['$scope', '$state', '$document', '$firebase
 
     };// end $scope.doSignup()
 
+    // Add store
+    $scope.addStore = function () {
+      $ionicModal.fromTemplateUrl('/employer/modals/add-store.html', {
+        scope: $scope,
+        animation: 'slide-in-up',
+        hideDelay: 920
+      }).then(function (modal) {
+        $scope.modalAddStore = modal;
+        $scope.modalAddStore.show();
 
-    $scope.doUpdate = function (userSignup) {
-      console.log(userSignup);
-      $ionicSlideBoxDelegate.next();
-    };
-    $scope.Update = function (userSignup) {
-      console.log(userSignup);
-      var user = firebase.auth().currentUser;
-      var db = firebase.database();
-      var ref = db.ref("user");
-      var uid = firebase.auth().currentUser.uid;
-      var usersRef = ref.child('employer/' + uid);
-      usersRef.update({
-        name: userSignup.displayname,
-        phone: userSignup.phone,
-        userid: uid,
-        industry: userSignup.industry
-      });
-      console.log("Signupp ok");
-      $ionicSlideBoxDelegate.next();
-    };
+        $scope.store = {};
 
 
-    $scope.autocomplete = {text: ''};
-    $scope.searchresult = {text: ''};
-    $scope.setSelectedAddress = function (selectedAddress) {
-      $scope.address = selectedAddress;
-    };
+//Find Store by Google
+        $scope.autocompleteLocation = {text: ''};
+        $scope.searchLocation = function () {
 
-    $scope.search = function () {
+          $scope.URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' + $scope.autocompleteLocation.text + '&language=vi&components=country:VN&sensor=true&key=' + CONFIG.APIKey;
+          $http({
+            method: 'GET',
+            url: $scope.URL
+          }).then(function successCallback(response) {
 
-      $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocomplete.text + '&components=country:VN&sensor=true&key=AIzaSyCly7S-AaWT0UD7eLI2cKq6-DfhS4ex6zc&callback=JSON_CALLBACK';
-      $http({
-        method: 'GET',
-        url: $scope.URL
-      }).then(function successCallback(response) {
+            $scope.ketquasLocation = response.data.results;
+            console.log($scope.ketquasLocation);
+          })
+        };
 
-        $scope.ketquas = response.data.results;
-        console.log($scope.ketquas);
-        var user = firebase.auth().currentUser;
-        var db = firebase.database();
-        var ref = db.ref();
-        var uid = firebase.auth().currentUser.uid;
-        var usersRef = ref.child('/user/employer/' + uid + '/location');
-        $scope.saveaddress = function () {
 
-          $ionicLoading.show({
-            template: '<ion-spinner class="spinner-positive"></ion-spinner>'
-          });
-          usersRef.update({
-            address: $scope.address.formatted_address,
-            location: {
-              lat: $scope.address.geometry.location.lat,
-              lng: $scope.address.geometry.location.lng
-            }
-          });
-          $ionicLoading.hide();
-          $scope.next();
+        $scope.setSelectedLocation = function (selected) {
+          $scope.location = selected;
+          console.log($scope.location)
+
+          $scope.store.location = {};
+          $scope.store.name = $scope.location.name;
+          $scope.store.address = $scope.location.formatted_address;
+          $scope.store.location.lat = $scope.location.geometry.location.lat;
+          $scope.store.location.lng = $scope.location.geometry.location.lng;
+          $scope.store.industry = $scope.location.types[0];
+          console.log($scope.store)
+
+        };
+
+        //Create Store by hand
+        $scope.storeName = '';
+        $scope.storeIndustry = '';
+
+        //find Address by Google
+        $scope.autocompleteAddress = {text: ''};
+        $scope.searchAddress = function () {
+
+          $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocompleteAddress.text + '&components=country:VN&sensor=true&key=' + CONFIG.APIKey;
+          $http({
+            method: 'GET',
+            url: $scope.URL
+          }).then(function successCallback(response) {
+
+            $scope.ketquasAddress = response.data.results;
+            console.log($scope.ketquasAddress);
+          })
+        };
+
+
+        $scope.setSelectedAddress = function (selected) {
+          $scope.address = selected;
+          console.log($scope.address)
+          $scope.store.location = {};
+          $scope.store.name = $scope.storeName;
+          $scope.store.address = $scope.address.formatted_address;
+          $scope.store.location.lat = $scope.address.geometry.location.lat;
+          $scope.store.location.lng = $scope.address.geometry.location.lng;
+          $scope.store.industry = $scope.storeIndustry;
+          console.log($scope.store)
+
+        };
+
+        $scope.submitStore = function (storeCreate) {
+
+          if (!$scope.store.name || !$scope.store.industry) {
+            $scope.store.name = storeCreate.Name;
+            $scope.store.industry = storeCreate.Industry;
+
+          }
+
+          var newStoreKey = firebase.database().ref('store').push().key;
+          $rootScope.storeIdCurrent = newStoreKey;
+          $scope.userRef.update({
+            currentStore: newStoreKey
+          })
+
+          var storeData = {
+            storeKey: newStoreKey,
+            storeName: $scope.store.name,
+            address: $scope.store.address,
+            location: $scope.store.location,
+            createdBy: $rootScope.userid,
+            createdAt: firebase.database.ServerValue.TIMESTAMP,
+            starCount: 0,
+            industry: $scope.store.industry,
+            photourl: $scope.photoUpload || 'img/restaurant.png'
+
+          }
+          console.log(storeData);
+
+
+          var newStoreRef = firebase.database().ref('store/' + newStoreKey);
+          newStoreRef.update(storeData);
+
+          $scope.slideTo(2)
         }
 
-      })
+        // Add Initial Job For Store
+        $scope.newHospital = {};
+        $scope.showjob = function () {
+          $ionicPopup.confirm({
+            title: 'Vị trí bạn đang cần tuyển',
+            scope: $scope,
+            // template: 'Are you sure you want to eat this ice cream?',
+            templateUrl: 'templates/popups/collect-job.html',
+            cssClass: 'animated bounceInUp dark-popup',
+            okType: 'button-small button-calm bold',
+            okText: 'Done',
+            cancelType: 'button-small'
+          }).then(function (res) {
+            if (res) {
+              for (var obj in $scope.newHospital.job) {
+                $scope.keyjob = $scope.newHospital.job[obj];
+                console.log('obj', $scope.keyjob);
+                if ($scope.keyjob == false) {
+                  delete $scope.newHospital.job[obj];
+                }
+              }
+              console.log('You are sure', $scope.newHospital);
 
+            } else {
+              console.log('You are not sure');
+            }
+          });
+        };
+
+        $scope.saveinterestjob = function () {
+
+          var savejobRef = firebase.database().ref('store/' + $rootScope.storeIdCurrent + '/job');
+          console.log($scope.newHospital.job);
+          savejobRef.set($scope.newHospital.job);
+
+          for (var key in $scope.newHospital.job) {
+            var jobKey = key;
+            var jobRef = firebase.database().ref('job/' + $rootScope.storeIdCurrent + '/' + jobKey);
+            var dataSave = {
+              job: jobKey,
+              createdByStore: $rootScope.storeIdCurrent,
+              createdById: $rootScope.userid,
+              createdAt: firebase.database.ServerValue.TIMESTAMP
+            }
+            console.log(dataSave);
+
+            jobRef.update(dataSave);
+
+          }
+          $scope.modalAddStore.hide();
+          $state.go('employer.dash')
+        };
+
+
+        $scope.cancel = function () {
+          $scope.modalAddStore.hide();
+
+        }
+      })
     };
+
+
+    $scope.doUpdate = function (userSignup) {
+      $ionicLoading.show({
+        template: '<ion-spinner class="spinner-positive"></ion-spinner>'
+      });
+      $scope.userRef.update({
+        phone: userSignup.phone,
+
+      });
+      console.log("update successful");
+      $ionicLoading.hide();
+      $ionicSlideBoxDelegate.next();
+    };
+
+    $scope.avatarimage = 'img/add-button.jpg';
 
     $scope.updateavatar = function () {
       console.log('update avatar clicked');
@@ -215,14 +423,7 @@ app.controller('esignupController', ['$scope', '$state', '$document', '$firebase
                     // [END onfailure]
                   }, function () {
                     console.log(uploadTask.snapshot.metadata);
-                    var url = uploadTask.snapshot.metadata.downloadURLs[0];
-                    var db = firebase.database();
-                    var ref = db.ref("user");
-                    var uid = firebase.auth().currentUser.uid;
-                    var usersRef = ref.child('employer/' + uid);
-                    usersRef.update({
-                      photourl: url
-                    });
+                    $scope.photoUpload = uploadTask.snapshot.metadata.downloadURLs[0];
                     $cordovaToast.showShortTop("Cập nhật ảnh thành công");
                     $ionicLoading.hide();
                     $scope.next()
@@ -293,14 +494,7 @@ app.controller('esignupController', ['$scope', '$state', '$document', '$firebase
                     // [END onfailure]
                   }, function () {
                     console.log(uploadTask.snapshot.metadata);
-                    var url = uploadTask.snapshot.metadata.downloadURLs[0];
-                    var db = firebase.database();
-                    var ref = db.ref("user");
-                    var uid = firebase.auth().currentUser.uid;
-                    var usersRef = ref.child('employer/' + uid);
-                    usersRef.update({
-                      photourl: url
-                    });
+                    $scope.photoUpload = uploadTask.snapshot.metadata.downloadURLs[0];
                     $ionicLoading.hide();
                     $scope.next()
                   });
@@ -318,40 +512,6 @@ app.controller('esignupController', ['$scope', '$state', '$document', '$firebase
         }
       });
     };
-    $scope.newHospital = {};
-    $scope.showjob = function () {
-      $ionicPopup.confirm({
-        title: 'Vị trí bạn đang cần tuyển',
-        scope: $scope,
-        // template: 'Are you sure you want to eat this ice cream?',
-        templateUrl: 'templates/popups/collect-job.html',
-        cssClass: 'animated bounceInUp dark-popup',
-        okType: 'button-small button-calm bold',
-        okText: 'Done',
-        cancelType: 'button-small'
-      }).then(function (res) {
-        if (res) {
-          for (var obj in $scope.newHospital.job) {
-            $scope.keyjob = $scope.newHospital.job[obj];
-            console.log('obj', $scope.keyjob);
-            if ($scope.keyjob == false) {
-              delete $scope.newHospital.job[obj];
-            }
-          }
-          console.log('You are sure', $scope.newHospital);
-
-        } else {
-          console.log('You are not sure');
-        }
-      });
-    };
-
-    $scope.saveinterestjob = function () {
-
-      var uid = firebase.auth().currentUser.uid;
-      var savejobRef = firebase.database().ref("user").child('employer/' + uid + '/interest');
-      console.log($scope.newHospital);
-      savejobRef.set($scope.newHospital);
-      $scope.next();
-    };
-  }]);
+  }
+])
+;

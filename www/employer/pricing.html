@@ -1,0 +1,82 @@
+<ion-view title="pricing" id="page21">
+  <ion-content padding="true" class="has-header">
+    <div class="list card" id="pricing-card217">
+      <ion-item class="item-icon-left" id="pricing-list-item52">
+        <i class="icon ion-ios-plus-outline"></i>Gói dùng th</ion-item>
+      <div class="item item-body" id="pricing-list-item-container19">
+        <div id="pricing-markdown21" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">30 lượt
+            <strong>Tuyển ứng viên</strong> /ngày</p>
+        </div>
+        <div id="pricing-markdown23" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">10 điểm
+            <strong>Mở khóa liên hệ</strong> miễn phí</p>
+        </div>
+        <div id="pricing-markdown27" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">Sử dụng tất cả tính năng</p>
+        </div>
+        <div id="pricing-markdown32" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">Đăng tối đa 3 công việc</p>
+        </div>
+      </div>
+    </div>
+    <div class="list card" id="pricing-card218">
+      <ion-item class="item-icon-left calm" id="pricing-list-item56">
+        <i class="icon ion-ios-plus-outline"></i>Gói thành viên VIP</ion-item>
+      <div class="item item-body" id="pricing-list-item-container20">
+        <div id="pricing-markdown29" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">Lượt
+            <strong>Tuyển ứng viên</strong> không giới hạn</p>
+        </div>
+        <div id="pricing-markdown37" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">Điểm
+            <strong>Mở khóa liên hệ</strong> không giới hạn</p>
+        </div>
+        <div id="pricing-markdown30" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">
+            <strong>Tạo công việc không giới hạn</strong>
+          </p>
+        </div>
+        <div id="pricing-markdown33" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">Thêm huy hiệu
+            <strong>Nhà tuyển dụng VIP</strong>, làm tăng độ tin cậy đối với ứng viên</p>
+        </div>
+      </div>
+      <ion-item class="item-icon-left dark" id="pricing-list-item59">
+        <i class="icon ion-pricetag"></i>{{vip.priceMonth}}.000đ/tháng</ion-item>
+      <form id="pricing-form21" class="list">
+        <ion-item class="range range-positive" id="pricing-range7">Tháng: {{vip.month}}
+          <input type="range" value="12" min="0" max="12" step="3" ng-model="vip.month" ng-change="priceMonth(vip.month)">
+        </ion-item>
+      </form>
+      <button ng-click="buy(vip)" id="pricing-button19" class="button button-positive  button-block icon ion-android-checkbox-outline"> Mua ngay!</button>
+    </div>
+    <div class="list card" id="pricing-card219">
+      <ion-item class="item-icon-left royal" id="pricing-list-item61">
+        <i class="icon ion-ios-plus-outline"></i>Mua điểm Mở Kh</ion-item>
+      <div class="item item-body" id="pricing-list-item-container27">
+        <div id="pricing-markdown53" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">Sau khi
+            <strong>tương hợp</strong> với ứng viên, bạn sẽ cần mở khóa liên hệ để
+            <strong>chat</strong>,
+            <strong>gọi</strong>,
+            <strong>email</strong> cho ứng viên</p>
+        </div>
+        <div id="pricing-markdown54" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">
+            <strong>1 lượt mở khóa / 1 điểm</strong>
+          </p>
+        </div>
+      </div>
+      <ion-item class="item-icon-left dark" id="pricing-list-item63">
+        <i class="icon ion-pricetag"></i>{{point.pricePoint}},000đ/điểm</ion-item>
+      <form id="pricing-form22" class="list">
+        <ion-item class="range range-positive" id="pricing-range8">Điểm: {{point.point}}
+          <input type="range" value="200" min="10" max="200" step="10" ng-model="point.point" ng-change="pricepoint(point.point)">
+        </ion-item>
+      </form>
+      <button ng-click="buy(point)"  id="pricing-button58" class="button button-positive  button-block icon ion-android-checkbox-outline"> Mua ngay!</button>
+    </div>
+    <div id="pricing-container7" class="creator-container"></div>
+  </ion-content>
+</ion-view>

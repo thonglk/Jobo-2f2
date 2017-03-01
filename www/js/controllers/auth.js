@@ -1,5 +1,5 @@
 "use strict";
-app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$document', '$state', '$cordovaInAppBrowser', '$ionicLoading', '$cordovaToast', '$ionicHistory', '$ionicPlatform', function ($scope, $firebaseArray, CONFIG, $document, $state, $cordovaInAppBrowser, $ionicLoading, $cordovaToast, $ionicHistory, $ionicPlatform) {
+app.controller('loginController', ['$rootScope', '$scope', '$firebaseArray', 'CONFIG', '$document', '$state', '$cordovaInAppBrowser', '$ionicLoading', '$cordovaToast', '$ionicHistory', '$ionicPlatform', '$http', function ($rootScope, $scope, $firebaseArray, CONFIG, $document, $state, $cordovaInAppBrowser, $ionicLoading, $cordovaToast, $ionicHistory, $ionicPlatform, $http) {
   $scope.$on('$ionicView.enter', function () {
     $ionicHistory.clearCache();
     console.log("clear");
@@ -18,22 +18,16 @@ app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$docum
 
     firebase.auth().signInWithEmailAndPassword(userLogin.username, userLogin.password).then(function () {
 
-      var uid = firebase.auth().currentUser.uid;
-
-      var userRef = firebase.database().ref('user/employer');
-      userRef.on("value", function (snapshot) {
-        $scope.employeruser = snapshot.val();
-        console.log("list", $scope.employeruser);
-        if ($scope.employeruser[uid]) {
-          $state.go('edash')
-        } else {
-          $state.go('sdash')
+      $rootScope.userid = firebase.auth().currentUser.uid;
+      firebase.database().ref('user/' + $rootScope.userid + '/type').once('value', function (snap) {
+        console.log(snap.val());
+        if (snap.val() == 1) {
+          $state.go('employer.dash')
         }
-        $ionicLoading.hide()
-
-      });
-
-
+        if (snap.val() == 2) {
+          $state.go('jobseeker.dash')
+        }
+      })
     }, function (error) {
       $ionicLoading.hide();
 
@@ -119,7 +113,7 @@ app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$docum
 
   }])
 
-  .controller('introController', function ($state, $scope, $ionicLoading, $rootScope, $ionicDeploy, $cordovaToast, $timeout, $ionicPopup) {
+  .controller('introController', function ($state, $scope, $ionicLoading, $rootScope, $ionicDeploy, $cordovaToast, $timeout, $ionicPopup, $snackbar, CONFIG) {
     firebase.database().ref('config').on('value', function (snap) {
       $scope.checkUpdate = snap.val().isShowUpdate;
       console.log($scope.checkUpdate);
@@ -152,138 +146,47 @@ app.controller('loginController', ['$scope', '$firebaseArray', 'CONFIG', '$docum
       });
 
     };
-    $timeout(checkFCM, 1000);
-
-    function checkFCM() {
-      if (typeof FCMPlugin != 'undefined') {
-        $timeout(getTheToken, 1000);
-
-        FCMPlugin.onNotification(
-          function (data) {
-            console.log("data", data);
-            if (data.wasTapped) {
-
-              window.location.href = data.param1;
-              //Notification was received on device tray and tapped by the user.
-            } else {
-
-              //chat
-              if (data.param2 == 'chat') {
-
-                //Notification was received in foreground. Maybe the user needs to be notified.
-                var alertPopup = $ionicPopup.alert({
-                  title: 'Tin nhắn mới',
-                  template: data.param3
-                });
-                alertPopup.then(function (res) {
-                  window.location.href = data.param1;
-                });
-              }
-
-              //like
-
-              if (data.param2 == 'fromSeeker') {
-
-                //Notification was received in foreground. Maybe the user needs to be notified.
-                var alertPopup = $ionicPopup.alert({
-                  title: 'Có ứng viên mới ứng tuyển',
-                  template: data.param3
-                });
-                alertPopup.then(function (res) {
-                  window.location.href = data.param1;
-                });
-              }
-
-              if (data.param2 == 'fromEmployer') {
-
-                //Notification was received in foreground. Maybe the user needs to be notified.
-                var alertPopup = $ionicPopup.alert({
-                  title: 'Có nhà tuyển dụng mới thích bạn',
-                  template: data.param3
-                });
-                alertPopup.then(function (res) {
-                  window.location.href = data.param1;
-                });
-              }
-              //liked
-
-
-              if (data.param2 == 'match') {
-
-                //Notification was received in foreground. Maybe the user needs to be notified.
-                var alertPopup = $ionicPopup.alert({
-                  title: 'Chúc mừng, bạn đã "matching"! ',
-                  template: data.param3
-                });
-                alertPopup.then(function (res) {
-                  window.location.href = data.param1;
-                });
-              }
-
-
-            }
-          }
-        );
-
-      } else {
-        console.log("null fcm");
-        $timeout(checkFCM, 1000);
+    $scope.showBtnFunc = function () {
+      var options = {
+        message: "Tin nhắn mới",
+        buttonName: "Xem thêm",
+        messageColor: 'black',
+        buttonFunction: $scope.goTo
+      };
+      $scope.goTo = function () {
+        $state.go(data.goto)
       }
-
-    }
-
-
-    function getTheToken() {
-      FCMPlugin.getToken(
-        function (token) {
-          if (token) {
-            $rootScope.tokenuser = token;
-            console.log("I got the token: " + token);
-
-          } else {
-            console.log("null token");
-            $timeout(getTheToken, 1000);
-
-          }
-        },
-        function (err) {
-          console.log('error retrieving token: ' + err);
-        }
-      );
-    }
-
-
-
+      $snackbar.show(options);
+    };
     $scope.deviceHeight = window.innerHeight;
     $scope.checkuser = function () {
 
 
-      $ionicLoading.show({
-        template: '<p>Loading...</p><ion-spinner></ion-spinner>'
-      });
+      // $ionicLoading.show({
+      //   template: '<p>Loading...</p><ion-spinner></ion-spinner>'
+      // });
       firebase.auth().onAuthStateChanged(function (user) {
+          if (user && !$rootScope.registering) {
+            $rootScope.userid = firebase.auth().currentUser.uid;
+            firebase.database().ref('user/' + $rootScope.userid + '/type').once('value', function (snap) {
+              console.log(snap.val());
+              if (snap.val() == 1) {
+                $state.go('employer.dash')
+              }
+              if (snap.val() == 2) {
+                $state.go('jobseeker.dash')
+              }
+              $ionicLoading.hide();
+              $cordovaToast.showLongCenter("Đăng nhập thành công! Đang chuyển hướng...")
 
-
-        if (user && !$rootScope.registering) {
-          var uid = firebase.auth().currentUser.uid;
-          var userRef = firebase.database().ref('user/employer');
-          userRef.once("value", function (snapshot) {
-            $scope.employeruser = snapshot.val();
-            console.log("list", $scope.employeruser);
-            if ($scope.employeruser[uid]) {
-              $state.go('edash')
-            } else {
-              $state.go('sdash')
-            }
+            });
+          } else {
+            console.log("Hãy đăng nhập!")
             $ionicLoading.hide();
 
-          });
-          $cordovaToast.showLongCenter("Đăng nhập thành công! Đang chuyển hướng...")
-        } else {
-          $ionicLoading.hide();
-
+          }
         }
-      });
+      );
 
     }
   });
