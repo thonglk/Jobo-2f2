@@ -50,20 +50,11 @@ app.controller('edashCtrl', function ($scope, $state, $firebaseArray, $http
         });
         var filtersRef = firebase.database().ref('filter/' + $scope.userid).on('value', function (snap) {
           $scope.newfilter = snap.val();
-          $scope.userdistance = $scope.newfilter.distance
         });
         $ionicLoading.show({
           template: '<p>Đang tải dữ liệu ứng viên...</p><ion-spinner></ion-spinner>'
         });
-        var cardRef = firebase.database().ref('user/jobber');
-        cardRef.once('value', function (snap) {
-          $ionicLoading.hide();
-          $scope.Objcards = snap.val();
-          console.log('object', $scope.Objcards);
-          $scope.doRefresh();
-
-
-        });
+        $scope.doRefresh();
 
         $timeout(function () {
           $scope.userchat = $firebaseArray(cardRef);

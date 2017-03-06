@@ -1,26 +1,100 @@
-<ion-view hide-back-button="true" title="Jobo" hide-nav-bar="true">
-  <ion-content ng-init="checkuser()" scroll="false">
+<ion-view view-title="Jobo" hide-nav-bar="true">
+  <ion-content>
+    <div style="padding-top: 20px">
+      <div class="row responsive-md intro">
+        <div class="col-offset-25 col-25 respon-log">
+          <div class="item-image img-slide-insta">
+            <img src="img/phone.png">
+          </div>
+        </div>
+        <div class="col-25 respon-log">
+          <ion-slide-box show-pager="false" ng-init="lockSlide()">
+            <ion-slide style="padding: 5px">
+              <div class="card">
+                <div class="bor-out">
+                  <div class="item-image logo">
+                    <img src="img/Jobo.png" alt="" title=""/>
+                  </div>
+                  <div class="form-login">
+                    <div class="list">
+                      <a ng-href="#/ssignup">
 
-    <div id="bg" style="background-image: url('img/nen2.jpg');">
-      <div id="search-container">
-        <div id="search" style="height:{{deviceHeight}}px">
-          <img src="img/Jobo.png" style="width: 150px;padding-top: 150px;display: block;margin: 0 auto;">
-          <a ng-href="#/ssignup">
+                        <button class="jobo-button jobo-button-block jobo-button-calm">Tôi muốn tìm việc
+                        </button>
+                      </a>
+                      <a ng-href="#/esignup">
+                        <button class="jobo-button button-block button-balanced">Tôi muốn tuyển dụng</button>
+                      </a>
 
-            <button class="jobo-button jobo-button-block jobo-button-calm">Tôi muốn tìm việc
-            </button>
-          </a>
-          <a ng-href="#/esignup">
-            <button class="jobo-button button-block button-balanced">Tôi muốn tuyển dụng</button>
-          </a>
-          <div class="text-center" style="margin-top:30px;">
-            <button class="button button-block button-clear button-stable font-default" ui-sref="login">Đã có tài khoản
-            </button>
 
+                    </div>
+                    <!--<p><span>Hoặc</span></p>-->
+                    <!--<button ng-click="facebookLogin()" id="login-button26" class="button button-positive  button-block icon-left ion-social-facebook">Đăng ký bằng Facebook</button>-->
+                    <!--<button ng-click="googleLogin()" id="login-button48" class="button button-assertive  button-block icon-left ion-social-googleplus">Đăng ký bằng Google</button>-->
+
+                  </div>
+                </div>
+              </div>
+
+              <div class="card" style="">
+                <div class="padding sign-up-link">
+                  <p class="asklogin">Bạn đã có tài khoản? <a href="" ng-click="Login()" title="">Đăng nhập</a></p>
+                </div>
+              </div>
+
+            </ion-slide>
+            <ion-slide>
+              <ion-slide style="padding: 5px">
+                <div class="card">
+                  <div class="bor-out">
+
+                    <form name="form_login" ng-submit="doLogin(userLogin)" novalidate>
+                      <div class="list">
+
+                        <label class="item item-input">
+                          <input type="email" ng-model="userLogin.username" id="user_name" placeholder="Email">
+                        </label>
+
+                        <label class="item item-input">
+                          <input type="password" ng-model="userLogin.password" id="user_pass"
+                                 placeholder="Mật khẩu">
+                        </label>
+
+                      </div>
+                      <button type="submit" class="jobo-button jobo-button-block jobo-button-calm"
+                              ng-disabled="!userLogin.username || !userLogin.password || userLogin.username === '' ||userLogin.password === ''">
+                        Đăng nhập
+                      </button>
+                      <p><span>Hoặc</span></p>
+                      <button ng-click="facebookLogin()" id="login-button26" class="button button-positive  button-block icon-left ion-social-facebook">Đăng ký bằng Facebook</button>
+                      <button ng-click="Gotosignup()" id="login-button48" class="button button-assertive  button-block icon-left ion-social-googleplus">Đăng ký bằng Google</button>
+                    </form>
+
+
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="padding sign-up-link">
+                    <p class="asklogin">Chưa có tài khoản? <a href="" ng-click="slideTo(0)" title="">Đăng ký</a></p>
+                  </div>
+                </div>
+              </ion-slide>
+
+          </ion-slide-box>
+
+
+          <div class="get-app">
+            <p>Tải ứng dụng</p>
+            <div class="badges">
+              <a class="badge-link" href="https://play.google.com/store/apps/details?id=com.ambius.jobo"><img
+                src="img/google-play-badge.svg" alt="" style="width: 135px"></a>
+              <a class="badge-link" href="https://itunes.apple.com/us/app/jobo-tim-viec-nhanh/id1180445871"><img
+                src="img/app-store-badge.svg" alt=""></a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
   </ion-content>
 </ion-view>
+

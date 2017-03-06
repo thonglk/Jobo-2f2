@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
+  <meta http-equiv="Content-Security-Policy" content="default-src *; style-src * &apos;unsafe-inline&apos;; script-src * &apos;unsafe-inline&apos; &apos;unsafe-eval&apos;">
+
   <title></title>
 
   <link href="lib/ionic/css/ionic.css" rel="stylesheet">
@@ -57,6 +59,7 @@
   <script src="lib/angular-swiper.js"></script>
   <script src="lib/underscore.min.js"></script>
   <script src="lib/angular-filter.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ngStorage/0.3.6/ngStorage.min.js"></script>
 
   <!-- time picker-->
   <script src="lib/ion-datetime-picker/ion-datetime-picker.min.js"></script>
@@ -116,7 +119,10 @@
   <script src="lib/angular-monoelastic.js"></script>
   <script src="https://code.ionicframework.com/collide/0.0.4/collide.js"></script>
   <script src="lib/ionic.tdcards2.js"></script>
+
+  <meta http-equiv="Access-Control-Allow-Origin" content="*">
 </head>
+
 <body ng-app="starter">
 <!--
   The nav bar that will be updated as we navigate between views.

@@ -29,7 +29,15 @@
         </button>
       </div>
     </div>
-    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="ontouch(swiper)">
+    <div ng-repeat="product in products" ng-if="$index % 4 == 0" class="row">
+
+      <div class="col-sm-6 col-lg-3">{{products[$index]}}</div>
+      <div class="col-sm-6 col-lg-3">{{products[$index + 1]}}</div>
+      <div class="col-sm-6 col-lg-3">{{products[$index + 2]}}</div>
+      <div class="col-sm-6 col-lg-3">{{products[$index + 3]}}</div>
+
+    </div>
+    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)" slides-per-view="initSlide()">
 
       <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard | limitTo:limit" end-repeat>
         <div class="spacer" style="height: 30px"></div>
@@ -90,10 +98,10 @@
             </div>
             <div class="padding">
               <div id="profile2-button-bar9" class="button-bar">
-                <button ng-click="like(0)" id="profile2-button61"
+                <button ng-click="like(card,0)" id="profile2-button61"
                         class="button button-positive  button-block icon ion-android-checkbox-outline"> Tuyển ứng viên
                 </button>
-                <button ng-click="like(-1)" id="profile2-button62" class="button button-dark  button-block">Ẩn</button>
+                <button ng-click="like(card,-1)" id="profile2-button62" class="button button-dark  button-block">Ẩn</button>
               </div>
             </div>
           </div>

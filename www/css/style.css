@@ -1,3 +1,262 @@
+/*Authentication*/
+
+/* Empty. Add your own CSS if you like */
+.cover {
+  background: #1A9CC7; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #1A9CC7, #32C28F); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #1A9CC7, #32C28F); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  padding: 20px;
+}
+
+.cover .list:last-child.card {
+  margin-bottom: 0px;
+}
+/*
+.info{
+padding-left: 20px;
+}*/
+
+.cover h1 {
+  color: white;
+}
+
+.cover .card {
+  margin: 10px 0px;
+}
+
+.info-text .item {
+  padding-top: 5px;
+  padding-bottom: 5px;
+  padding-left: 30px;
+}
+
+.info-text i {
+  font-size: 20px !important;
+  left: 0 !important;
+}
+
+.info-text p {
+  color: white;
+}
+
+.info-text .list, .info-text .item {
+  background: transparent !important;
+  color: white;
+  border: 0;
+  box-shadow: 0;
+}
+
+.info-text .list.card {
+  box-shadow: none;
+}
+
+.cover button, .hide-user button {
+  border-radius: 0;
+}
+
+/*.care-list {
+  display: inline-block;;
+}
+
+.care-list li{
+  display: inline-block;
+  border: 1px solid;
+  padding: 4px 5px;
+  margin-right: 10x;
+  margin-top:  10px;
+}*/
+
+.care-list button {
+  border-color: #ddd !important;
+  border-radius: 0 !important;
+  margin-top: 5px;
+}
+
+.company, .pos {
+  display: inline-block;
+}
+
+.company p {
+  display: inline;
+  font-size: 16px;
+  font-weight: bold;
+  color: black;
+}
+
+.experince span {
+  display: block;
+  font-size: 12px;
+  color: #aaa;
+}
+
+.experince i, .care i {
+  margin: 0px 10px;
+}
+
+.title-bold {
+  display: inline;
+  font-weight: bold;
+  font-size: 18px !important;
+}
+
+.text-bor-left {
+  position: relative;
+}
+
+.text-bor-left:before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  width: 3px;
+  background: black;
+  left: -16px;
+}
+
+.experince .item {
+  border: 0;
+}
+
+@media screen and (min-width: 568px) {
+  .cover .item-image img {
+    padding-right: 10px;
+  }
+
+  .col-25.respon-log {
+    padding: 0px;
+  }
+
+
+}
+
+@media screen and (max-width: 767px) {
+  .img-slide-insta {
+    display: none;
+  }
+
+  .col-25.respon-log {
+    padding: 0px 50px;
+  }
+}
+
+@media screen and (max-width: 560px) {
+  .col-25.respon-log {
+    padding: 0px;
+    margin: 0;
+  }
+
+  .col-25.respon-log .card{
+    box-shadow: none;
+  }
+  .bor-out{
+    padding: 20px 0px !important;
+  }
+}
+
+@media screen and (max-width: 1050px) {
+  .col-25.respon-log {
+    min-width: 50%;
+    margin-left: 0;
+  }
+}
+
+header .header-content .header-content-inner .list-badges {
+  margin-bottom: 25px;
+}
+header .header-content .header-content-inner .list-badges img {
+  height: 50px;
+  margin-bottom: 25px;
+}
+
+section.download .badges .badge-link {
+  display: block;
+  margin-bottom: 25px;
+}
+section.download .badges .badge-link:last-child {
+  margin-bottom: 0;
+}
+section.download .badges .badge-link img {
+  height: 60px;
+}
+@media (min-width: 768px) {
+  section.download .badges .badge-link {
+    display: inline-block;
+    margin-bottom: 0;
+  }
+}
+@media (min-width: 768px) {
+  section.download h2 {
+    font-size: 70px;
+  }
+}
+.item-image.logo img {
+  max-width: 175px;
+}
+
+.bor-out {
+  padding: 40px 40px;
+}
+
+.asklogin {
+  margin: 0px;
+}
+
+#fb-log {
+  background-image: url('../img/fb.png');
+  background-repeat: no-repeat;
+  background-position: 15px 3px;
+  display: block;
+  text-align: center;
+  padding-left: 20px;
+  text-decoration: none;
+  color: black;
+}
+
+.sign-up-link {
+  text-align: center;
+}
+
+.get-app {
+  text-align: center;
+}
+
+.img-slide-insta {
+  padding-right: 20px;
+}
+
+a{
+  text-decoration: none;
+}
+
+.forgot-pass{
+  font-size: 14px;
+}
+
+.bor-out p{
+  text-align: center;
+  position: relative;
+}
+
+.bor-out span {
+  background: white;
+  position: relative;
+  padding: 0px 10px;
+}
+
+.bor-out p:before{
+  content:"";
+  position: absolute;
+  bottom: 3px;
+  left: 0;
+  right: 0;
+  height: 0.5em;
+  border-top: 1px solid #ccc;
+  /*z-index: -1;*/
+}
+
+/*end*/
+
+
 img {
   object-fit: cover;
 }

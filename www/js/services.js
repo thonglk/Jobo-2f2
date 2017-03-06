@@ -8,17 +8,22 @@ angular.module('starter.services', [])
     }
   })
 
-app.filter('myLimitTo', [function(){
-  return function(obj, limit){
+  // .service('AuthFG', function ($state) {
+  //
+  //   }
+  // );
+
+app.filter('myLimitTo', [function () {
+  return function (obj, limit) {
     var keys = Object.keys(obj);
-    if(keys.length < 1){
+    if (keys.length < 1) {
       return [];
     }
 
     var ret = new Object,
       count = 0;
-    angular.forEach(keys, function(key, arrayIndex){
-      if(count >= limit){
+    angular.forEach(keys, function (key, arrayIndex) {
+      if (count >= limit) {
         return false;
       }
       ret[key] = obj[key];

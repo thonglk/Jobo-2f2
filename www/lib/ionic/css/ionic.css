@@ -8659,28 +8659,28 @@ progress {
         color: #fff; }
   .button.button-positive {
     border-color: transparent;
-    background-color: #1FBDF1
+    background-color: #0c60ee
   ;
     color: #fff; }
     .button.button-positive:hover {
       color: #fff;
       text-decoration: none; }
     .button.button-positive.active, .button.button-positive.activated {
-      background-color: #1FBDF1; }
+      background-color: #0c60ee; }
     .button.button-positive.button-clear {
       border-color: transparent;
       background: none;
       box-shadow: none;
-      color: #1FBDF1; }
+      color: #0c60ee; }
     .button.button-positive.button-icon {
       border-color: transparent;
       background: none; }
     .button.button-positive.button-outline {
-      border-color: #1FBDF1;
+      border-color: #0c60ee;
       background: transparent;
-      color: #1FBDF1; }
+      color: #0c60ee; }
       .button.button-positive.button-outline.active, .button.button-positive.button-outline.activated {
-        background-color: #1FBDF1;
+        background-color: #0c60ee;
         box-shadow: none;
         color: #fff; }
   .button.button-calm {

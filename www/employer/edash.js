@@ -14,9 +14,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   , $ionicModal
   , $ionicSlideBoxDelegate
   , $ionicPopup
-  , TDCardDelegate
   , $timeout) {
-
 
 
   angular.element($window).bind('resize', function () {
@@ -72,7 +70,6 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
     var user = firebase.auth().currentUser;
 
     if (user) {
-
       // User is signed in.
       $rootScope.userid = user.uid;
       console.log("i'm in " + $rootScope.userid);
@@ -92,7 +89,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         var userRef = firebase.database().ref('user/' + $rootScope.userid);
         userRef.once('value', function (snapshot) {
           $rootScope.usercurent = snapshot.val();
-          $rootScope.storeIdCurrent = $rootScope.usercurent.currentStore
+          $rootScope.storeIdCurrent = $rootScope.usercurent.currentStore;
           $rootScope.loadCurrentStore();
           console.log(" with " + $rootScope.storeIdCurrent)
 
@@ -160,32 +157,34 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   }
 
 
-
   $scope.$back = function () {
     window.history.back();
   };
+  $scope.onReadySwiper = function (swiper) {
+    console.log('ready');
+    $scope.swiper = swiper;
+    $scope.swiper.update();
+
+  };
 
 
-// //refresh swiper card
-//   $scope.onReadySwiper = function (swiper) {
-//
-//     $scope.swiper = swiper;
-//     $scope.swiper.update();
-//
-//     console.log($scope.swiper)
-//
-//
-//   };
+  // $scope.$on('ngRepeatFinished', function () {
+  //   $scope.swiper = new Swiper('.swiper-container', {
+  //     //Your options here:
+  //     slidesPerView: $scope.initSlide()
+  //     slidesPerColumn
+  //   })
+  //   console.log($scope.swiper)
+  // });
+  $scope.onTouch = function (swiper) {
+    $scope.swiper = swiper;
+    $scope.swiper.update();
 
-
-  $scope.$on('ngRepeatFinished', function () {
-    $scope.mySwiper = new Swiper('.swiper-container', {
-      //Your options here:
-      slidesPerView: $scope.initSlide()
-    })
-    console.log($scope.mySwiper)
-    });
-
+    console.log($scope.swiper.activeIndex);
+    if ($scope.swiper.activeIndex == $scope.limit - 1) {
+      $scope.limit = $scope.limit + 5;
+    }
+  };
 //
 // //Tinh khoang cach
 // function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
@@ -222,6 +221,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         $scope.newfilter.userid = $rootScope.storeIdCurrent;
         console.log($scope.newfilter);
         $http({
+
           method: 'GET',
           url: CONFIG.APIURL + '/api/users',
           params: $scope.newfilter
@@ -235,73 +235,8 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         $ionicLoading.hide();
       }
     });
-
-
-    // $scope.mylat = $scope.usercurent.location.location.lat;
-    // $scope.mylng = $scope.usercurent.location.location.lng;
-    // $scope.usercard = [];
-    // angular.forEach($scope.Objcards, function (card) {
-    //   if (card.location && card.location.location) {
-    //     var yourlat = card.location.location.lat;
-    //     var yourlng = card.location.location.lng;
-    //     var distance = getDistanceFromLatLonInKm($scope.mylat, $scope.mylng, yourlat, yourlng);
-    //
-    //
-    //     if ((card.stars && !card.stars[$scope.userid]) && (card.disstars && !card.disstars[$scope.userid]) && distance < $scope.userdistance) {
-    //       card.distance = distance;
-    //       if ($scope.newfilter && $scope.newfilter.onlydistance === true) {
-    //         $scope.usercard.push(card)
-    //
-    //       } else {
-    //         if (card.interest && card.interest.time && card.interest.time[$scope.newfilter.time] && card.interest.job && card.interest.job[$scope.newfilter.job]) {
-    //           $scope.usercard.push(card)
-    //
-    //         }
-    //       }
-    //     }
-    //   }
-    // });
-    // console.log("array", $scope.usercard);
   };
 
-  $scope.ontouch = function () {
-    console.log("touch")
-    // $scope.swiper = swiper;
-    // $scope.swiper.update();
-    console.log($scope.mySwiper.activeIndex);
-
-    console.log($scope.mySwiper.activeIndex);
-    if ($scope.mySwiper.activeIndex == $scope.limit - 1) {
-      $scope.limit = $scope.limit + 5;
-    }
-  };
-  /*
-   $scope.viewliked = function () {
-   $ionicModal.fromTemplateUrl('templates/modals/liked/eliked.html', {
-   scope: $scope,
-   animation: 'slide-in-up',
-   hideDelay: 920
-   }).then(function (modal) {
-   $scope.modalProfile = modal;
-   $scope.modalProfile.show();
-   var userlikeRef = firebase.database().ref('user/jobber').orderByChild('stars/' + $scope.userid).equalTo(true);
-   userlikeRef.on('value', function (snap) {
-   $scope.liked = snap.val();
-   console.log('filter', snap.val())
-   });
-   $scope.hideliked = function () {
-   $scope.modalProfile.hide();
-
-   }
-
-   })
-   };*/
-  $scope.changefilter = function () {
-
-    $scope.newfilter.onlydistance = true;
-    $scope.doRefresh();
-
-  };
 
   $scope.editjob = function () {
     if (!$scope.newfilter) {
@@ -338,8 +273,6 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
           if (res) {
             console.log('You are sure');
             console.log('select', $scope.newfilter)
-
-
           } else {
             console.log('You are not sure');
           }
@@ -393,10 +326,8 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   };
   $scope.deviceHeight = window.innerHeight;
 
-
   $scope.slideIndex = 1;
 // to logout
-
 
   $scope.share = function () {
     $cordovaSocialSharing
@@ -406,9 +337,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
       }, function (err) {
         // An error occurred. Show a message to the user
       });
-
   };
-
 
   $scope.matchlike = "";
 
@@ -419,39 +348,6 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
     $rootScope.userdisliked = [];
   }
 
-  // $scope.newHospital = {};
-  // $scope.applyJob = function () {
-  //   $scope.userliked = $scope.usercard[$scope.swiper.activeIndex];
-  //
-  //   $ionicPopup.confirm({
-  //     title: 'Vị trí bạn muốn offer ' + $scope.userliked.name,
-  //     scope: $scope,
-  //     // template: 'Are you sure you want to eat this ice cream?',
-  //     templateUrl: 'employer/modals/offer-job.html',
-  //     cssClass: 'animated bounceInUp dark-popup',
-  //     okType: 'button-small button-calm bold',
-  //     okText: 'Done',
-  //     cancelType: 'button-small'
-  //   }).then(function (res) {
-  //     if (res) {
-  //       for (var obj in $scope.newHospital.job) {
-  //         $scope.keyjob = $scope.newHospital.job[obj];
-  //         console.log('obj', $scope.keyjob);
-  //         if ($scope.keyjob == false) {
-  //           delete $scope.newHospital.job[obj];
-  //         }
-  //       }
-  //       console.log('You are sure', $scope.newHospital);
-  //       $scope.like($scope.newHospital.job)
-  //       $scope.newHospital = {};
-  //       console.log('Done', $scope.newHospital);
-  //
-  //
-  //     } else {
-  //       console.log('You are not sure');
-  //     }
-  //   });
-  // };
 
   $scope.applyThis = function (id, key) {
     if ($scope.selectedJob && $scope.selectedJob[id] && $scope.selectedJob[id][key]) {
@@ -466,281 +362,67 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
       }
       $scope.selectedJob[id][key] = true;
     }
-  }
+  };
 
+  $scope.like = function (card, action) {
 
-$scope.like = function (action) {
-  var likedId = $scope.usercard[$scope.swiper.activeIndex].userid;
-  var likeActivity = firebase.database().ref('activity/like/' + $rootScope.storeIdCurrent + ':' + likedId)
-  likeActivity.once('value', function (snap) {
-    var likeCurrent = snap.val();
-    console.log(likeCurrent);
-    if (!likeCurrent) {
+    var likedId = card.userid;
+    var likeActivity = firebase.database().ref('activity/like/' + $rootScope.storeIdCurrent + ':' + likedId);
+
+    if (card.likeMe) {
+      likeActivity.update({
+        matchedAt: new Date().getTime(),
+        status: 1,
+        jobstore: $scope.selectedJob[likedId]
+
+      });
+      itsAMatch($rootScope.storeIdCurrent, likedId)
+    } else {
       likeActivity.update({
         createdAt: new Date().getTime(),
         type: 1,
         status: action,
-        job: $scope.selectedJob[likedId],
+        jobstore: $scope.selectedJob[likedId],
         employerId: $rootScope.userid,
         like: $rootScope.storeIdCurrent,
         liked: likedId
       })
     }
-    if (likeCurrent && likeCurrent.liked == $rootScope.storeIdCurrent && likeCurrent.status == 0) {
-      likeActivity.update({
-        matchedAt: new Date().getTime(),
-        status: 1
-      })
-    }
-  });
-}
+  };
 
-/*
+  $scope.chatto = function (id) {
+    $state.go("employer.chats", {to:id,slide:1})
+  };
 
- $scope.like = function () {
- var likewithpost = $scope.usercard[$scope.swiper.activeIndex].userid;
- $scope.matchlike = likewithpost;
- var toTokenRef = firebase.database().ref('token/' + likewithpost);
- toTokenRef.on('value', function (snap) {
- $scope.toToken = snap.val();
- console.log("token", $scope.toToken)
+  $scope.limit = 5;
 
- });
- if ($scope.toToken) {
- var fcm_server_key = "AAAArk3qIB4:APA91bEWFyuKiFqLt4UIrjUxLbduQCWJB4ACptTtgAovz4CKrMdonsS3jt06cfD9gGOQr3qtymBmKrsHSzGhqyJ_UWrrEbA4YheznlqYjsCBp_12bNPFSBepqg_qrxwdYxX_IcT9ne5z6s02I2mu2boy3VTN3lGPYg";
+  function itsAMatch(storeid, userid) {
+    $ionicModal.fromTemplateUrl('employer/modals/ematch.html', {
+      scope: $scope,
+      animation: 'animated _fadeOut',
+      hideDelay: 920
+    }).then(function (modal) {
+      $scope.modalMatch = modal;
+      $scope.modalMatch.show();
 
- $http({
- method: "POST",
- dataType: 'jsonp',
- headers: {'Content-Type': 'application/json', 'Authorization': 'key=' + fcm_server_key},
- url: "https://fcm.googleapis.com/fcm/send",
- data: JSON.stringify(
- {
- "notification": {
- "title": "Lượt thích mới ",  //Any value
- "body": $scope.usercurent.name + " đã thích hồ sơ của bạn, apply vào đây thôi! ",  //Any value
- "sound": "default", //If you want notification sound
- "click_action": "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
- "icon": "fcm_push_icon"  //White icon Android resource
- },
- "data": {
- "param1": "#/eviewprofile/" + $scope.userid,  //Any data to be retrieved in the notification callback
- "param2": "fromEmployer",
- "param3": $scope.usercurent.name + " đã thích hồ sơ của bạn "
+      var storeRef = firebase.database().ref('/store/' + storeid);
+      storeRef.once('value', function (snap) {
+        $scope.storeData = snap.val()
+      });
 
- },
- "to": $scope.toToken.tokenId, //Topic or single device
- "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
- "restricted_package_name": "" //Optional. Set for application filtering
- }
- )
- }).success(function (data) {
- console.log("Success: " + JSON.stringify(data));
- }).error(function (data) {
- console.log("Error: " + JSON.stringify(data));
- });
- }
+      var userRef = firebase.database().ref('/user/' + userid);
+      userRef.once('value', function (snap) {
+        $scope.userData = snap.val()
+      });
 
- if (!$rootScope.userdisliked[likewithpost]) {
- $scope.userliked[likewithpost] = true;
- console.log($scope.userliked);
+      $scope.chatto = function (id) {
+        $state.go("employer.chats", {to:id,slide:1})
+      };
 
- var globalPostRef = firebase.database().ref('/reactUser/' + likewithpost);
-
-
- toggleStar(globalPostRef, $rootScope.storeIdCurrent, job);
- console.log("toggleStar");
-
- }
- $timeout(function () {
- $scope.swiper.slideNext();
- }, 1000);
- };
- function toggleStar(postRef, uid, job) {
- postRef.transaction(function (post) {
- if (!post) {
- post = {}
- }
- console.log("sap like dc roi", post);
- if (post) {
- if (post.like && post.like[uid] && post.dislike && post.dislike[uid]) {
-
- } else {
- if (!post.like) {
- post.like = {};
- }
- post.like[uid] = {
- storeLike: uid,
- status: 0,
- createdAt: firebase.database.ServerValue.TIMESTAMP,
- job: job
- };
-
-
- console.log("done", uid);
- var obj = $scope.usercurent.stars;
- // Check if user has already liked me
- for (var prop in obj) {
- if (prop == $scope.matchlike) {
- itsAMatch();
- pushmatch(uid)
- }
- }
-
- }
- }
- return post;
- });
- }
- */
-
-$scope.dislike = function () {
-  var likewithpost = $scope.usercard[$scope.swiper.activeIndex].userid;
-  $scope.matchlike = likewithpost;
-  if (!$rootScope.userliked[likewithpost]) {
-    $scope.userdisliked[likewithpost] = true;
-    console.log($scope.userdisliked);
-    var uid = firebase.auth().currentUser.uid;
-    var globalPostRef = firebase.database().ref('/user/jobber/' + likewithpost);
-    distoggleStar(globalPostRef, uid);
-    console.log(likewithpost);
-  }
-  $timeout(function () {
-    $scope.swiper.slideNext();
-  }, 1000);
-
-};
-
-// [START post_stars_transaction]
-function distoggleStar(postRef, uid) {
-  postRef.transaction(function (post) {
-    console.log("sap dislike dc roi", uid);
-
-    if (post) {
-      if (post.stars && post.stars[uid] && post.disstars && post.disstars[uid]) {
-
-      } else {
-        post.disstarCount++;
-        if (!post.disstars) {
-          post.disstars = {};
-        }
-        post.disstars[uid] = true;
-        console.log("done", uid);
-
-
+      $scope.hideMatch = function () {
+        $scope.modalMatch.hide();
       }
-    }
-    return post;
-  });
-}
-
-$scope.limit = 5;
-
-
-$scope.onTouch = function () {
-  $ionicSlideBoxDelegate.enableSlide(false);
-  console.log('touched');
-
-};
-$scope.onRelease = function () {
-  $ionicSlideBoxDelegate.enableSlide(true);
-  console.log('released');
-};
-
-function pushmatch(uid) {
-  var toTokenRef = firebase.database().ref('token/' + uid);
-  toTokenRef.on('value', function (snap) {
-    $scope.toToken = snap.val();
-    console.log("token", $scope.toToken)
-
-  });
-  if ($scope.toToken) {
-    var fcm_server_key = "AAAArk3qIB4:APA91bEWFyuKiFqLt4UIrjUxLbduQCWJB4ACptTtgAovz4CKrMdonsS3jt06cfD9gGOQr3qtymBmKrsHSzGhqyJ_UWrrEbA4YheznlqYjsCBp_12bNPFSBepqg_qrxwdYxX_IcT9ne5z6s02I2mu2boy3VTN3lGPYg";
-
-    $http({
-      method: "POST",
-      dataType: 'jsonp',
-      headers: {'Content-Type': 'application/json', 'Authorization': 'key=' + fcm_server_key},
-      url: "https://fcm.googleapis.com/fcm/send",
-      data: JSON.stringify(
-        {
-          "notification": {
-            "title": "Chúc mừng bạn đã matching ",  //Any value
-            "body": $scope.usercurent.name + " và bạn đã matching với nhau, phỏng vấn đi làm thôi! ",  //Any value
-            "sound": "default", //If you want notification sound
-            "click_action": "FCM_PLUGIN_ACTIVITY",  //Must be present for Android
-            "icon": "fcm_push_icon"  //White icon Android resource
-          },
-          "data": {
-            "param1": "#/schats/" + $scope.userid,  //Any data to be retrieved in the notification callback
-            "param2": "matching",
-            "param3": $scope.usercurent.name + " và bạn đã matching với nhau, phỏng vấn đi làm thôi!"
-
-          },
-          "to": $scope.toToken.tokenId, //Topic or single device
-          "priority": "high", //If not set, notification won't be delivered on completely closed iOS app
-          "restricted_package_name": "" //Optional. Set for application filtering
-        }
-      )
-    }).success(function (data) {
-      console.log("Success: " + JSON.stringify(data));
-    }).error(function (data) {
-      console.log("Error: " + JSON.stringify(data));
     });
   }
-
-
-}
-
-
-function itsAMatch() {
-  $ionicModal.fromTemplateUrl('templates/modals/ematch.html', {
-    scope: $scope,
-    animation: 'animated _fadeOut',
-    hideDelay: 920
-  }).then(function (modal) {
-    $scope.modalMatch = modal;
-    $scope.modalMatch.show();
-    $scope.matched = $scope.Objcards[$scope.matchlike];
-
-    var uid = firebase.auth().currentUser.uid;
-
-    var matchedRef = firebase.database().ref('/user/jobber/' + $scope.matched.userid);
-    matchStar(matchedRef, uid);
-    var matchRef = firebase.database().ref('/user/employer/' + uid);
-    matchStar(matchRef, $scope.matched.userid);
-
-
-    function matchStar(matchRef, uid) {
-      matchRef.transaction(function (post) {
-        console.log("sap match dc roi", uid);
-
-        if (post) {
-          if (post.match && post.match[uid]) {
-            post.match[uid] = null;
-          } else {
-            if (!post.match) {
-              post.match = {};
-            }
-            post.match[uid] = true;
-            console.log("done", uid);
-
-
-          }
-        }
-        return post;
-      });
-    }
-
-
-    $scope.chat = function () {
-      $state.go("/chats/" + $scope.matched.userid)
-    };
-
-    $scope.hideMatch = function () {
-      $scope.modalMatch.hide();
-    }
-  });
-}
 })
 ;

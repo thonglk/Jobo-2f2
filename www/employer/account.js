@@ -1,6 +1,6 @@
 "use strict";
 
-app.controller('AccountCtrl', function ($scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup) {
+app.controller('AccountCtrl', function ($scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup, $ionicLoading) {
 
   // Config Slide function
   $scope.lockSlide = function () {
@@ -71,11 +71,11 @@ app.controller('AccountCtrl', function ($scope, $rootScope, CONFIG, $ionicModal,
     }
   };
   $scope.getListJob = function () {
-      var jobListRef = firebase.database().ref('job/' + $rootScope.storeIdCurrent);
-      jobListRef.on('value', function (snap) {
-        $rootScope.jobList = snap.val();
-        console.log($rootScope.jobList);
-      });
+    var jobListRef = firebase.database().ref('job/' + $rootScope.storeIdCurrent);
+    jobListRef.on('value', function (snap) {
+      $rootScope.jobList = snap.val();
+      console.log($rootScope.jobList);
+    });
   };
 
 

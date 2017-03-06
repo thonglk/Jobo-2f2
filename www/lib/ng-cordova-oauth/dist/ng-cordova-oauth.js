@@ -528,7 +528,7 @@
           if(options !== undefined && options.hasOwnProperty("auth_type")) {
             flowUrl += "&auth_type=" + options.auth_type;
           }
-          var browserRef = window.cordova.InAppBrowser.open(flowUrl, '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
+          var browserRef = window.cordova.InAppBrowser.open(flowUrl, '_blank', 'location=no');
           browserRef.addEventListener('loadstart', function(event) {
             if((event.url).indexOf(redirect_uri) === 0) {
               browserRef.removeEventListener("exit",function(event){});
@@ -784,7 +784,8 @@
               redirect_uri = options.redirect_uri;
             }
           }
-          var browserRef = window.cordova.InAppBrowser.open('https://accounts.google.com/o/oauth2/auth?client_id=' + clientId + '&redirect_uri=' + redirect_uri + '&scope=' + appScope.join(" ") + '&approval_prompt=force&response_type=token id_token', '_blank', 'location=no,clearsessioncache=yes,clearcache=yes');
+          var browserRef = window.cordova.InAppBrowser.open('https://accounts.google.com/o/oauth2/auth?client_id=' + clientId + '&redirect_uri=' + redirect_uri + '&scope=' + appScope.join(" ") + '&approval_prompt=force&response_type=token id_token', '_blank', 'location=no');
+          console.log('fix');
           browserRef.addEventListener("loadstart", function(event) {
             if((event.url).indexOf(redirect_uri) === 0) {
               browserRef.removeEventListener("exit",function(event){});
@@ -1492,7 +1493,7 @@
      * @return   promise
      */
     function oauthNetatmo(options) {
-      
+
       var deferred = $q.defer();
       var fetchingToken = false;
       var clientId = (options.clientId)? options.clientId: null;
@@ -1501,14 +1502,14 @@
       var state = (options.state)? options.state: Math.random().toString(36).substr(2, 5);
       var inappbrowserOptions = (options.inappbrowserOptions)? options.inappbrowserOptions: 'location=no,clearsessioncache=yes,clearcache=yes';
 
-      if(window.cordova) {        
+      if(window.cordova) {
         if($cordovaOauthUtility.isInAppBrowserInstalled()) {
-          
+
           var redirect_uri = "http://localhost/callback";
           var authorize_uri = 'https://api.netatmo.com/oauth2/authorize?client_id=' + clientId + '&redirect_uri=' + redirect_uri + '&scope=' + appScope +'&state='+ state;
           var browserRef = window.cordova.InAppBrowser.open(authorize_uri, '_blank', inappbrowserOptions);
 
-          browserRef.addEventListener('loadstart', inappbrowserLoadStarted);          
+          browserRef.addEventListener('loadstart', inappbrowserLoadStarted);
           browserRef.addEventListener('exit', inapbrowserExited);
         } else {
           deferred.reject({error: "no_inappbrowser_plugin"});
@@ -1541,8 +1542,8 @@
           if(state === responseState){
 
             var httpOptions = {
-              method: "post", 
-              url: "https://api.netatmo.com/oauth2/token", 
+              method: "post",
+              url: "https://api.netatmo.com/oauth2/token",
               data: 'grant_type=authorization_code&client_id='+ clientId +'&client_secret='+ clientSecret +'&code='+ requestToken +'&scope='+ appScope +'&redirect_uri='+ redirect_uri,
               headers: {
                  'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8'
@@ -3058,8 +3059,8 @@
           providerUrl += '&scope=' + appScope.join(" ");
 
           var browserRef = window.cordova.InAppBrowser.open(
-              providerUrl, 
-              '_blank', 
+              providerUrl,
+              '_blank',
               'location=no,clearsessioncache=yes,clearcache=yes'
           );
 
@@ -3076,11 +3077,11 @@
               }
 
               if(parameterMap.access_token !== undefined && parameterMap.access_token !== null) {
-                deferred.resolve({ 
-                  access_token: parameterMap.access_token, 
-                  token_type: parameterMap.token_type, 
-                  expires_in: parameterMap.expires_in, 
-                  id_token: parameterMap.id_token 
+                deferred.resolve({
+                  access_token: parameterMap.access_token,
+                  token_type: parameterMap.token_type,
+                  expires_in: parameterMap.expires_in,
+                  id_token: parameterMap.id_token
                 });
               } else {
                 deferred.reject("Problem authenticating");

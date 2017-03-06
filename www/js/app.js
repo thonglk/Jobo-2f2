@@ -7,6 +7,7 @@
 // 'starter.controllers' is found in controllers.js
 var app = angular.module('starter', [
   'ionic'
+  , 'ngStorage'
   , 'ion-datetime-picker'
   , 'snackbar'
   , 'ngCordovaOauth'
@@ -36,6 +37,7 @@ var app = angular.module('starter', [
       if (window.StatusBar) {
         // org.apache.cordova.statusbar required
         StatusBar.styleDefault();
+        console.log(StatusBar)
       }
     });
   })
@@ -51,6 +53,12 @@ var app = angular.module('starter', [
 
   .config(function ($provide, $ionicConfigProvider, $compileProvider) {
     $ionicConfigProvider.tabs.position('bottom');
+    $ionicConfigProvider.views.transition('none');
+    $ionicConfigProvider.views.swipeBackEnabled(false);
+    $ionicConfigProvider.spinner.icon('spiral');
+    $ionicConfigProvider.navBar.alignTitle('center');
+
+
     // $ionicConfigProvider.scrolling.jsScrolling(false);
     // $translateProvider.useStaticFilesLoader({
     //     prefix: 'l10n/',
@@ -78,11 +86,6 @@ var app = angular.module('starter', [
 
     // Authentication
 
-      .state('login', {
-        url: '/login',
-        templateUrl: "templates/login.html",
-        controller: "loginController"
-      })
       .state('ssignup', {
         url: '/ssignup',
         templateUrl: "templates/signup/seekersignup.html",
@@ -142,7 +145,7 @@ var app = angular.module('starter', [
         views: {
           'tab-chats': {
             templateUrl: 'employer/chat-detail.html',
-            controller: 'ChatDetailCtrl'
+            controller: 'eChatDetailCtrl'
           }
         }
       })
@@ -206,31 +209,15 @@ var app = angular.module('starter', [
   })
 
 
-  .run(function ($ionicPlatform) {
-    $ionicPlatform.ready(function () {
-      if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-        cordova.plugins.Keyboard.disableScroll(true);
-      }
-
-      if (window.StatusBar) {
-        // org.apache.cordova.statusbar required
-        StatusBar.styleDefault();
-      }
-
-    });
-
-
-  })
-
-  .run(function ($rootScope, $ionicLoading, CONFIG, $http, $timeout, $snackbar, $state) {
+  .run(function ($rootScope, $ionicLoading, CONFIG, $http, $timeout, $snackbar, $state,
+                 $localStorage,
+                 $sessionStorage) {
 
 
       $rootScope.CONFIG = CONFIG;
       $rootScope.dataJob = CONFIG.data.job;
       $rootScope.time = CONFIG.data.time;
       $rootScope.industry = CONFIG.data.industry;
-
 
       var user = firebase.auth().currentUser;
 
@@ -255,7 +242,7 @@ var app = angular.module('starter', [
           var userRef = firebase.database().ref('user/' + $rootScope.userid);
           userRef.once('value', function (snapshot) {
             $rootScope.userCurrent = snapshot.val();
-            $rootScope.storeIdCurrent = $rootScope.userCurrent.currentStore
+            $rootScope.storeIdCurrent = $rootScope.userCurrent.currentStore;
             $rootScope.loadCurrentStore()
 
           });
@@ -272,45 +259,43 @@ var app = angular.module('starter', [
       } else {
         // No user is signed in.
       }
-      $rootScope.checkPlatform = {
-        isSafari: (function () {
-          var ua = navigator.userAgent.toLowerCase();
-          return (ua.indexOf('safari') >= 0 && ua.indexOf('chrome') < 0 && ua.indexOf('android') < 0);
-        })(),
-        isUiWebView: /(iPhone|iPod|iPad).*AppleWebKit(?!.*Safari)/i.test(navigator.userAgent),
-        isArray: function (arr) {
-          return Object.prototype.toString.apply(arr) === '[object Array]';
-        },
-        /*==================================================
-         Browser
-         ====================================================*/
-        browser: {
-          ie: window.navigator.pointerEnabled || window.navigator.msPointerEnabled,
-          ieTouch: (window.navigator.msPointerEnabled && window.navigator.msMaxTouchPoints > 1) || (window.navigator.pointerEnabled && window.navigator.maxTouchPoints > 1),
-        },
-        /*==================================================
-         Devices
-         ====================================================*/
-        device: (function () {
-          var ua = navigator.userAgent;
-          var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/);
-          var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
-          var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
-          var iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
-          return {
-            ios: ipad || iphone || ipod,
-            android: android
-          };
-        })(),
-      }
-      console.log(JSON.stringify($rootScope.checkPlatform)
-      )
 
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      console.log(userAgent);
-      // if ($rootScope.checkPlatform.device.android || $rootScope.checkPlatform.device.ios) {
-      //   $timeout(checkFCM, 1000);
-      // }
+      $rootScope.checkPlatform = function () {
+        var ua = navigator.userAgent.toLowerCase();
+        var platforms;
+        if (ua.indexOf('mobile') < 0) {
+          platforms = "web"
+        } else {
+          if (ua.indexOf('chrome') > 0 || ua.indexOf('safari') > 0 || ua.indexOf('firefox') > 0 || ua.indexOf('edge') > 0) {
+            platforms = "mobile"
+
+          } else {
+            platforms = "app"
+
+          }
+        }
+        return platforms
+      };
+      $rootScope.checkDevice = function () {
+        var ua = navigator.userAgent.toLowerCase();
+        var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/);
+        var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
+        var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
+        var iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
+        return {
+          ios: ipad || iphone || ipod,
+          android: android
+        };
+      };
+
+      $rootScope.platforms = $rootScope.checkPlatform();
+      $rootScope.device = $rootScope.checkDevice();
+      console.log($rootScope.platforms, $rootScope.device);
+
+
+      if ($rootScope.platforms == "app") {
+        $timeout(checkFCM, 1000);
+      }
       function checkFCM() {
 
         if (typeof FCMPlugin != 'undefined') {
@@ -393,7 +378,6 @@ var app = angular.module('starter', [
 
     }
   )
-
 /*
 
 

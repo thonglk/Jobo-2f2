@@ -1,6 +1,8 @@
 "use strict";
-app.controller('esignupController', ['CONFIG', '$ionicModal', '$cordovaOauth', '$scope', '$state', '$document', '$firebaseArray', '$ionicSlideBoxDelegate', '$ionicActionSheet', '$http', '$cordovaCamera', '$rootScope', '$ionicLoading', '$cordovaToast', '$ionicPlatform', '$ionicPopup', '$ionicHistory',
-  function (CONFIG, $ionicModal, $cordovaOauth, $scope, $state, $document, $firebaseArray, $ionicSlideBoxDelegate, $ionicActionSheet, $http, $cordovaCamera, $rootScope, $ionicLoading, $cordovaToast, $ionicPlatform, $ionicPopup, $ionicHistory) {
+app.controller('esignupController', ['CONFIG', '$ionicModal', '$cordovaOauth', '$scope', '$state', '$document', '$firebaseArray', '$ionicSlideBoxDelegate', '$ionicActionSheet', '$http', '$cordovaCamera', '$rootScope', '$ionicLoading', '$cordovaToast', '$ionicPlatform', '$ionicPopup', '$ionicHistory', '$stateParams',
+  function (CONFIG, $ionicModal, $cordovaOauth, $scope, $state, $document, $firebaseArray, $ionicSlideBoxDelegate, $ionicActionSheet, $http, $cordovaCamera, $rootScope, $ionicLoading, $cordovaToast, $ionicPlatform, $ionicPopup, $ionicHistory, $stateParams) {
+    $scope.params = $stateParams.slide;
+    console.log($scope.params);
     $scope.lockSlide = function () {
       $ionicSlideBoxDelegate.enableSlide(false);
     };
@@ -21,92 +23,136 @@ app.controller('esignupController', ['CONFIG', '$ionicModal', '$cordovaOauth', '
       $ionicSlideBoxDelegate.slide(index);
     };
 
-    $scope.facebookLogin = function () {
-      $ionicLoading.show({
-        template: '<ion-spinner class="spinner-positive"></ion-spinner>'
-      });
+    $scope.facebookLogin = function (type) {
 
-      var facebooklog = true;
+      var fbLoginSuccess = function (userData) {
+        var accessToken = userData.authResponse.accessToken;
+        var credential = firebase.auth.FacebookAuthProvider.credential(accessToken);
 
-      $cordovaOauth.facebook("295208480879128", ["email"]).then(function (result) {
-        console.log(result)
-        console.log(result.access_token)
-
-        var credential = firebase.auth.FacebookAuthProvider.credential(result.access_token);
-        // Sign in with the credential from the Facebook user.
-        console.log(credential)
-
-        firebase.auth().signInWithCredential(credential).then(function (result) {
-          console.log(result);
-          firebase.auth().onAuthStateChanged(function (user) {
-            if (user && facebooklog == true) {
-              console.log(user);
-              $scope.userRef = firebase.database().ref("user/" + user.uid);
-              $scope.userRef.once('value', function (snap) {
-                if (snap.val()) {
-                  $state.go('employer.dash')
-                } else {
-                  $scope.userRef.update({
-                    type: 1,
-                    name: user.displayName,
-                    userid: user.uid,
-                    email: user.email,
-                    photourl: 'img/macdinh.jpg',
-                    createdAt: new Date().getTime()
-                  });
-                  console.log("create username successful");
-                  $ionicLoading.hide();
-                  $ionicSlideBoxDelegate.next();
-                }
-              })
-
-            } else {
-              // No user is signed in.
-            }
-          });
-        })
-      })
-    }
-    $scope.googleLogin = function () {
-
-      $cordovaOauth.google("748631498782-qt0hmdnb267fh9ltn0aktb7re2fjq944.apps.googleusercontent.com", ["email"]).then(function (result) {
-        console.log("Response Object -> " + JSON.stringify(result.access_token));
-        var credential = firebase.auth.GoogleAuthProvider.credential(result.access_token)
+        SignInWithCredential(credential);
         // Sign in with the credential from the Facebook user.
 
-        firebase.auth().signInWithCredential(credential).then(function (result) {
-          console.log(result);
-          firebase.auth().onAuthStateChanged(function (user) {
-            if (user && facebooklog == true) {
-              console.log(user);
-              $scope.userRef = firebase.database().ref("user/" + user.uid);
-              $scope.userRef.once('value', function (snap) {
-                if (snap.val()) {
-                  $state.go('employer.dash')
-                } else {
-                  $scope.userRef.update({
-                    type: 1,
-                    name: user.displayName,
-                    userid: user.uid,
-                    email: user.email,
-                    photourl: 'img/macdinh.jpg',
-                    createdAt: new Date().getTime()
-                  });
-                  console.log("create username successful");
-                  $ionicLoading.hide();
-                  $ionicSlideBoxDelegate.next();
-                }
-              })
+      };
+      facebookConnectPlugin.login(["public_profile"], fbLoginSuccess,
+        function loginError(error) {
+          console.error(error)
+        }
+      );
 
-            } else {
-              // No user is signed in.
-            }
-          });
+      function SignInWithCredential(cre) {
+        firebase.auth().signInWithCredential(cre).then(function (result) {
+          $rootScope.userid = result.uid;
+
+          console.log("SignInWithCredential", JSON.stringify(result));
+
+          var userData = {
+            userid: result.uid,
+            name: result.displayName,
+            email: result.email,
+            photourl: 'img/macdinh.jpg',
+            createdAt: new Date().getTime()
+          };
+
+          checkSignupOrSignIn(userData, type);
         })
-      }, function (error) {
-        console.log("Error -> " + error);
-      });
-    }
+      }
+
+      function checkSignupOrSignIn(userData, type) {
+        var userRef = firebase.database().ref("user/" + userData.userid);
+        userRef.once('value', function (snap) {
+          console.log('checkSignupOrSignIn', type, JSON.stringify(snap.val()));
+          if (snap.val()) {
+            console.log('Đăng nhập')
+            type = snap.val().type;
+            if (type == 1) {
+              console.log('employer go to');
+
+              $state.go('employer.dash')
+            }
+            if (type == 2) {
+              $state.go('jobseeker.dash')
+            }
+          } else {
+            console.log('Đăng ký');
+
+            if (!type) {
+
+              // A confirm dialog
+              var confirmPopup = $ionicPopup.confirm({
+                title: 'Bạn là?',
+                template: 'Hãy chọn đúng vai trò sử dụng của bạn, tác vụ này sẽ không lặp lại vào lần sau?',
+                scope: null, // Scope (optional). A scope to link to the popup content.
+                buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                  text: 'Nhà tuyển dụng',
+                  type: 'button-default',
+                  onTap: function (e) {
+                    type = 1;
+                    return type;
+                  }
+                }, {
+                  text: 'Ứng viên',
+                  type: 'button-positive',
+                  onTap: function (e) {
+                    type = 2;
+                    return type;
+                  }
+                }]
+              });
+
+              confirmPopup.then(function (res) {
+                if (res) {
+                  console.log('You are sure', res);
+                  createDataUser(userRef, userData, type)
+                } else {
+                  console.log('You are not sure');
+                }
+              });
+            }
+            if (type) {
+              console.log('has type');
+
+              if (!userData.email) {
+                // A confirm dialog
+                $ionicPopup.confirm({
+                  title: 'Email của bạn?',
+                  template: '<label class="item item-input"><input type="email" ng-model="username" id="user_name" placeholder="Email"></label>',
+                  scope: $scope, // Scope (optional). A scope to link to the popup content.
+                  buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                    text: 'OK',
+                    type: 'button-default',
+                    onTap: function (e) {
+                      userData.email = $scope.username;
+                    }
+                  }]
+                }).then(function (res) {
+                  if (res) {
+                    console.log('You are sure', res);
+                    createDataUser(userRef, userData, type)
+                  } else {
+                    console.log('You are not sure');
+                  }
+                });
+              }
+
+              createDataUser(userRef, userData, type)
+            }
+
+
+          }
+        })
+
+      }
+
+      function createDataUser(userRef, userData, type) {
+        userData.type = type;
+        userRef.update(userData);
+        console.log("create username successful");
+        $ionicLoading.hide();
+        $ionicSlideBoxDelegate.next()
+
+      }
+    };
+
     $ionicPlatform.registerBackButtonAction(function () {
       if ($scope.slideIndex) {
         $ionicSlideBoxDelegate.previous();

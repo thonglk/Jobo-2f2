@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "748631498782-8svrsk4pv9ud6ve7o74k05d5bnl0gclj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ambius.jobo",
+            "certificate_hash": "d74b66ba47eed3d32b34642d7a1321c17d98a498"
+          }
+        },
+        {
           "client_id": "748631498782-qt0hmdnb267fh9ltn0aktb7re2fjq944.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -34,6 +42,13 @@
             {
               "client_id": "748631498782-qt0hmdnb267fh9ltn0aktb7re2fjq944.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "748631498782-i2iidi2otpjvsqk4d4q655472giihla8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.ambius.jobo"
+              }
             }
           ]
         },

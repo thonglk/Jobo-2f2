@@ -6,7 +6,7 @@ angular.module('starter.configs', [])
     "FIREBASE_DB_URL": 'https://jobo-b8204.firebaseio.com',
     "FIREBASE_STORAGE": 'jobo-b8204.appspot.com',
     "MESSAGE_SENDER_ID": '1075962129210',
-    "APIURL": 'http://joboserver.herokuapp.com',
+    "APIURL": 'http://localhost:8080',
     'FCM_KEY': "AAAArk3qIB4:APA91bEWFyuKiFqLt4UIrjUxLbduQCWJB4ACptTtgAovz4CKrMdonsS3jt06cfD9gGOQr3qtymBmKrsHSzGhqyJ_UWrrEbA4YheznlqYjsCBp_12bNPFSBepqg_qrxwdYxX_IcT9ne5z6s02I2mu2boy3VTN3lGPYg",
     "APIKey": 'AIzaSyATOX9rL_ULV-Q_e2kImu9wYgK2AToOteQ',
     "StatusChat": {
