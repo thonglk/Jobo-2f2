@@ -4,10 +4,10 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view>
-  <ion-content class="padding">
+<ion-view hide-nav-bar="true" ng-init="init()">
+  <ion-content>
     <ion-header-bar class="bar-light">
-      <i class="button icon-left ion-chevron-left button-clear"></i>
+      <i class="button icon-left ion-chevron-left button-clear" ui-sref="employer.chats"></i>
 
       <h1 class="title" ng-click="viewProfile(chatedData.userid)" style="text-align: center">{{chatedData.name}}</h1>
       <i class="button icon-right ion-ios-calendar button-clear animated shake"

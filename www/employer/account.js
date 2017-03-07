@@ -1,6 +1,6 @@
 "use strict";
 
-app.controller('AccountCtrl', function ($scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup, $ionicLoading) {
+app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup, $ionicLoading) {
 
   // Config Slide function
   $scope.lockSlide = function () {
@@ -23,21 +23,18 @@ app.controller('AccountCtrl', function ($scope, $rootScope, CONFIG, $ionicModal,
   // End Config Slide function
 
   $scope.init = function () {
-    var user = firebase.auth().currentUser;
-    if (user) {
-      $rootScope.userid = user.uid;
-      if (!$rootScope.usercurent) {
-        var userRef = firebase.database().ref('user/' + $rootScope.userid);
-        userRef.once('value', function (snapshot) {
-          $rootScope.userCurrent = snapshot.val();
-          $rootScope.storeIdCurrent = $rootScope.userCurrent.currentStore
-          $scope.getListStore();
-          $scope.getListJob();
-          $state.reload()
+      AuthUser.employer()
+        .then(function (result) {
+            console.log(result)
+          $scope.loadCurrentStore(result.storeIdCurrent)
+            $scope.getListStore(result.userid);
+            $scope.getListJob(result.storeIdCurrent);
+          }, function (error) {
+            console.log(error)
 
-        });
-      }
-    }
+            // error
+          }
+        );
 
 
   };
@@ -48,24 +45,29 @@ app.controller('AccountCtrl', function ($scope, $rootScope, CONFIG, $ionicModal,
     $rootScope.storeIdCurrent = storeKey;
     var setCurrent = firebase.database().ref('user/' + $rootScope.userid)
     setCurrent.update({currentStore: storeKey});
+    console.log({currentStore: storeKey});
     $scope.loadCurrentStore()
     $scope.getListJob();
     $scope.closePopover();
-    $state.reload()
   };
 
-  $scope.loadCurrentStore = function () {
-    var storeDataCurrent = firebase.database().ref('store/' + $rootScope.storeIdCurrent);
+  $scope.loadCurrentStore = function (storeId) {
+    var storeDataCurrent = firebase.database().ref('store/' + storeId);
     storeDataCurrent.on('value', function (snap) {
-      $rootScope.storeDataCurrent = snap.val()
+      $timeout(
+        $rootScope.storeDataCurrent = snap.val()
+        , 100
+      )
       console.log($rootScope.storeDataCurrent);
     });
   }
-  $scope.getListStore = function () {
+  $scope.getListStore = function (userId) {
     if (!$scope.storeList) {
-      var storeListRef = firebase.database().ref('store').orderByChild('createdBy').equalTo($rootScope.userid);
+      var storeListRef = firebase.database().ref('store').orderByChild('createdBy').equalTo(userId);
       storeListRef.on('value', function (snap) {
-        $scope.storeList = snap.val();
+        $timeout($scope.storeList = snap.val()
+          , 100
+        )
         console.log($scope.storeList)
       })
     }
@@ -73,7 +75,9 @@ app.controller('AccountCtrl', function ($scope, $rootScope, CONFIG, $ionicModal,
   $scope.getListJob = function () {
     var jobListRef = firebase.database().ref('job/' + $rootScope.storeIdCurrent);
     jobListRef.on('value', function (snap) {
-      $rootScope.jobList = snap.val();
+      $timeout($rootScope.jobList = snap.val()
+      ,
+      100)
       console.log($rootScope.jobList);
     });
   };

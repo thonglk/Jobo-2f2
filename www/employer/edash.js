@@ -17,31 +17,31 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   , $timeout) {
 
 
-  angular.element($window).bind('resize', function () {
-
-    $scope.width = $window.innerWidth;
-    if ($scope.width <= 1920 && $scope.width > 1024) {
-      var mySwiper = new Swiper('.swiper-container', {
-        slidesPerView: 3
-      })
-    }
-
-    if ($scope.width <= 1024 && $scope.width > 767) {
-      var mySwiper = new Swiper('.swiper-container', {
-        slidesPerView: 2
-      })
-    }
-
-    if ($scope.width <= 767) {
-      var mySwiper = new Swiper('.swiper-container', {
-        slidesPerView: 1
-      })
-    }
-    console.log($scope.width);
-    // manuall $digest required as resize event
-    // is outside of angular
-    $scope.$digest();
-  });
+  // angular.element($window).bind('resize', function () {
+  //
+  //   $scope.width = $window.innerWidth;
+  //   if ($scope.width <= 1920 && $scope.width > 1024) {
+  //     var mySwiper = new Swiper('.swiper-container', {
+  //       slidesPerView: 3
+  //     })
+  //   }
+  //
+  //   if ($scope.width <= 1024 && $scope.width > 767) {
+  //     var mySwiper = new Swiper('.swiper-container', {
+  //       slidesPerView: 2
+  //     })
+  //   }
+  //
+  //   if ($scope.width <= 767) {
+  //     var mySwiper = new Swiper('.swiper-container', {
+  //       slidesPerView: 1
+  //     })
+  //   }
+  //   console.log($scope.width);
+  //   // manuall $digest required as resize event
+  //   // is outside of angular
+  //   $scope.$digest();
+  // });
   $scope.initSlide = function () {
     var slidesPerView;
     $scope.width = $window.innerWidth;
@@ -382,10 +382,10 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         createdAt: new Date().getTime(),
         type: 1,
         status: action,
-        jobstore: $scope.selectedJob[likedId],
+        jobStore: $scope.selectedJob[likedId],
         employerId: $rootScope.userid,
-        like: $rootScope.storeIdCurrent,
-        liked: likedId
+        storeId:$rootScope.storeIdCurrent,
+        userId: likedId
       })
     }
   };

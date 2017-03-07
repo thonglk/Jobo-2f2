@@ -218,47 +218,13 @@ var app = angular.module('starter', [
       $rootScope.dataJob = CONFIG.data.job;
       $rootScope.time = CONFIG.data.time;
       $rootScope.industry = CONFIG.data.industry;
+      $http({
+        method: 'GET',
+        url: '/api/employer/react?id=-KdPB0ie6zIADq4RkwKV'
+      }).then(function successCallback(response) {
+        console.log("respond", response.data);
+      })
 
-      var user = firebase.auth().currentUser;
-
-      if (user) {
-        $ionicLoading.show({
-          template: '<p>Đang tải dữ liệu...!</p><ion-spinner></ion-spinner>'
-        });
-        // User is signed in.
-        $rootScope.userid = user.uid;
-        console.log("i'm in " + $rootScope.userid);
-
-        var tokenRef = firebase.database().ref("token/" + $rootScope.userid);
-        if ($rootScope.tokenuser) {
-          tokenRef.update({
-            userid: $rootScope.userid,
-            tokenId: $rootScope.tokenuser
-
-          })
-        }
-        ;
-        if (!$rootScope.usercurent) {
-          var userRef = firebase.database().ref('user/' + $rootScope.userid);
-          userRef.once('value', function (snapshot) {
-            $rootScope.userCurrent = snapshot.val();
-            $rootScope.storeIdCurrent = $rootScope.userCurrent.currentStore;
-            $rootScope.loadCurrentStore()
-
-          });
-        }
-        $rootScope.loadCurrentStore = function () {
-          var storeDataCurrent = firebase.database().ref('store/' + $rootScope.storeIdCurrent);
-          storeDataCurrent.on('value', function (snap) {
-            $rootScope.storeDataCurrent = snap.val()
-            console.log($rootScope.storeDataCurrent);
-          });
-        }
-        $ionicLoading.hide()
-
-      } else {
-        // No user is signed in.
-      }
 
       $rootScope.checkPlatform = function () {
         var ua = navigator.userAgent.toLowerCase();
