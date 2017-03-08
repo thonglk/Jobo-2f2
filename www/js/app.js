@@ -218,12 +218,7 @@ var app = angular.module('starter', [
       $rootScope.dataJob = CONFIG.data.job;
       $rootScope.time = CONFIG.data.time;
       $rootScope.industry = CONFIG.data.industry;
-      $http({
-        method: 'GET',
-        url: '/api/employer/react?id=-KdPB0ie6zIADq4RkwKV'
-      }).then(function successCallback(response) {
-        console.log("respond", response.data);
-      })
+
 
 
       $rootScope.checkPlatform = function () {

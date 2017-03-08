@@ -42,23 +42,18 @@ app.controller('eChatsCtrl', function ($q, $scope, $rootScope, CONFIG, $statePar
 
     };
 
-    $scope.timeConverter = function (timestamp) {
+    $scope.timeAgo = function (timestamp) {
       var time;
-      var dat = new Date(timestamp)
       var now = new Date().getTime()
-      console.log('now', dat)
       var a = now - timestamp
-      console.log('a', a)
 
       var minute = (a - a % 60000) / 60000
-      console.log(minute)
       if (minute < 60) {
         time = minute + " phút trước"
       } else {
         var hour = (minute - minute % 60) / 60 + 1
         if (hour < 24) {
           time = hour + " giờ trước"
-
         } else {
           var day = (hour - hour % 24) / 24 + 1
           if (hour < 24) {
@@ -70,7 +65,6 @@ app.controller('eChatsCtrl', function ($q, $scope, $rootScope, CONFIG, $statePar
             } else {
               var year = (month - month % 12) / 12 + 1
               time = year + " năm  trước"
-
             }
           }
         }

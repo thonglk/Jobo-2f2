@@ -11,8 +11,7 @@ app.controller("eSettingCtrl", function ($scope, $ionicModal, $http, $ionicLoadi
     $scope.usercurent = snapshot.val();
     console.log('im', $scope.usercurent)
     $ionicLoading.hide()
-
-  })
+  });
   $scope.editname = function () {
     $ionicModal.fromTemplateUrl('templates/modals/eeditname.html', {
       scope: $scope,

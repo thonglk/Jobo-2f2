@@ -27,7 +27,7 @@
             <p style="white-space:normal;">Vị trí đề xuất:
             <p ng-repeat="(key,value) in card.jobStore">{{dataJob[key]}}</p></p>
             <i class="icon ion-checkmark-circled" ng-click="like()"></i>
-            <p>{{timeConverter(card.likeAt)}}</p>
+            <p>{{timeAgo(card.likeAt)}}</p>
           </ion-item>
 
         </ion-list>
@@ -40,7 +40,7 @@
             <p style="white-space:normal;">Vị trí:
             <p ng-repeat="(key,value) in card.job">{{dataJob[key]}}</p></p>
             <i class="icon ion-chatbubbles" ng-click="chatTo(card.userid)"></i>
-            <p>{{timeConverter(card.likeAt)}}</p>
+            <p>{{timeAgo(card.likeAt)}}</p>
           </ion-item>
         </ion-list>
       </ks-swiper-slide>
@@ -52,7 +52,7 @@
             <p style="white-space:normal;">Vị trí mong muốn:
             <p ng-repeat="(key,value) in card.jobUser">{{dataJob[key]}}</p></p>
             <i class="icon ion-chatbubbles" ui-sref="employer.chat-detail({chatId: card.userid})"></i>
-            <p>{{timeConverter(card.matchedAt)}}</p>
+            <p>{{timeAgo(card.matchedAt)}}</p>
           </ion-item>
         </ion-list>
       </ks-swiper-slide>
