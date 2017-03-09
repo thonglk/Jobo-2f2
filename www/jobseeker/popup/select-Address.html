@@ -1,0 +1,14 @@
+<div class="padding">
+  <label class="item item-input" id="taocuahang-search3">
+    <i class="icon ion-search placeholder-icon"></i>
+    <input type="search" ng-model="autocompleteAddress.text" placeholder="Vd: 51 Hàng Khay"
+           ng-change="searchAddress()">
+  </label>
+</div>
+
+<label class="checkbox-inline" ng-repeat="ketqua in ketquasAddress | limitTo:3 ">
+  <ion-list class="list-borderless">
+    <ion-radio ng-value="ketqua" ng-click="setSelectedAddress(ketqua)">{{ketqua.formatted_address}}
+    </ion-radio>
+  </ion-list>
+</label>

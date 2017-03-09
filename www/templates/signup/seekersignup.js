@@ -127,7 +127,7 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
           $scope.usersRef = firebase.database().ref('user/' + user.uid);
           $scope.usersRef.update({
             type: 2,
-            name: userSignup.name,
+            phone: userSignup.phone,
             userid: user.uid,
             email: userSignup.username,
             photourl: "img/macdinh.jpg",
@@ -178,6 +178,7 @@ app.controller('ssignupController', ['$scope', '$state', '$document', '$firebase
     };
 
     $scope.userInfo = {};
+
     //find school
 
     $scope.autocompleteSchool = {text: ''};

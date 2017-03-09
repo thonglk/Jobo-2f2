@@ -1,5 +1,108 @@
 /*Authentication*/
 
+.input-group {
+  display: flex;
+  width: 100%;
+  position: relative;
+}
+
+input.form-control.input-number {
+  position: relative;
+  z-index: 2;
+  flex: 1 1 auto;
+  width: 1%;
+  margin-bottom: 0;
+  border: 1px solid #ddd;
+  padding: 0px 16px;
+}
+.form-modify label input:focus, input.form-control.input-number:focus {
+  color: #9faecb ;
+  background-color: #fff;
+  border-color: #8ad4ee ;
+  outline: none;
+}
+
+.span-number{
+  padding: 6px 10px;
+  background: #ccc;
+}
+
+
+.input-group-addon {
+  padding: 0.5rem 0.75rem;
+  margin-bottom: 0;
+  font-size: 0.875rem;
+  font-weight: normal;
+  line-height: 1.25;
+  color: #9faecb;
+  text-align: center;
+  background-color: #e1e6ef;
+  border: 1px solid #e1e6ef;
+}
+
+.input-icon{
+  border: 1px solid #ddd;
+  border-right: 0;
+  padding: 5px 10px 5px 10px;
+  margin-top: -10px;
+  background: #eee;
+  border-radius: 0;
+}
+
+.item-divider {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  min-height: 30px;
+  background-color: #f9f9fa;
+  color: #222;
+  font-weight: 500;
+}
+/*card*/
+
+.form-mod{
+  border-right: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd
+}
+.form-modify{
+  padding: 16px;
+  margin-bottom: 0px;
+}
+.form-modify label{
+  border: 0;
+  padding: 0;
+}
+.form-modify label span{
+  margin-bottom: 5px;
+}
+
+.form-modify label input{
+  padding: 0px 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 0;
+}
+
+.form-mod button{
+  border-radius: 0;
+}
+wrap
+
+
+
+/*/h3/*/
+h3.with-line {
+  border-bottom: 1px solid #d6d6d6;
+  color: #666;
+  font-weight: 400;
+  padding-top: 30px;
+  margin-bottom: 14px;
+  line-height: 39px;
+  width: 100%;
+}
+h3 {
+  font-size: 20px;
+}
 /* Empty. Add your own CSS if you like */
 .cover {
   background: #1A9CC7; /* fallback for old browsers */
@@ -289,6 +392,15 @@ img {
 .font-default {
   font-family: "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !important;
 }
+
+body {
+  font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: normal;
+  line-height: 1.5;
+  color: #374767;
+  background-color: #f2f4f8; !important;}
+
 
 html, body, div, applet, object, iframe, h1, h2, h3, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, i, u, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, fieldset, figure, figcaption, footer, header, button, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
   font-family: 'gotham-book';

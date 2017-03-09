@@ -1,0 +1,115 @@
+<!--
+  This template loads for the 'tab.friend-detail' state (app.js)
+  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
+  The FriendsCtrl pulls data from the Friends service (service.js)
+  The Friends service returns an array of friend data
+-->
+<ion-view hide-nav-bar="true" ng-init="init()">
+  <ion-content>
+    <ion-header-bar class="bar-light">
+      <i class="button icon-left ion-chevron-left button-clear" ui-sref="employer.chats"></i>
+
+      <h1 class="title" ng-click="viewProfile(chatedData.userid)" style="text-align: center">{{chatedData.name}}</h1>
+      <i class="button icon-right ion-ios-calendar button-clear animated shake"
+         style="position: absolute;right: 40px" ion-datetime-picker ng-model="timeInterview"
+         ng-change="setInterview(timeInterview)"></i>
+      <i class="button icon-right ion-android-call button-clear animated shake" ng-click="showphone()"></i>
+
+    </ion-header-bar>
+    <ion-item class="item item-body" id="activity-list-item54" ng-if="messages.interview" style="margin-top: 44px">
+      <p style="margin-top:0px;color:#000000;">Bạn và {{chatedData.name}} sẽ có buổi phỏng vấn lúc
+        <strong>{{messages.interview.interview | date: "H:mm dd-MM-yyyy"}}</strong> tại
+        <strong>{{messages.interview.place}}</strong>
+      </p></ion-item>
+
+    <ion-content has-bouncing="true" class="has-footer"
+                 delegate-handle="userMessageScroll">
+
+      <div class="list card" id="page3-card25" style=>
+        <div class="item item-body" id="page3-list-item-container18">
+          <div id="page3-markdown20" style="text-align:center;" class="show-list-numbers-and-dots">
+            <p style="margin-top:0px;">{{chatedData.name}} rất phù hợp với vị trí <span
+              ng-repeat="(key,value) in chatUser.job">{{dataJob[key]}}</span> Tips: Hãy bắt đầu trò chuyện với
+              {{chatedData.name}} và đặt lịch phỏng vấn!
+            </p>
+          </div>
+        </div>
+      </div>
+      <div ng-repeat="message in messages" class="message-wrapper"
+           on-hold="onMessageHold($event, $index, message)">
+
+        <div ng-if="chatUser.userid === message.sender">
+          <div ng-if="Status[message.key]" style="color: darkgrey;
+    font-size: xx-small;
+text-align: center;">{{timeConverter(message.createdAt)}}
+          </div>
+          <div>
+            <img ng-click="viewProfile(chatUser.userid)" class="profile-pic left"
+                 ng-src="{{chatUser.photourl}}" onerror="onProfilePicError(this)"/>
+          </div>
+
+          <div class="chat-bubble left" ng-click="showStatus(message.key)">
+
+            <div class="message" ng-bind-html="message.text"></div>
+
+          </div>
+        </div>
+        <div ng-if="Status[message.key]" style="
+    position: absolute;
+    right: 10px;
+    bottom: -20px;
+    color: darkgrey;
+    font-size: xx-small;
+">{{CONFIG.StatusChat[message.status]}}
+        </div>
+
+        <div ng-if="storeIdCurrent === message.sender && message.type == 0">
+          <div ng-if="Status[message.key]" style="color: darkgrey;
+    font-size: xx-small;
+text-align: center;">{{timeConverter(message.createdAt)}}
+          </div>
+
+          <div>
+            <img ng-click="showProfile()" class="profile-pic right"
+                 ng-src="{{storeDataCurrent.photourl}}" onerror="onProfilePicError(this)"/>
+          </div>
+
+          <div class="chat-bubble right" ng-click="showStatus(message.key)">
+
+            <div class="message" ng-bind-html="message.text">
+            </div>
+          </div>
+          <div ng-if="Status[message.key]" style="
+    position: absolute;
+    right: 10px;
+    bottom: -20px;
+    color: darkgrey;
+    font-size: xx-small;
+">{{CONFIG.StatusChat[message.status]}}
+          </div>
+        </div>
+
+
+        <div class="cf"></div>
+
+      </div>
+    </ion-content>
+
+    <form name="sendMessageForm" ng-submit="sendMessage(sendMessageForm)" novalidate>
+      <ion-footer-bar class="item-input-inset message-footer" keyboard-attach>
+        <label class="item-input-wrapper message-box">
+            <textarea ng-model="input.message" class="message-box" value=""
+                      placeholder="Send {{chatUser.name}} a message..." required minlength="1" maxlength="1500"
+                      msd-elastic></textarea>
+        </label>
+        <div class="footer-btn-wrap">
+          <button class="button button-clear button-small footer-btn" type="submit"
+                  ng-disabled="!input.message || input.message === ''">Send
+          </button>
+        </div>
+      </ion-footer-bar>
+    </form>
+
+
+  </ion-content>
+</ion-view>

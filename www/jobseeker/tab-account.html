@@ -1,0 +1,65 @@
+<ion-view hide-nav-bar="true" ng-init="init()">
+  <ion-header-bar align-title="center" class="bar-light">
+
+    <div class="buttons">
+      <button ui-sref="employer.setting"
+              class="button button-clear icon ion-gear-b animated "></button>
+    </div>
+    <h1 ng-click="openPopover($event)" class="title">{{storeDataCurrent.storeName}}
+    </h1>
+
+  </ion-header-bar>
+  <ion-content hide-nav-bar="true">
+    <div class="profile-container" style="margin-bottom: 30px">
+      <img ng-click="updateavatar()" ng-src="{{avatarimage}}" class="profile-image" width="100">
+    </div>
+
+    <div class="row" id="vitri-container6" style="position: relative;padding: 10px">
+      <div class="col-75"><h4 id="vitri-heading1" style="color:#000000;">Vị trí đang tuyển</h4></div>
+      <div class="col"><button ng-click="addJob()" id="vitri-button16" class="button button-positive button-small icon-left ion-android-add" style="position: absolute;
+    right: 10px;">Thêm</button></div>
+    </div>
+    <div class="list card" id="job-card22" style="margin-top: 0px" ng-repeat="job in jobList">
+      <ion-item class="item-icon-right positive  title" id="job-list-item40">{{dataJob[job.job]}}
+        <span class="item-note">{{job.createdAt}}</span>
+        <i class="icon ion-android-cloud-done"></i>
+      </ion-item>
+      <div class="item item-body" id="job-list-item-container14">
+        <div id="job-markdown26" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">
+            <strong>Lương:</strong> {{job.salary}} {{job.type}}</p>
+        </div>
+        <div id="job-markdown25" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">
+            <strong>Ca:</strong> <p ng-repeat="(key,value) in job.shift"> {{time[key]}}</p></p>
+        </div>
+        <div id="job-markdown22" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">
+            <strong>Số lượng:</strong> {{job.unit}}</p>
+        </div>
+        <div id="job-markdown24" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">
+            <strong>Yêu cầu:</strong> {{job.sex}} <p ng-if="job.figure">,ngoại hình ưa nhìn</p><p ng-if="job.experience">,đã có kinh nghiệm</p> </p>
+        </div>
+        <div id="job-markdown16" class="show-list-numbers-and-dots">
+          <p style="margin-top:0px;color:#000000;">
+            <strong>Hạn chót:</strong> {{job.deadline}}</p>
+        </div>
+        <div id="job-button-bar5" class="button-bar">
+          <a href-inappbrowser="http://#" id="job-button46" style="color:#39C1EC;" class="button button-positive  button-block button-clear icon ion-android-contacts"> 2</a>
+          <a href-inappbrowser="http://#" id="job-button37" class="button button-positive  button-block button-clear icon ion-edit"></a>
+          <a ui-sref="jobo" id="job-button47" class="button button-assertive  button-block button-clear icon ion-android-delete"></a>
+        </div>
+      </div>
+    </div>
+
+
+    <!--<ion-list>-->
+    <!--<ion-toggle  ng-model="settings.enableFriends">-->
+        <!--Enable Friends-->
+    <!--</ion-toggle>-->
+    <!--</ion-list>-->
+
+  </ion-content>
+</ion-view>
+

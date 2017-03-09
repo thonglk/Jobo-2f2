@@ -201,7 +201,82 @@ var app = angular.module('starter', [
         url: '/convert',
         templateUrl: 'templates/convert.html',
         controller: 'convertCtrl'
-      });
+      })
+
+      // Jobseeker states
+
+      .state('jobseeker', {
+        url: '/jobseeker',
+        abstract: true,
+        templateUrl: 'jobseeker/tabs.html'
+      })
+
+
+      .state('sprofile', {
+        url: '/sprofile',
+        templateUrl: 'jobseeker/sprofile.html',
+        controller: 'sprofileCtrl'
+
+      })
+
+      .state('jobseeker.dash', {
+        url: '/dash',
+        views: {
+          'tab-dash': {
+            templateUrl: 'jobseeker/tab-dash.html',
+            controller: 'sDashCtrl'
+          }
+        }
+      })
+
+      .state('jobseeker.chats', {
+        url: '/chats',
+        views: {
+          'tab-chats': {
+            templateUrl: 'jobseeker/tab-chats.html',
+            controller: 'eChatsCtrl'
+          }
+        }
+      })
+      .state('jobseeker.chat-detail', {
+        url: '/chats/:chatId',
+        views: {
+          'tab-chats': {
+            templateUrl: 'jobseeker/chat-detail.html',
+            controller: 'eChatDetailCtrl'
+          }
+        }
+      })
+      .state('jobseeker.activity', {
+        url: '/activity',
+        views: {
+          'tab-activity': {
+            templateUrl: 'jobseeker/tab-activity.html',
+            controller: 'sActivityCtrl'
+          }
+        }
+      })
+      .state('jobseeker.interview', {
+        url: '/interview',
+        views: {
+          'tab-interview': {
+            templateUrl: 'employer/tab-interview.html',
+            controller: 'sInterviewCtrl'
+          }
+        }
+      })
+
+
+      .state('jobseeker.account', {
+        url: '/account',
+        views: {
+          'tab-account': {
+            templateUrl: 'jobseeker/tab-account.html',
+            controller: 'AccountCtrl'
+          }
+        }
+      })
+
 
 // if none of the above states are matched, use this as the fallback
     $urlRouterProvider.otherwise('/intro');
@@ -218,7 +293,7 @@ var app = angular.module('starter', [
       $rootScope.dataJob = CONFIG.data.job;
       $rootScope.time = CONFIG.data.time;
       $rootScope.industry = CONFIG.data.industry;
-
+      $rootScope.dataLanguages = {english: "Tiếng Anh"};
 
 
       $rootScope.checkPlatform = function () {

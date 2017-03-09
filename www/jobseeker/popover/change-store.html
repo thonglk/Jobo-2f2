@@ -1,0 +1,16 @@
+<ion-popover-view style="width: 90%">
+  <ion-header-bar><h1 class="title">Danh sách cửa hàng</h1></ion-header-bar>
+  <ion-content padding="true" class="has-header">
+    <ion-list id="popver-list29" ng-repeat="store in storeList">
+      <ion-item class="item-avatar item-icon-right" id="popver-list-item42" ng-click="setCurrentStore(store.storeKey)">
+        <img src="img/macdinh.jpg">
+        <h2>{{store.storeName}}</h2>
+        <p>{{store.address}} </p>
+        <i ng-if="store.storeKey == storeIdCurrent" class="icon ion-android-done"></i>
+      </ion-item>
+    </ion-list>
+    <ion-item class="item-icon-left positive" id="popver-list-item50" ng-click="addStore()">
+      <i class="icon ion-android-add"></i>Thêm cửa hàng
+    </ion-item>
+  </ion-content>
+</ion-popover-view>

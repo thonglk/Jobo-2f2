@@ -10,7 +10,7 @@
             <div class="list">
 
               <label class="item item-input">
-                <input type="text" ng-model="userSignup.name" id="userSignup.name" placeholder="Tên đầy đủ">
+                <input type="text" ng-model="userSignup.phone" id="userSignup.phone" placeholder="Số điện thoại">
               </label>
               <label class="item item-input">
                 <input type="email" ng-model="userSignup.username" id="cuser_name" placeholder="Email">
@@ -21,7 +21,7 @@
 
             </div>
             <button ng-click="doSignup(userSignup)" class="jobo-button jobo-button-block jobo-button-calm"
-                    ng-disabled="!userSignup.username || userSignup.username === '' || !userSignup.password || userSignup.password === '' || !userSignup.name || userSignup.name === ''">
+                    ng-disabled="!userSignup.username || userSignup.username === '' || !userSignup.password || userSignup.password === '' || !userSignup.phone || userSignup.phone === ''">
               Đăng ký
             </button>
           </div>
@@ -29,7 +29,6 @@
         </form>
         <button ng-click="facebookLogin()" class="jobo-button jobo-button-block jobo-button-calm"> facebookLogin
         </button>
-        <button ng-click="googleLogin()" class="jobo-button jobo-button-block jobo-button-calm"> googleLogin</button>
 
 
       </ion-slide>

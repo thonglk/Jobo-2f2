@@ -1,0 +1,54 @@
+<ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()">
+  <ion-content scroll="false">
+    <ion-item class="item-icon-left item-icon-right item" id="profile-list-item15" style="
+    border-bottom-width: 0px;
+">
+      <i class="icon ion-ios-search-strong" ng-click="showfilter()"></i>
+
+      <i class="icon ion-refresh" ng-click="doRefresh()"></i>
+    </ion-item>
+    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="ontouch(swiper)">
+      <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard">
+
+        <div class="list card td-card" id="page2-card26">
+          <div id="page2-container11">
+            <div style="
+    height: 250px;
+">
+              <a href="#/eviewprofile/{{ card.userid}}"><img src="{{ card.photourl }}" style="width: 100%"></a>
+            </div>
+          </div>
+          <div ng-show="card.stars[userid]" class="padding animated bounceInUp">
+            <i class="icon ion-heart" style="color: #ee5555;"></i>
+          </div>
+          <ion-item class="item-icon-right" id="page2-list-item33">
+            <h2>{{card.name}}</h2>
+            <i class="icon ion-heart" style="color: #ff6961" ng-if="usercurent.stars[card.userid]"></i>
+
+            <p><i class="ion-location"></i> {{ card.distance }} km</p>
+
+          </ion-item>
+          <div class="padding" ng-if="card.interest.job">
+            <label ng-repeat="(key,value) in card.interest.job">
+              <button class="button margin-top-5 button-outline button-small button-positive">{{dataJob[key]}}
+              </button>
+            </label>
+          </div>
+
+        </div>
+        <button style="margin-top: 0px; margin-bottom: 0px" ng-click="like()" class="jobo-button jobo-button-block jobo-button-calm"><i class="ion-android-checkbox-outline"></i> Ứng tuyển
+        </button>
+        <button style="margin-top: 0px; margin-bottom: 0px" ng-click="dislike()" class="button button-block button-clear button-dark">
+          Xóa
+        </button>
+        <p class="animated fadeInUp" style="text-align: center;background: -webkit-linear-gradient(#1FBDF1 , #39DFA5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;" ng-if="userliked[card.userid]">Bạn đã ứng tuyển công việc này!</p>
+        <p class="animated fadeInUp" style="text-align: center" ng-if="userdisliked[card.userid]">Bạn đã không thích
+          công việc này!</p>
+
+      </ks-swiper-slide>
+    </ks-swiper-container>
+
+  </ion-content>
+</ion-view>

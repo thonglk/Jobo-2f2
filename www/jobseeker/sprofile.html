@@ -1,0 +1,290 @@
+<ion-view title="Cập nhật thông tin" id="page11" ng-init="init()">
+  <ion-content padding="true" class="has-header">
+    <!--<img ng-src="{{usercurent.photourl}}" class="swiper-images" ng-click="updateavatar()">-->
+    <!--<i ng-click="updateavatar()"-->
+    <!--class="button button-positive button-small button-clear icon-left ion-images">Sửa</i>-->
+
+    <!--<div class="list form-mod" style="margin-top: 100px; ">-->
+    <div class="card">
+      <div class="item item-divider">
+        Thông tin liên hệ
+      </div>
+
+      <div class="list form-modify">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Họ và tên</span>
+          <input ng-model="userData.name" type="text" placeholder="">
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Ngày sinh</span>
+          <input ng-model="userData.birth" type="date">
+        </label>
+        <div class="list list-inset">
+          <span class="input-label">Địa chỉ</span>
+
+          <label class="item item-input">
+            <i class="icon ion-search placeholder-icon input-icon"></i>
+            <input type="text" ng-model="userData.address" placeholder="Search" ng-click="selectAddress()">
+          </label>
+        </div>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Email</span>
+          <input ng-disabled="userData.email" ng-model="userData.email" type="email" placeholder="">
+        </label>
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Số điện thoại</span>
+          <input ng-disabled="userData.phone" ng-model="userData.phone" type="number" placeholder="{{userData.phone}}">
+        </label>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="item item-divider">
+        Thông tin cá nhân
+      </div>
+      <div class="profile-container" style="margin-bottom: 30px">
+        <img ng-click="updateavatar()" ng-src="{{userData.photourl}}" class="profile-image" width="100">
+      </div>
+
+      <div class="list form-modify">
+        <label class="item item-select item-stacked-label">
+          <span class="input-label">Giới tính</span>
+          <select ng-model="userInfo.sex">
+            <option ng-value="male">Không</option>
+            <option ng-value="male">Nam</option>
+            <option ng-value="female">Nữ</option>
+          </select>
+        </label>
+
+        <span class="input-label">Chiều cao</span>
+        <div class="input-group">
+          <input class="form-control input-number" type="text">
+          <span class="input-group-addon span-number">cm</span>
+        </div>
+        <span class="input-label">Cân nặng</span>
+        <div class="input-group">
+          <input class="form-control input-number" type="text">
+          <span class="input-group-addon span-number">kg</span>
+        </div>
+      </div>
+      <ul class="list">
+        <li class="item item-toggle">
+          Ngoại hình ưu nhìn
+          <label class="toggle toggle-assertive">
+            <input ng-model="userData.figure" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="item item-divider">
+        Trình độ học vấn
+      </div>
+      <div class="list form-modify list-inset">
+        <div class="list list-inset">
+          <span class="input-label">Trường</span>
+
+          <label class="item item-input">
+            <i class="icon ion-search placeholder-icon input-icon"></i>
+            <input type="text" ng-model="userData.school" placeholder="Search" ng-click="selectSchool()">
+          </label>
+        </div>
+        <span class="input-label">Ngoại ngữ</span>
+        <ion-item class=" item-icon-right" ng-click="collectLanguages()">
+          <span class="gotham-book" ng-if="!userData.languages">Nhấn để thêm ngoại ngữ</span>
+          <span class="gotham-book" ng-repeat="(key,value) in userData.languages">{{dataLanguages[key]}},</span>
+          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+        </ion-item>
+
+        <!--<label class="item item-input item-stacked-label">-->
+        <!---->
+        <!--<input ng-model="userData.languages" type="text" placeholder="" ng-click="collectLanguages()">-->
+        <!--</label>-->
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="item item-divider">
+        Mong muốn tìm việc
+      </div>
+
+      <div class="list form-modify">
+        <span class="input-label">Thu nhập mong muốn</span>
+        <div class="input-group">
+          <input class="form-control input-number" type="text">
+          <span class="input-group-addon span-number">VNĐ/tháng</span>
+        </div>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Nơi làm việc mong muốn</span>
+          <input ng-model="userData.industry" type="search" placeholder="">
+        </label>
+        <span class="input-label">Công việc mong muốn</span>
+        <ion-item class=" item-icon-right" ng-click="showJob()">
+          <span class="gotham-book" ng-if="!userData.job">Nhấn để thêm công việc</span>
+          <span class="gotham-book" ng-repeat="(key,value) in userData.job">{{dataJob[key]}},</span>
+          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+        </ion-item>
+        <span class="input-label">Thời gian đi làm</span>
+
+        <ion-item class=" item-icon-right" ng-click="showShift()">
+          <span class="gotham-book" ng-if="!userData.time">Nhấn để thêm thời gian</span>
+          <span class="gotham-book" ng-repeat="(key,value) in userData.time">{{time[key]}},</span>
+          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+        </ion-item>
+
+        <div class="list">
+          <span class="input-label">Khoảng cách di chuyển: {{userData.distance}} km</span>
+
+          <div class="item range range-positive">
+            <i class="icon ion-ios-sunny-outline"></i>
+            <input ng-model="userData.distance" type="range" name="volume" min="0" max="50" value="33">
+            <i class="icon ion-ios-sunny"></i>
+          </div>
+        </div>
+
+        <label class="item item-input item-select">
+          <span class="input-label">Trạng thái tìm việc</span>
+
+          <select ng-model="userData.status">
+            <option value="1">Tìm gấp</option>
+            <option value="0" selected>Bình thường</option>
+            <option value="-1">Chưa có nhu cầu</option>
+          </select>
+        </label>
+        <p>Hồ sơ sẽ được ưu tiên hiển thị cho bạn tìm việc gấp</p>
+
+      </div>
+    </div>
+
+
+    <div class="card">
+      <div class="item item-divider">
+        Kinh nghiệm làm việc
+      </div>
+      <div ng-repeat="card in userData.experience">
+        <div class="list form-modify">
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">Nơi làm việc</span>
+            <input ng-model="card.company" type="text" placeholder="">
+          </label>
+          <label class="item item-input item-stacked-label" ng-click="showJobExp(card)">
+            <span class="input-label">Công việc</span>
+            <ion-item class=" item-icon-right" >
+              <span class="gotham-book" ng-if="!card.job">Nhấn để thêm công việc</span>
+              <span class="gotham-book" ng-repeat="(key,value) in card.job">{{dataJob[key]}},</span>
+              <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+            </ion-item>
+          </label>
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">Bắt đầu</span>
+            <input ng-model="card.start" type="month" placeholder="">
+          </label>
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">Kết thúc</span>
+            <input ng-if="card.end != true" ng-model="card.end" type="month" placeholder="">
+          </label>
+        </div>
+        <ul class="list">
+
+          <li class="item item-toggle">
+            Đến nay
+            <label class="toggle toggle-assertive">
+              <input ng-model="card.end" type="checkbox">
+              <div class="track">
+                <div class="handle"></div>
+              </div>
+            </label>
+          </li>
+        </ul>
+      </div>
+      <div class="item item-divider">
+        <button ng-click="addMoreExp(userData.experience)" class="button button-small button-outline button-positive">
+          Thêm
+        </button>
+        <button ng-click="deleteExp(userData.experience)" class="button button-small button-outline button-assertive">
+          Xóa
+        </button>
+      </div>
+
+    </div>
+
+    <div class="card">
+      <div class="item item-divider">
+        Khác
+      </div>
+      <div class="list form-modify">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Giới thiệu bản thân</span>
+          <input ng-model="userData.description" type="text" placeholder="">
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Video giới thiệu</span>
+          <input ng-model="userData.videourl" type="url" placeholder="Http://youtube.com/">
+          <p>Video giới thiệu về bản thân, tại sao nhà tuyển dụng nên chọn bạn,...</p>
+        </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="item item-divider">
+        Nhận thông báo mới khi
+      </div>
+      <ul class="list">
+        <li class="item item-toggle">
+          Tin nhắn mới
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiMes" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+      </ul>
+      <ul class="list">
+        <li class="item item-toggle">
+          Nhà tuyển dụng muốn tuyển bạn
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiInvite" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+      </ul>
+      <ul class="list">
+
+        <li class="item item-toggle">
+          Có nhà tuyển dụng tương hợp với bạn
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiMatch" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+      </ul>
+      <ul class="list">
+        <li class="item item-toggle">
+          Có công việc mới
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiJob" setting.notiMatchtype="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+
+
+      </ul>
+    </div>
+
+    <div class="item item-divider">
+      <button class="button icon-left ion-checkmark button-balanced button-small">Submit</button>
+      <button class="button icon-left ion-close button-assertive button-small">Reset</button>
+    </div>
+    </div>
+  </ion-content>
+</ion-view>

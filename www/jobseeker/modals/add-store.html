@@ -1,0 +1,117 @@
+<ion-modal-view>
+  <ion-header-bar class="bar-stable">
+    <h1 class="title">Thêm cửa hàng</h1>
+    <div class="buttons">
+      <button class="button" ng-click="cancel()">Hủy</button>
+    </div>
+  </ion-header-bar>
+  <ion-content class="has-header">
+    <ion-slide-box show-pager="false" on-slide-changed="slideChanged(index)" ng-init="lockSlide()">
+      <ion-slide>
+        <div class="padding">
+          <form id="taocuahang-form12" class="list">
+            <div id="taocuahang-markdown14" class="show-list-numbers-and-dots">
+              <p style="color:#000000;font-size:12px;">Tìm cửa hàng của bạn trên
+                <em>Google Places</em>
+              </p>
+            </div>
+            <label ng-if="!location" class="item item-input" id="taocuahang-search3">
+              <i class="icon ion-search placeholder-icon"></i>
+              <input type="search" ng-model="autocompleteLocation.text" placeholder="Vd: Gogi house Cầu giấy"
+                     ng-change="searchLocation()">
+            </label>
+            <label ng-if="!location" class="checkbox-inline" ng-repeat="ketqua in ketquasLocation | limitTo:3 ">
+              <ion-list>
+                <ion-radio ng-value="ketqua" ng-click="setSelectedLocation(ketqua)">{{ketqua.name}} -
+                  {{ketqua.formatted_address}}
+                </ion-radio>
+              </ion-list>
+            </label>
+            <div ng-if="location" class="item item-body" id="taocuahang-list-item-container10">
+              <div id="taocuahang-markdown15" class="show-list-numbers-and-dots">
+                <p style="margin-top:0px;color:#000000;">{{location.name}}
+                </p>
+              </div>
+            </div>
+          </form>
+          <div ng-if="location" class="profile-container" style="margin-bottom: 30px">
+            <img ng-click="updateavatar()" ng-src="{{avatarimage}}" class="profile-image" width="100">
+          </div>
+
+          <button ng-disabled="!location" ng-click="submitStore()" id="taocuahang-button20"
+                  class="button button-positive  button-block">Xác
+            nhận
+          </button>
+          <button ng-click="next()" class="button button-assertive button-small button-clear">Không
+            tìm
+            thấy? Hãy tạo mới!
+          </button>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="padding">
+          <div class="profile-container" style="margin-bottom: 30px">
+            <img ng-click="updateavatar()" ng-src="{{avatarimage}}" class="profile-image" width="100">
+          </div>
+
+          <form id="taocuahang2-form13" class="list">
+            <ion-list id="taocuahang2-list30">
+              <label class="item item-input" id="taocuahang2-input10">
+                <div class="input-label">Tên cửa hàng</div>
+                <input type="text" ng-model="storeCreate.Name" placeholder="...">
+              </label>
+              <label class="item item-input item-select">
+                <div class="input-label">
+                  Lĩnh vực
+                </div>
+                <select ng-model="storeCreate.Industry">
+                  <option ng-repeat="(key,value) in industry" value="{{key}}">{{value}}</option>
+                </select>
+              </label>
+              <!--<label class="item item-input" id="taocuahang2-textarea1">-->
+              <!--<div class="input-label">Mô tả</div>-->
+              <!--<textarea placeholder="..." ng-model="storeDescription"></textarea></label>-->
+              <ion-item class="item-divider" id="taocuahang2-list-item-divider9"> Địa chỉ</ion-item>
+              <label ng-if="!address" class="item item-input" id="taocuahang-search3">
+                <i class="icon ion-search placeholder-icon"></i>
+                <input type="search" ng-model="autocompleteAddress.text" placeholder="Vd: 51 Hàng Khay"
+                       ng-change="searchAddress()">
+              </label>
+              <label ng-if="!address" class="checkbox-inline" ng-repeat="ketqua in ketquasAddress | limitTo:3 ">
+                <ion-list>
+                  <ion-radio ng-value="ketqua" ng-click="setSelectedAddress(ketqua)">{{ketqua.formatted_address}}
+                  </ion-radio>
+                </ion-list>
+              </label>
+            </ion-list>
+
+            <div ng-if="address" class="item item-body" id="taocuahang-list-item-container10">
+              <div id="taocuahang-markdown15" class="show-list-numbers-and-dots">
+                <p style="margin-top:0px;color:#000000;">{{address.formatted_address}}
+                </p>
+              </div>
+            </div>
+            <button ng-disabled="!address || !storeCreate.Name || !storeCreate.Industry " ng-click="submitStore(storeCreate)"
+                    id="taocuahang2-button25" class="button button-positive  button-block">Tạo
+            </button>
+          </form>
+        </div>
+      </ion-slide>
+      <ion-slide>
+        <div class="padding">
+          <div class="list card" id="profile-card215">
+            <ion-item class="item-icon-left" id="profile-list-item34">
+              <i class="icon ion-ios-briefcase"></i>Vị trí cần tuyển
+            </ion-item>
+            <ion-item class="item-icon-right" ng-click="showjob()">
+              <span class="gotham-book" ng-if="!newHospital.job">Nhấn để thêm công việc,</span>
+              <span class="gotham-book" ng-repeat="(key,value) in newHospital.job">{{dataJob[key]}}, </span>
+              <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+            </ion-item>
+          </div>
+          <button ng-click="saveinterestjob()" class="jobo-button jobo-button-block jobo-button-calm">Tiếp</button>
+        </div>
+      </ion-slide>
+    </ion-slide-box>
+  </ion-content>
+</ion-modal-view>

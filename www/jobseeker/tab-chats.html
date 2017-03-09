@@ -1,0 +1,65 @@
+<ion-view title="match" hide-nav-bar="true" id="page20" ng-init="init()">
+  <ion-header-bar>
+    <div id="match-button-bar7" class="button-bar">
+      <button ng-click="swiperto(0)" id="match-button50"
+              class="button button-positive  button-block button-clear {{swiper.activeIndex == 0 ? 'color-red' : 'color-gray'}}">
+        Đã thích
+      </button>
+      <button ng-click="swiperto(1)" id="match-button50"
+              class="button button-positive  button-block button-clear {{swiper.activeIndex == 1 ? 'color-red' : 'color-gray'}}">
+        Ứng tuyển
+      </button>
+      <button ng-click="swiperto(2)" id="match-button51"
+              class="button button-positive  button-block button-clear {{swiper.activeIndex == 2 ? 'color-red' : 'color-gray'}}">
+        Tương hợp
+      </button>
+    </div>
+
+  </ion-header-bar>
+  <ion-content padding="false" class="manual-ios-statusbar-padding">
+
+    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)">
+      <ks-swiper-slide class="swiper-slide">
+        <ion-list id="match-list32" ng-repeat="card in reactList.like">
+          <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
+            <img src="{{card.photourl}}">
+            <h2>{{card.name}}</h2>
+            <p style="white-space:normal;">Vị trí đề xuất:
+            <p ng-repeat="(key,value) in card.jobStore">{{dataJob[key]}}</p></p>
+            <i class="icon ion-checkmark-circled" ng-click="like()"></i>
+            <p>{{timeAgo(card.likeAt)}}</p>
+          </ion-item>
+
+        </ion-list>
+      </ks-swiper-slide>
+      <ks-swiper-slide class="swiper-slide">
+        <ion-list id="match-list32" ng-repeat="card in reactList.liked">
+          <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
+            <img src="{{card.photourl}}">
+            <h2>{{card.name}}</h2>
+            <p style="white-space:normal;">Vị trí:
+            <p ng-repeat="(key,value) in card.job">{{dataJob[key]}}</p></p>
+            <i class="icon ion-chatbubbles" ng-click="chatTo(card.userid)"></i>
+            <p>{{timeAgo(card.likeAt)}}</p>
+          </ion-item>
+        </ion-list>
+      </ks-swiper-slide>
+      <ks-swiper-slide class="swiper-slide">
+        <ion-list id="match-list32" ng-repeat="card in reactList.match">
+          <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
+            <img src="{{card.photourl}}">
+            <h2>{{card.name}}</h2>
+            <p style="white-space:normal;">Vị trí mong muốn:
+            <p ng-repeat="(key,value) in card.jobUser">{{dataJob[key]}}</p></p>
+            <i class="icon ion-chatbubbles" ui-sref="employer.chat-detail({chatId: card.userid})"></i>
+            <p>{{timeAgo(card.matchedAt)}}</p>
+          </ion-item>
+        </ion-list>
+      </ks-swiper-slide>
+    </ks-swiper-container>
+  </ion-content>
+
+
+  </ion-content>
+</ion-view>
+

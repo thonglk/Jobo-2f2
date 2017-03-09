@@ -1,0 +1,21 @@
+<ion-list id="contact-list15">
+  <ion-item class="item-avatar item-icon-right light" style=" background: -webkit-linear-gradient(to left, #1FBDF1 , #39DFA5); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #1FBDF1 , #39DFA5);"
+            id="jobo-list-item10">
+    <img src='{{chatedData.photourl}}'>
+    <h2light>{{chatedData.name}}
+    </h2light>
+  </ion-item>
+  <ion-item class="item-icon-left" id="contact-list-item48" href="tel:{{chatedData.phone}}">
+    <i class="icon ion-ios-telephone"></i>{{chatedData.mobile}}
+  </ion-item>
+  <ion-item class="item-icon-left" id="contact-list-item49" href="mailto:{{chatedData.email}}">
+    <i class="icon ion-android-mail"></i>{{chatedData.email}}
+  </ion-item>
+</ion-list>
+<div id="contact-button-bar4" class="button-bar">
+  <a href="tel:{{chatedData.mobile}}" id="contact-button44"
+     class="button button-positive  button-block icon ion-ios-telephone"></a>
+  <a href="mailto:{{chatedData.email}}" id="contact-button45"
+     class="button button-calm  button-block icon ion-android-mail"></a>
+</div>
