@@ -11,6 +11,7 @@ app.controller("sprofileCtrl", function ($scope,
                                          $cordovaCapture,
                                          $cordovaToast,
                                          $sce,
+                                         $timeout,
                                          $firebaseArray,
                                          $ionicLoading,
                                          $ionicPopup,
@@ -77,18 +78,32 @@ app.controller("sprofileCtrl", function ($scope,
 
 
   $scope.addMoreExp = function (exp) {
-    if(!exp){
+    if (!exp) {
       var a = 1;
       $scope.userData.experience = {}
-      $scope.userData.experience[a] = {id: a}
-    }
+      $scope.userData.experience[a] = {}
+      $scope.userData.experience[a].id = 1
+    } else {
+      var stt;
+      for (var i in exp) {
+          stt = i
 
-    var stt;
-    for (var i in exp) {
-      stt = i
+      }
+      return new Promise(function (resolve) {
+        resolve(stt)
+
+      }).then(function (stt) {
+        if (!stt) {
+          stt = 0
+        }
+        var n = Number(stt) + 1
+        exp[n] = {id: n}
+        $timeout(function () {
+          console.log(exp)
+        },100)
+      })
+
     }
-    var n = stt + 1
-    exp[n] = {}
   }
 
   $scope.deleteExp = function (exp) {
@@ -97,6 +112,9 @@ app.controller("sprofileCtrl", function ($scope,
       stt = i
     }
     delete exp[stt]
+    $timeout(function () {
+      console.log(exp)
+    },100)
   }
 
   // Search Address
@@ -309,7 +327,6 @@ app.controller("sprofileCtrl", function ($scope,
       }
     })
   }
-
 
 
   $scope.calculatemonth = function calculatemonth(birthday) { // birthday is a date

@@ -75,11 +75,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
         $scope.modalProfile.hide();
 
       };
-      $scope.selectjob = function (selectedjob) {
-        $scope.newfilter.job = selectedjob;
-        console.log('select', $scope.newfilter)
 
-      };
       $scope.showjob = function () {
 
         $ionicPopup.confirm({
@@ -124,11 +120,10 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
         });
       };
       $scope.createHospital = function () {
-        var uid = firebase.auth().currentUser.uid;
-        var filtersRef = firebase.database().ref('filter/' + uid);
+        var filtersRef = firebase.database().ref('filter/' + $rootScope.userid);
 
         console.log($scope.newfilter);
-        filtersRef.update($scope.newfilter)
+        filtersRef.set($scope.newfilter)
         $scope.modalProfile.hide();
         $scope.getUserFiltered();
       };
