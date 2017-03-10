@@ -1,12 +1,35 @@
 <ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()">
   <ion-content scroll="false">
-    <ion-item class="item-icon-left item-icon-right item" id="profile-list-item15" style="
-    border-bottom-width: 0px;
-">
-      <i class="icon ion-ios-search-strong" ng-click="showfilter()"></i>
+    <div class="bar" style="border: hidden">
+      <button class="button button-outline icon-left ion-android-options button-balanced" ng-click="filterSearch()">Lọc
+      </button>
+    </div>
+    <div ng-if="usercard.length == 0 && userdistance">
+      <p style="    margin: 20px;
+    text-align: center;
+    padding-top: 50px;
+" class="ng-binding"
+      > Không có ứng viên nào đạt yêu cầu của bạn, hãy thay đổi bộ lọc tìm kiếm hoặc chỉ tìm những ứng viên xung
+        quanh và không quan trọng vị trí</p>
+      <div class="padding">
+        <button ng-click="changefilter()" class="jobo-button jobo-button-block jobo-button-calm">Tìm ứng viên xung
+          quanh
+        </button>
+      </div>
+    </div>
+    <div ng-if="!newfilter" style="align-content: center">
+      <p style="    margin: 20px;
+    text-align: center;
+    padding-top: 50px;
+" class="ng-binding"
+      > Hãy bắt đầu lọc hồ sơ các ứng viên và tìm ra người phù hợp cho yêu cầu của bạn</p>
+      <div class="padding">
+        <button ng-click="filterSearch()" class="button button-outline button-positive button-block">
+          Lọc công việc
+        </button>
+      </div>
+    </div>
 
-      <i class="icon ion-refresh" ng-click="doRefresh()"></i>
-    </ion-item>
     <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="ontouch(swiper)">
       <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard">
 
@@ -15,32 +38,34 @@
             <div style="
     height: 250px;
 ">
-              <a href="#/eviewprofile/{{ card.userid}}"><img src="{{ card.photourl }}" style="width: 100%"></a>
+              <a href="#/viewstore/{{card.storeKey}}"><img src="{{ card.photourl }}" style="width: 100%"></a>
             </div>
           </div>
-          <div ng-show="card.stars[userid]" class="padding animated bounceInUp">
+          <div ng-show="card.likeMe" class="padding animated bounceInUp">
             <i class="icon ion-heart" style="color: #ee5555;"></i>
           </div>
           <ion-item class="item-icon-right" id="page2-list-item33">
-            <h2>{{card.name}}</h2>
-            <i class="icon ion-heart" style="color: #ff6961" ng-if="usercurent.stars[card.userid]"></i>
-
-            <p><i class="ion-location"></i> {{ card.distance }} km</p>
+            <h2>{{card.storeName}}</h2>
+              <p><i class="ion-location"></i> {{ card.distance }} km</p>
 
           </ion-item>
-          <div class="padding" ng-if="card.interest.job">
-            <label ng-repeat="(key,value) in card.interest.job">
-              <button class="button margin-top-5 button-outline button-small button-positive">{{dataJob[key]}}
+          <div class="padding" ng-if="card.job">
+            <label ng-repeat="(key,value) in card.job">
+              <button ng-click="applyThis(card.storeKey,key)"
+                class="button margin-top-5 button-outline button-small button-positive">{{dataJob[key]}}
               </button>
             </label>
           </div>
 
         </div>
-        <button style="margin-top: 0px; margin-bottom: 0px" ng-click="like()" class="jobo-button jobo-button-block jobo-button-calm"><i class="ion-android-checkbox-outline"></i> Ứng tuyển
-        </button>
-        <button style="margin-top: 0px; margin-bottom: 0px" ng-click="dislike()" class="button button-block button-clear button-dark">
-          Xóa
-        </button>
+        <div class="padding">
+          <div id="profile2-button-bar9" class="button-bar">
+            <button ng-click="like(card,0)" id="profile2-button61"
+                    class="button button-positive  button-block icon ion-android-checkbox-outline"> Tuyển ứng viên
+            </button>
+            <button ng-click="like(card,-1)" id="profile2-button62" class="button button-dark  button-block">Ẩn</button>
+          </div>
+        </div>
         <p class="animated fadeInUp" style="text-align: center;background: -webkit-linear-gradient(#1FBDF1 , #39DFA5);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;" ng-if="userliked[card.userid]">Bạn đã ứng tuyển công việc này!</p>

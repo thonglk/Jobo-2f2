@@ -1,5 +1,10 @@
-
+<div class="item-input-inset">
+  <label class="item-input-wrapper">
+    <i class="icon ion-ios-search placeholder-icon"></i>
+    <input force-lower-case type="text" class="bold" placeholder="Search 7 Matches" ng-model="search" ng-value="search" ng-change="filterResults(search)">
+  </label>
+</div>
 <ion-list class="list-borderless"
-          ng-repeat="(key, value) in dataJob">
+          ng-repeat="(key, value) in dataJob ">
   <ion-radio value='true' ng-model="newfilter.job[key]" ng-click="selectjob(key)">{{ value }}</ion-radio>
 </ion-list>

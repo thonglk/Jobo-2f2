@@ -5,8 +5,8 @@
   </label>
 </div>
 
-<ion-list ng-repeat="(key, value) in dataJob | filter:search ">
+<ion-list ng-repeat="(key, value) in dataIndustry | filter:search ">
 
-  <ion-checkbox style="border: hidden" id="{{ key }}" value="{{ key }}" ng-model="newHospital.job[key]">{{ value }}
+  <ion-checkbox style="border: hidden" id="{{ key }}" value="{{ key }}" ng-model="newHospital.industry[key]">{{ value }}
   </ion-checkbox>
 </ion-list>

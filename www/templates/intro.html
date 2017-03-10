@@ -1,4 +1,4 @@
-<ion-view view-title="Jobo" hide-nav-bar="true">
+<ion-view view-title="Jobo" hide-nav-bar="true" ng-init="checkuser()">
   <ion-content>
     <div style="padding-top: 20px">
       <div class="row responsive-md intro">
@@ -17,12 +17,12 @@
                   </div>
                   <div class="form-login">
                     <div class="list">
-                      <a ng-href="#/ssignup">
+                        <a ng-href="#/signup/2">
 
                         <button class="jobo-button jobo-button-block jobo-button-calm">Tôi muốn tìm việc
                         </button>
                       </a>
-                      <a ng-href="#/esignup">
+                      <a ng-href="#/signup/1">
                         <button class="jobo-button button-block button-balanced">Tôi muốn tuyển dụng</button>
                       </a>
 

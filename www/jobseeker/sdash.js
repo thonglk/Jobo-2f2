@@ -2,6 +2,7 @@
 
 app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
   , CONFIG
+  , AuthUser
   , $window
   , $cordovaToast
   , $cordovaLocalNotification
@@ -17,120 +18,22 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
   , $timeout) {
 
 
-  $scope.initSlide = function () {
-    var slidesPerView;
-    $scope.width = $window.innerWidth;
-    if ($scope.width > 1024) {
-      slidesPerView = 3
-    }
-    if ($scope.width <= 1024 && $scope.width > 767) {
-      slidesPerView = 2
-    }
-
-    if ($scope.width <= 767) {
-      slidesPerView = 1
-
-    }
-    return slidesPerView
-  }
-
   $scope.init = function () {
-
+    $rootScope.storeData = {};
     $ionicPlatform.registerBackButtonAction(function (event) {
       event.preventDefault();
     }, 100);
-    $rootScope.registering = false;
 
-
-    var user = firebase.auth().currentUser;
-
-    if (user) {
-      // User is signed in.
-      $rootScope.userid = user.uid;
-      console.log("i'm in " + $rootScope.userid);
-
-
-      var tokenRef = firebase.database().ref("token/" + $rootScope.userid);
-      if ($rootScope.tokenuser) {
-        tokenRef.update({
-          userid: $rootScope.userid,
-          tokenId: $rootScope.tokenuser
-
-        })
-      }
-      ;
-
-      if (!$rootScope.usercurent) {
-        var userRef = firebase.database().ref('user/' + $rootScope.userid);
-        userRef.once('value', function (snapshot) {
-          $rootScope.usercurent = snapshot.val();
-          $rootScope.storeIdCurrent = $rootScope.usercurent.currentStore;
-          $rootScope.loadCurrentStore();
-          console.log(" with " + $rootScope.storeIdCurrent)
-
+    AuthUser.user()
+      .then(function (result) {
+          console.log(result)
           $scope.getUserFiltered()
-        });
-      } else {
-        $scope.getUserFiltered()
-      }
-      $rootScope.loadCurrentStore = function () {
-        var storeDataCurrent = firebase.database().ref('store/' + $rootScope.storeIdCurrent);
-        storeDataCurrent.on('value', function (snap) {
-          $rootScope.storeDataCurrent = snap.val()
-          console.log($rootScope.storeDataCurrent);
-        });
-      }
-
-
-    } else {
-      // No user is signed in.
-    }
-
-
-    /*
-
-     firebase.auth().onAuthStateChanged(function (user) {
-     if (user) {
-
-     console.log("i'm in", user.uid);
-
-     $ionicLoading.show({
-     template: '<p>Đang tải dữ liệu ứng viên...</p><ion-spinner></ion-spinner>'
-     });
-
-
-     $timeout(function () {
-     $scope.userchat = $firebaseArray(cardRef);
-     console.log("chat", $scope.userchat);
-     }, 2000);
-
-     var newmessagesRef = firebase.database().ref('newmessages/' + $scope.userid);
-     newmessagesRef.on('value', function (snap) {
-     $scope.newmessage = snap.val();
-     });
-
-
-     $scope.checknewmessage = function () {
-     if ($scope.newmessage) {
-     $scope.totalcount = 0;
-
-     for (var obj in $scope.newmessage) {
-     $scope.totalcount++;
-     }
-     return ($scope.totalcount > 0);
-     }
-     };
-     // Get a database reference to our posts
-     } else {
-     // No user is signed in.
-     $state.go("login");
-     }
-
-     });
-
-     */
+        }, function (error) {
+          console.log(error)
+          // error
+        }
+      );
   }
-
 
   $scope.$back = function () {
     window.history.back();
@@ -143,14 +46,6 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
   };
 
 
-  // $scope.$on('ngRepeatFinished', function () {
-  //   $scope.swiper = new Swiper('.swiper-container', {
-  //     //Your options here:
-  //     slidesPerView: $scope.initSlide()
-  //     slidesPerColumn
-  //   })
-  //   console.log($scope.swiper)
-  // });
   $scope.onTouch = function (swiper) {
     $scope.swiper = swiper;
     $scope.swiper.update();
@@ -160,64 +55,16 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
       $scope.limit = $scope.limit + 5;
     }
   };
-//
-// //Tinh khoang cach
-// function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-//   var R = 6371; // Radius of the earth in km
-//   var dLat = deg2rad(lat2 - lat1);  // deg2rad below
-//   var dLon = deg2rad(lon2 - lon1);
-//   var a =
-//       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-//       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-//       Math.sin(dLon / 2) * Math.sin(dLon / 2)
-//     ;
-//   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-//   var x = R * c; // Distance in km
-//   var n = parseFloat(x);
-//   x = Math.round(n * 10) / 10;
-//   return x;
-// }
-//
-// function deg2rad(deg) {
-//   return deg * (Math.PI / 180)
-// }
-//
-// //end tinh khoang cach
-
-  $scope.getUserFiltered = function () {
-    // $ionicLoading.show({
-    //   template: '<p>Đang tải dữ liệu ứng viên...</p><ion-spinner></ion-spinner>'
-    // });
-    var filtersRef = firebase.database().ref('filter/' + $rootScope.userid);
-    filtersRef.on('value', function (snap) {
-      $scope.newfilter = snap.val();
-
-      if ($scope.newfilter) {
-        $scope.newfilter.userid = $rootScope.storeIdCurrent;
-        console.log($scope.newfilter);
-        $http({
-
-          method: 'GET',
-          url: CONFIG.APIURL + '/api/users',
-          params: $scope.newfilter
-        }).then(function successCallback(response) {
-          console.log("respond", response.data);
-          $scope.usercard = response.data;
-          $ionicLoading.hide();
-        })
-
-      } else {
-        $ionicLoading.hide();
-      }
-    });
-  };
 
 
-  $scope.editjob = function () {
+  $scope.filterSearch = function () {
     if (!$scope.newfilter) {
       $scope.newfilter = {};
     }
-    $ionicModal.fromTemplateUrl('templates/modals/efilter.html', {
+    $scope.clearFilter =function () {
+      $scope.newfilter = {}
+    }
+    $ionicModal.fromTemplateUrl('jobseeker/modals/filter.html', {
       scope: $scope,
       animation: 'animated _zoomOut',
       hideDelay: 920
@@ -287,9 +134,32 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
       };
     });
   };
-  $scope.gotosprofile = function (id) {
-    window.location.href = "#/viewprofile/" + id
+  $scope.getUserFiltered = function () {
+    // $ionicLoading.show({
+    //   template: '<p>Đang tải dữ liệu ứng viên...</p><ion-spinner></ion-spinner>'
+    // });
+    var filtersRef = firebase.database().ref('filter/' + $rootScope.userid);
+    filtersRef.on('value', function (snap) {
+      $scope.newfilter = snap.val();
+
+      if ($scope.newfilter) {
+        $scope.newfilter.userid = $rootScope.userid;
+        console.log($scope.newfilter);
+        $http({
+          method: 'GET',
+          url: CONFIG.APIURL + '/api/employer',
+          params: $scope.newfilter
+        }).then(function successCallback(response) {
+          console.log("respond", response.data);
+          $rootScope.storeData = response.data;
+          $ionicLoading.hide();
+        })
+      } else {
+        $ionicLoading.hide();
+      }
+    });
   };
+
 
   $scope.slideHasChanged = function (index) {
     console.log('slideHasChanged');
@@ -338,35 +208,59 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
       $scope.selectedJob[id][key] = true;
     }
   };
+  /*  asdas = {
+   $$hashKey: "object:39"
+
+   address: "195 Đội Cấn, Ba Đình, Hà Nội, Vietnam"
+
+   createdAt: 1488170787774
+
+   createdBy: "j2sLCo7HsOdN7mPkGQSjFPLoOfx2"
+
+   distance: 2.1
+
+   industry: "banle"
+
+   job: {banhang: true, chamsockhachhang: true}
+
+   location: {lat: 21.035079, lng: 105.823692}
+
+   photourl: "img/restaurant.png"
+
+   starCount: 0
+
+   storeKey: "-Kdxt195aFPl0LOBrtFd"
+
+   storeName: "Cowoboy Jack"
+   }*/
 
   $scope.like = function (card, action) {
 
-    var likedId = card.userid;
-    var likeActivity = firebase.database().ref('activity/like/' + $rootScope.storeIdCurrent + ':' + likedId);
+    var likedId = card.storeKey;
+    var likeActivity = firebase.database().ref('activity/like/' + likedId + ':' + $rootScope.userid);
 
     if (card.likeMe) {
       likeActivity.update({
         matchedAt: new Date().getTime(),
         status: 1,
         jobstore: $scope.selectedJob[likedId]
-
       });
       itsAMatch($rootScope.storeIdCurrent, likedId)
     } else {
       likeActivity.update({
         createdAt: new Date().getTime(),
-        type: 1,
+        type: 2,
         status: action,
-        jobStore: $scope.selectedJob[likedId],
-        employerId: $rootScope.userid,
-        storeId:$rootScope.storeIdCurrent,
-        userId: likedId
+        jobUser: $scope.selectedJob[likedId],
+        employerId: card.createdBy,
+        storeId: card.storeKey,
+        userId: $rootScope.userid,
       })
     }
   };
 
   $scope.chatto = function (id) {
-    $state.go("employer.chats", {to:id,slide:1})
+    $state.go("employer.chats", {to: id, slide: 1})
   };
 
   $scope.limit = 5;
@@ -391,7 +285,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
       });
 
       $scope.chatto = function (id) {
-        $state.go("employer.chats", {to:id,slide:1})
+        $state.go("employer.chats", {to: id, slide: 1})
       };
 
       $scope.hideMatch = function () {

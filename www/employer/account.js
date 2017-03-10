@@ -1,6 +1,6 @@
 "use strict";
 
-app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup, $ionicLoading) {
+app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup, $ionicLoading,$ionicPlatform) {
 
   // Config Slide function
   $scope.lockSlide = function () {

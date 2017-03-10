@@ -1,6 +1,121 @@
 <ion-modal-view>
   <ion-header-bar>
     <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="$back()">Back</a>
+    <h1 class="title">{{userData.name}}</h1>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list">
+      <div class="item item-image">
+
+        <img ng-src="{{userData.photourl}}">
+      </div>
+      <ion-list class="list-borderless">
+        <ion-item class="item-icon-right">
+          <h2 class="font-130">{{userData.name}}</h2>
+          <div id="profile-markdown7" class="show-list-numbers-and-dots">
+
+            <p><i class="ion-location"></i> {{userData.address}} </p>
+          </div>
+
+          <div id="profile-markdown36" class="show-list-numbers-and-dots" ng-if="userData.birth">
+            <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-android-calendar"></i>
+              {{calculateAge(userData.birth)}} tuổi
+            </p>
+          </div>
+
+        </ion-item>
+      </ion-list>
+      <div class="padding animated bounceInUp">
+        <span>{{userData.description}}</span>
+
+        <hr>
+        <h4>Thông tin cá nhân
+        </h4>
+        <span>
+          Chiều cao: {{userData.height}}
+          <br>
+                    Cân nặng: {{userData.weight}}
+                    <br>
+
+       <button ng-if="userData.figure" class="button margin-top-5 button-outline button-small button-assertive">              Ngoại hình ưa nhìn
+</button>
+
+        </span>
+
+        <hr>
+        <div id="profile-markdown35" class="show-list-numbers-and-dots" ng-if="userData.school">
+          <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-university"></i>
+            {{userData.school}}
+          </p>
+        </div>
+        <h4>Kinh nghiệm làm việc
+        </h4>
+        <span>
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          tempor incididunt ut labore et dolore magna aliqua.
+        </span>
+
+        <hr>
+        <h4>Trình độ học vấn
+        </h4>
+        <span>
+          <div ng-if="userData.school">
+          Trường: {{userData.school}}
+          <br></div>
+           <div ng-if="userData.languages">
+          Ngoại ngữ: {{userData.school}}
+          <br></div>
+        </span>
+        <hr>
+        <h4>
+          Mong muốn tìm việc
+        </h4>
+        <span>
+
+        <div ng-if="userData.industry">
+          Nơi làm việc mong muốn: {{userData.school}}
+          <br></div>
+        <div ng-if="userData.job">
+          Công việc mong muốn: {{userData.school}}
+          <br></div>
+        <div ng-if="userData.expectSalary">
+          Mức lương mong muốn: {{userData.expectSalary}}
+          <br></div>
+        <div ng-if="userData.time">
+          Hình thức làm việc: {{userData.time}}
+          <br></div>
+        <div ng-if="userData.expectSalary">
+          Khoảng cách di chuyển: {{userData.expectSalary}}
+          <br></div>
+        <div ng-if="userData.status">
+          Trạng thái tìm việc: {{userData.status}}
+          <br></div>
+        </span>
+        <hr>
+        <!--</div>-->
+        <h4 style="text-align: center">Tuyển ứng viên này vào vị trí
+        </h4>
+        <span>
+          <button
+            class="button margin-top-5 button-outline button-small button-assertive">I fucking love Science</button>
+        <button class="button margin-top-5 button-outline button-small button-assertive">Ionic</button>
+        <button class="button margin-top-5 button-outline button-small button-assertive">Meanwhile in Australia</button>
+        <button class="button margin-top-5 button-outline button-small button-assertive">GaijinPot</button>
+      </span>
+        <hr>
+      </div>
+    </div>
+    <p style="margin-top: 30px;">&nbsp;</p>
+    <button style="margin-top: 0px; margin-bottom: 0px" ng-click="like()" class="jobo-button jobo-button-block jobo-button-calm"><i class="ion-android-checkbox-outline"></i> Ứng tuyển
+    </button>
+  </ion-content>
+
+</ion-modal-view>
+<!--Contact GitHub API Training Shop Blog About
+© 2017 GitHub, Inc. Terms Privacy Security Status Help
+<ion-modal-view>
+  <ion-header-bar>
+    <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="$back()">Back</a>
 <h1 class="title">{{userData.name}}</h1>
   </ion-header-bar>
   <ion-content>
@@ -145,4 +260,4 @@
       <button id="profile2-button62" class="button button-dark  button-block">Ẩn</button>
     </div>
   </div>
-</ion-modal-view>
+</ion-modal-view>-->

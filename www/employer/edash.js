@@ -17,31 +17,6 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   , $timeout) {
 
 
-  // angular.element($window).bind('resize', function () {
-  //
-  //   $scope.width = $window.innerWidth;
-  //   if ($scope.width <= 1920 && $scope.width > 1024) {
-  //     var mySwiper = new Swiper('.swiper-container', {
-  //       slidesPerView: 3
-  //     })
-  //   }
-  //
-  //   if ($scope.width <= 1024 && $scope.width > 767) {
-  //     var mySwiper = new Swiper('.swiper-container', {
-  //       slidesPerView: 2
-  //     })
-  //   }
-  //
-  //   if ($scope.width <= 767) {
-  //     var mySwiper = new Swiper('.swiper-container', {
-  //       slidesPerView: 1
-  //     })
-  //   }
-  //   console.log($scope.width);
-  //   // manuall $digest required as resize event
-  //   // is outside of angular
-  //   $scope.$digest();
-  // });
   $scope.initSlide = function () {
     var slidesPerView;
     $scope.width = $window.innerWidth;
@@ -112,48 +87,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
     }
 
 
-    /*
 
-     firebase.auth().onAuthStateChanged(function (user) {
-     if (user) {
-
-     console.log("i'm in", user.uid);
-
-     $ionicLoading.show({
-     template: '<p>Đang tải dữ liệu ứng viên...</p><ion-spinner></ion-spinner>'
-     });
-
-
-     $timeout(function () {
-     $scope.userchat = $firebaseArray(cardRef);
-     console.log("chat", $scope.userchat);
-     }, 2000);
-
-     var newmessagesRef = firebase.database().ref('newmessages/' + $scope.userid);
-     newmessagesRef.on('value', function (snap) {
-     $scope.newmessage = snap.val();
-     });
-
-
-     $scope.checknewmessage = function () {
-     if ($scope.newmessage) {
-     $scope.totalcount = 0;
-
-     for (var obj in $scope.newmessage) {
-     $scope.totalcount++;
-     }
-     return ($scope.totalcount > 0);
-     }
-     };
-     // Get a database reference to our posts
-     } else {
-     // No user is signed in.
-     $state.go("login");
-     }
-
-     });
-
-     */
   }
 
 
@@ -168,14 +102,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   };
 
 
-  // $scope.$on('ngRepeatFinished', function () {
-  //   $scope.swiper = new Swiper('.swiper-container', {
-  //     //Your options here:
-  //     slidesPerView: $scope.initSlide()
-  //     slidesPerColumn
-  //   })
-  //   console.log($scope.swiper)
-  // });
+
   $scope.onTouch = function (swiper) {
     $scope.swiper = swiper;
     $scope.swiper.update();
@@ -242,7 +169,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
     if (!$scope.newfilter) {
       $scope.newfilter = {};
     }
-    $ionicModal.fromTemplateUrl('templates/modals/efilter.html', {
+    $ionicModal.fromTemplateUrl('employer/modals/filter.html', {
       scope: $scope,
       animation: 'animated _zoomOut',
       hideDelay: 920
@@ -253,11 +180,18 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         $scope.modalProfile.hide();
 
       };
+      $scope.clearFilter =function () {
+        $scope.newfilter = {}
+      }
+
       $scope.selectjob = function (selectedjob) {
         $scope.newfilter.job = selectedjob;
         console.log('select', $scope.newfilter)
 
       };
+
+
+
       $scope.showjob = function () {
 
         $ionicPopup.confirm({
@@ -306,7 +240,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         var filtersRef = firebase.database().ref('filter/' + uid);
 
         console.log($scope.newfilter);
-        filtersRef.update($scope.newfilter)
+        filtersRef.set($scope.newfilter)
         $scope.modalProfile.hide();
         $scope.getUserFiltered();
       };

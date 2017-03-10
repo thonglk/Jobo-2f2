@@ -1,27 +1,92 @@
-<ion-view title="Tài khoản cá nhân" id="page18">
-  <ion-content padding="false" class="has-header">
-    <ion-list id="eAccount-list16">
-      <ion-item class="item-divider" id="eAccount-list-item-divider4"> Tài khoản</ion-item>
-      <ion-item class="item-avatar item-icon-right" id="eAccount-list-item69">
-        <i class="icon ion-images"></i>
-      </ion-item>
-      <ion-item id="eAccount-list-item25" ng-click="editname()">Tên đầy đủ
-        <span class="item-note">{{usercurent.name}}</span>
-      </ion-item>
-    </ion-list>
-    <ion-list id="eAccount-list18">
-      <ion-item class="item-divider" id="eAccount-list-item-divider5"> Liên hệ</ion-item>
-      <ion-item id="eAccount-list-item38">Email
-        <span class="item-note">{{usercurent.email}}</span>
-      </ion-item>
-      <ion-item class="dark" id="eAccount-list-item39" ng-click="editphone()">SĐT
-        <span class="item-note">{{usercurent.phone}}</span>
-      </ion-item>
-    </ion-list>
-    <ion-list id="eAccount-list19">
-      <ion-item class="item-divider" id="eAccount-list-item-divider6"> Cài đặt</ion-item>
-      <ion-toggle toggle-class="toggle-positive" id="eAccount-toggle2">Ẩn hiện thị</ion-toggle>
-    </ion-list>
+<ion-view title="Cài đặt" id="page18">
+  <ion-content>
+    <div class="card">
+      <div class="item item-divider">
+        Thông tin liên hệ
+      </div>
+      <div class="profile-container">
+        <img ng-click="showProfile()" ng-src="{{userData.photourl}}" class="profile-image" width="100">
+        <img
+          ui-sref="profile"
+          ng-src="img/edit.png"
+          class="profile-edit"
+          width="30">
+      </div>
+
+      <div class="list form-modify">
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Họ và tên</span>
+          <input ng-model="userData.name" type="text" placeholder="">
+        </label>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Chức vụ</span>
+          <input ng-model="userData.title" type="text">
+        </label>
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Email</span>
+          <input ng-disabled="userData.email" ng-model="userData.email" type="email" placeholder="">
+        </label>
+
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Số điện thoại</span>
+          <input ng-disabled="userData.phone" ng-model="userData.phone" type="number" placeholder="{{userData.phone}}">
+        </label>
+      </div>
+    </div>
+    <div class="card">
+      <div class="item item-divider">
+        Nhận thông báo mới khi
+      </div>
+      <ul class="list">
+        <li class="item item-toggle">
+          Tin nhắn mới
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiMes" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+      </ul>
+      <ul class="list">
+        <li class="item item-toggle">
+          Nhà tuyển dụng muốn tuyển bạn
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiInvite" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+      </ul>
+      <ul class="list">
+
+        <li class="item item-toggle">
+          Có nhà tuyển dụng tương hợp với bạn
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiMatch" type="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+      </ul>
+      <ul class="list">
+        <li class="item item-toggle">
+          Có công việc mới
+          <label class="toggle toggle-assertive">
+            <input ng-model="setting.notiJob" setting.notiMatchtype="checkbox">
+            <div class="track">
+              <div class="handle"></div>
+            </div>
+          </label>
+        </li>
+
+
+      </ul>
+    </div>
+
 
     <p style="margin-top: 4px;">&nbsp;</p>
     <div class="padding color-gray">CONTACT US</div>

@@ -64,15 +64,11 @@ angular.module('starter.configs', [])
       "time": {
         "breakchieu": "Gẫy chiều",
         "breaktrua": "Gẫy trưa",
-        "endday": "Ngày cuối tuần",
-        "endnight": "Tối cuối tuần",
         "flexible": "Linh hoạt",
         "fullchieu": "Fulltime chiều",
         "fullsang": "Full sáng",
         "partsang": "Partime sáng",
         "parttoi": "Partime tối",
-        "weekday": "Ngày trong tuần",
-        "weeknight": "Tối trong tuần"
       }
     }
   });

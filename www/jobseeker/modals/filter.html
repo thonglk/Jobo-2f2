@@ -1,0 +1,45 @@
+<ion-modal-view title="Lựa chọn ">
+
+  <ion-header-bar align-title="center">
+    <div class="buttons" ng-click="cancel()">
+      <button class="button button-clear button-dark ">Hủy</button>
+    </div>
+    <h1 class="title"> Lọc ứng viên
+    </h1>
+    <div class="buttons" ng-click="createHospital()">
+      <button class="button button-clear button-calm">Lọc</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <div class="list" ng-hide="newfilter.onlydistance">
+      <p style="margin-top: 8px;">&nbsp;</p>
+      <div class="padding color-gray">Nơi làm việc mong muốn</div>
+      <ion-item class="item-icon-right" ng-click="showjob()">
+        <span class="gotham-book">{{dataIndustry[newfilter.industry]}}</span>
+        <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+      </ion-item>
+      <p style="margin-top: 8px;">&nbsp;</p>
+      <div class="padding color-gray">Vị trí cần tuyển</div>
+      <ion-item class="item-icon-right" ng-click="showjob()">
+        <span class="gotham-book">{{dataJob[newfilter.job]}}</span>
+        <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+      </ion-item>
+    </div>
+    <div class="list">
+      <p style="margin-top: 8px;">&nbsp;</p>
+      <div class="padding color-gray">Bán kính tìm kiếm</div>
+      <ion-item class="range range-positive" id="profile-range2">{{newfilter.distance}} km
+        <input type="range" on-tap="onTap($event)" on-drag="onTap($event)" value="{{filter.distance}}" min="0"
+               max="50" step="0.5" name="distance" ng-model="newfilter.distance">
+      </ion-item>
+
+    </div>
+    <div>
+      <button id="profile-button57"
+              class="button button-block" style="color: red"
+              ng-click="clearFilter()">Clear
+      </button>
+
+    </div>
+  </ion-content>
+</ion-modal-view>

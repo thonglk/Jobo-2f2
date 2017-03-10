@@ -3,10 +3,10 @@ app.controller('eChatsCtrl', function ($q, $scope, $rootScope, CONFIG, $statePar
 
 
     $scope.init = function () {
-      AuthUser.employer()
+      AuthUser.user()
         .then(function (result) {
             console.log(result)
-            $scope.getListReact(result.storeIdCurrent)
+            $scope.getListReact()
 
           }, function (error) {
             console.log(error)
@@ -14,21 +14,73 @@ app.controller('eChatsCtrl', function ($q, $scope, $rootScope, CONFIG, $statePar
             // error
           }
         );
-
+      $rootScope.reactList = {};
+      $rootScope.reactList.like = [];
+      $rootScope.reactList.liked = [];
+      $rootScope.reactList.match = [];
 
     };
 
+  function updateReact(snap) {
+    console.log(snap.val(),'change');
+    var data = snap.val()
 
+
+    angular.forEach(data, function (card) {
+      var reActRef = firebase.database().ref('store/' + card.storeId);
+      reActRef.once('value', function (snap) {
+        $scope.reactStore[card.storeId] = snap.val();
+        if (card.status == 1) {
+
+          // match
+          var cardPush = {
+            storeName: $scope.reactStore[card.storeId].name,
+            userid: $scope.reactStore[card.storeId].storeId,
+            photourl: $scope.reactStore[card.storeId].photourl,
+            likeAt: card.createdAt,
+            matchedAt: card.matchedAt,
+            jobUser: card.jobUser,
+            jobStore: card.jobStore
+          }
+          $scope.reactList.match.push(cardPush)
+        } else {
+          if (card.status == 0 && card.type == 1) {
+            //liked
+            var cardPush = {
+              storeName: $scope.reactStore[card.storeId].name,
+              photourl: $scope.reactStore[card.storeId].photourl,
+              storeId: card.storeId,
+              likeAt: card.createdAt,
+              jobStore: card.jobStore
+            }
+            $scope.reactList.liked.push(cardPush)
+
+          }
+          if (card.status == 0 && card.type == 2) {
+            //like
+            var cardPush = {
+              storeName: $scope.reactStore[card.storeId].name,
+              photourl: $scope.reactStore[card.storeId].photourl,
+              storeId: card.storeId,
+              likeAt: card.createdAt,
+              jobUser: card.jobUser
+            }
+            $scope.reactList.like.push(cardPush)
+
+          }
+        }
+
+      });
+
+
+    })
+    console.log('$scope.reactList',$scope.reactList)
+  }
     // Get list
-    $scope.getListReact = function (store) {
+    $scope.getListReact = function () {
       if (!$scope.reactList) {
-        $http({
-          method: 'GET',
-          url: CONFIG.APIURL + '/api/employer/react?id=' + store + '&callback=JSON_CALLBACK'
-        }).then(function successCallback(response) {
-          console.log("respond", response.data);
-          $scope.reactList = response.data;
-        })
+        var reactRef = firebase.database().ref('activity/like')
+        reactRef.on('child_added', updateReact)
       }
     };
     $scope.swiperto = function (index) {

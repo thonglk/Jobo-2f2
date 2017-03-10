@@ -1,0 +1,4 @@
+<ion-list ng-repeat="(key, value) in dataTime ">
+  <ion-checkbox style="border: hidden" id="{{ key }}" value="{{ key }}" ng-model="newHospital.time[key]">{{ value }}
+  </ion-checkbox>
+</ion-list>

@@ -1,7 +1,6 @@
 "use strict";
 
-app.controller("sprofileCtrl", function ($scope,
-                                         $rootScope,
+app.controller("storeCtrl", function ($scope,
                                          $ionicActionSheet,
                                          $ionicSlideBoxDelegate,
                                          $cordovaCamera,
@@ -13,76 +12,33 @@ app.controller("sprofileCtrl", function ($scope,
                                          $sce,
                                          $firebaseArray,
                                          $ionicLoading,
-                                         $ionicPopup,
-                                         AuthUser) {
+                                         $ionicPopup) {
 
-  $scope.init = function () {
-    AuthUser.user()
-      .then(function (result) {
-          console.log(result)
-          var profileRef = firebase.database().ref('profile/' + $rootScope.userid)
-          profileRef.once('value', function (snap) {
-            $rootScope.userData = snap.val();
-            console.log($rootScope.userData);
-            if (!$rootScope.userData) {
-              var userRef = firebase.database().ref('user/' + $rootScope.userid)
-              userRef.once('value', function (snap) {
-                var userInfo = snap.val()
-                console.log(userInfo)
-                if (userInfo) {
-                  $rootScope.userData = {email: userInfo.email, phone: userInfo.phone, photourl: userInfo.photourl}
-                  console.log($rootScope.userData);
-
-                }
-              })
-            }
-          })
-        }, function (error) {
-          console.log(error)
-          // error
-        }
-      );
-  }
-
-
-  $scope.selectJob = function (id) {
-    $scope.newHospital.job = $scope.userData.experience[id].job;
-
-    $ionicPopup.confirm({
-      title: 'Chọn công việc',
-      scope: $scope,
-      // template: 'Are you sure you want to eat this ice cream?',
-      templateUrl: 'templates/popups/collect-job.html',
-      cssClass: 'animated bounceInUp dark-popup',
-      okType: 'button-small button-calm bold',
-      okText: 'Xong ',
-      cancelType: 'button-small'
-    }).then(function (res) {
-      if (res) {
-        for (var obj in $scope.newHospital.job) {
-          $scope.keyjob = $scope.newHospital.job[obj];
-          console.log('obj', $scope.keyjob);
-          if ($scope.keyjob == false) {
-            delete $scope.newHospital.job[obj];
-          }
-        }
-        $scope.userData.experience[id].job = $scope.newHospital.job
-        console.log($scope.userData.experience);
-        $scope.newHospital = {}
-      } else {
-        console.log('You are not sure');
-      }
-    });
+  $scope.userData = {
+    "createdAt": 1488285452104,
+    "email": "test2@joboapp.com",
+    "name": "Hoàng Quốc",
+    "phone": "0987654345",
+    "photourl": "img/macdinh.jpg",
+    "type": 2,
+    "userid": "2Ex94dTG7ffOJTIuadP5Ko4XBtd2",
+    "address": "48 Hai Bà Trưng, Tràng Tiền, Hoàn Kiếm, Hà Nội, Vietnam",
+    "birth": 1996,
+    "experience": true,
+    "figure": true,
+    "job": {
+      "baotri": true
+    },
+    "location": {
+      "lat": 21.0250862,
+      "lng": 105.8502656
+    },
+    "sex": "Nữ",
   };
-
-
+  var a = 1;
+  $scope.userData.experience = {}
+  $scope.userData.experience[a] = {}
   $scope.addMoreExp = function (exp) {
-    if(!exp){
-      var a = 1;
-      $scope.userData.experience = {}
-      $scope.userData.experience[a] = {id: a}
-    }
-
     var stt;
     for (var i in exp) {
       stt = i
@@ -132,7 +88,7 @@ app.controller("sprofileCtrl", function ($scope,
       title: 'Địa chỉ',
       scope: $scope,
       // template: 'Are you sure you want to eat this ice cream?',
-      templateUrl: 'templates/popups/select-Address.html',
+      templateUrl: 'jobseeker/popup/select-Address.html',
       cssClass: 'animated bounceInUp dark-popup',
       okType: 'button-small button-calm bold',
       okText: 'Done',
@@ -154,7 +110,7 @@ app.controller("sprofileCtrl", function ($scope,
       title: 'Địa chỉ',
       scope: $scope,
       // template: 'Are you sure you want to eat this ice cream?',
-      templateUrl: 'templates/popups/select-School.html',
+      templateUrl: 'jobseeker/popup/select-School.html',
       cssClass: 'animated bounceInUp dark-popup',
       okType: 'button-small button-calm bold',
       okText: 'Done',
@@ -193,70 +149,12 @@ app.controller("sprofileCtrl", function ($scope,
 
   }
   $scope.newHospital = {}
-  $scope.collectJob = function () {
-    $ionicPopup.confirm({
-      title: 'Công việc mong muốn',
-      scope: $scope,
-      // template: 'Are you sure you want to eat this ice cream?',
-      templateUrl: 'templates/popups/collect-job.html',
-      cssClass: 'animated bounceInUp dark-popup',
-      okType: 'button-small button-calm bold',
-      okText: 'Done',
-      cancelType: 'button-small'
-    }).then(function (res) {
-      if (res) {
-        for (var obj in $scope.newHospital.job) {
-          $scope.keyjob = $scope.newHospital.job[obj];
-          console.log('obj', $scope.keyjob);
-          if ($scope.keyjob == false) {
-            delete $scope.newHospital.job[obj];
-          }
-        }
-        console.log('You are sure', $scope.newHospital);
-        $scope.userData.job = $scope.newHospital.job
-
-      } else {
-        console.log('You are not sure');
-      }
-    })
-  };
-
-  $scope.collectTime = function () {
-    $ionicPopup.confirm({
-      title: 'Thời gian có thể đi làm',
-      scope: $scope,
-      // template: 'Are you sure you want to eat this ice cream?',
-      templateUrl: 'templates/popups/collect-time.html',
-      cssClass: 'animated bounceInUp dark-popup',
-      okType: 'button-small button-calm bold',
-      okText: 'Done',
-      cancelType: 'button-small'
-    }).then(function (res) {
-      if (res) {
-        for (var obj in $scope.newHospital.time) {
-          $scope.keyjob = $scope.newHospital.time[obj];
-          console.log('obj', $scope.keyjob);
-          if ($scope.keyjob == false) {
-            delete $scope.newHospital.time[obj];
-          }
-        }
-        console.log('You are sure', $scope.newHospital);
-        $scope.userData.time = $scope.newHospital.time
-        $scope.newHospital = {}
-      } else {
-        console.log('You are not sure');
-      }
-    })
-  }
-
   $scope.collectLanguages = function () {
-    $scope.newHospital.languages = $scope.userData.languages
-
     $ionicPopup.confirm({
       title: 'Khả năng ngoại ngữ',
       scope: $scope,
       // template: 'Are you sure you want to eat this ice cream?',
-      templateUrl: 'templates/popups/collect-languages.html',
+      templateUrl: 'jobseeker/popup/collect-languages.html',
       cssClass: 'animated bounceInUp dark-popup',
       okType: 'button-small button-calm bold',
       okText: 'Done',
@@ -267,11 +165,10 @@ app.controller("sprofileCtrl", function ($scope,
           $scope.keyjob = $scope.newHospital.languages[obj];
           console.log('obj', $scope.keyjob);
           if ($scope.keyjob == false) {
-            delete $scope.newHospital.languages[obj];
+            delete $scope.languages.job[obj];
           }
         }
         console.log('You are sure', $scope.newHospital);
-
         $scope.userData.languages = $scope.newHospital.languages
 
       } else {
@@ -280,37 +177,24 @@ app.controller("sprofileCtrl", function ($scope,
     })
   }
 
-  $scope.collectIndustry = function () {
-    $scope.newHospital.industry = $scope.userData.industry
 
-    $ionicPopup.confirm({
-      title: 'Nơi làm việc mong muốn',
-      scope: $scope,
-      // template: 'Are you sure you want to eat this ice cream?',
-      templateUrl: 'templates/popups/collect-industry.html',
-      cssClass: 'animated bounceInUp dark-popup',
-      okType: 'button-small button-calm bold',
-      okText: 'Done',
-      cancelType: 'button-small'
-    }).then(function (res) {
-      if (res) {
-        for (var obj in $scope.newHospital.industry) {
-          $scope.keyjob = $scope.newHospital.industry[obj];
-          console.log('obj', $scope.keyjob);
-          if ($scope.keyjob == false) {
-            delete $scope.newHospital.industry[obj];
-          }
-        }
-        console.log('You are sure', $scope.newHospital);
-        $scope.userData.industry = $scope.newHospital.industry
+  $scope.init = function () {
+    // var uid = firebase.auth().currentUser.uid;
+    // $scope.uid = firebase.auth().currentUser.uid;
+    // console.log('im', $scope.uid);
+    // $ionicLoading.show({
+    //   template: '<ion-spinner class="spinner-positive"></ion-spinner>'
+    // });
+    // var userRef = firebase.database().ref('user/jobber/' + uid);
+    // userRef.on("value", function (snapshot) {
+    //   $ionicLoading.hide();
+    //   $scope.usercurent = snapshot.val();
+    //   $scope.birthdate = snapshot.val().birth
+    //
+    //
+    // })
 
-      } else {
-        console.log('You are not sure');
-      }
-    })
-  }
-
-
+  };
 
   $scope.calculatemonth = function calculatemonth(birthday) { // birthday is a date
     var birthdate = new Date(birthday);
@@ -494,7 +378,65 @@ app.controller("sprofileCtrl", function ($scope,
       }
     });
   };
+  $scope.addjob = function () {
+    $ionicModal.fromTemplateUrl('templates/modals/add-job.html', {
+      scope: $scope,
+      animation: 'slide-in-up',
+      hideDelay: 920
+    }).then(function (modal) {
+      $scope.modalProfile = modal;
+      $scope.modalProfile.show();
 
+      $scope.showjob = function () {
+        $scope.newHospital = {};
+        $ionicPopup.confirm({
+          title: 'Vị trí',
+          scope: $scope,
+          // template: 'Are you sure you want to eat this ice cream?',
+          templateUrl: 'templates/popups/collect-job.html',
+          cssClass: 'animated bounceInUp dark-popup',
+          okType: 'button-small button-calm bold',
+          okText: 'Xong ',
+          cancelType: 'button-small'
+        }).then(function (res) {
+          if (res) {
+            console.log('You are sure', $scope.newHospital);
+
+          } else {
+            console.log('You are not sure');
+          }
+        });
+      };
+
+      $scope.savejob = function (job) {
+
+
+        var db = firebase.database();
+        var ref = db.ref("user");
+        var uid = firebase.auth().currentUser.uid;
+        var newPostKey = firebase.database().ref("user").child('jobber/' + uid + '/jobhistory').push().key;
+
+        var usersRef = ref.child('jobber/' + uid + '/jobhistory/' + newPostKey);
+
+        usersRef.update({
+          company: job.company,
+          monthstart: job.monthstartselected,
+          monthend: job.monthendselected,
+          industry: job.industry,
+          title: $scope.newHospital.job,
+          key: newPostKey
+
+        });
+        $scope.modalProfile.hide();
+        $cordovaToast.showShortTop("Đã thêm")
+
+
+      };
+      $scope.hideProfile = function () {
+        $scope.modalProfile.hide();
+      }
+    });
+  };
   $scope.captureVideo = function () {
     var options = {limit: 1, duration: 60};
 
@@ -568,10 +510,156 @@ app.controller("sprofileCtrl", function ($scope,
   $scope.trustSrc = function (src) {
     return $sce.trustAsResourceUrl(src);
   };
-  $scope.submit = function () {
+  $scope.showinterest = function () {
+    $ionicModal.fromTemplateUrl('templates/modals/edit-interest.html', {
+      scope: $scope,
+      animation: 'slide-in-up',
+      hideDelay: 920
+    }).then(function (modal) {
+      $scope.modalSettings = modal;
+      $scope.modalSettings.show();
+      $scope.cancel = function () {
+        $scope.modalSettings.hide();
+      };
 
-    console.log($rootScope.userData)
-    var profileRef = firebase.database().ref('profile/' + $rootScope.userid)
-    profileRef.update($rootScope.userData)
+      $scope.showjob = function () {
+
+        $ionicPopup.confirm({
+          title: 'Lựa chọn vị trí mà bạn muốn ',
+          scope: $scope,
+          // template: 'Are you sure you want to eat this ice cream?',
+          templateUrl: 'templates/popups/collect-job.html',
+          cssClass: 'animated bounceInUp dark-popup',
+          okType: 'button-small button-calm bold',
+          okText: 'Xong ',
+          cancelType: 'button-small'
+        }).then(function (res) {
+          if (res) {
+            for (var obj in $scope.newHospital.job) {
+              $scope.keyjob = $scope.newHospital.job[obj];
+              console.log('obj', $scope.keyjob);
+              if ($scope.keyjob == false) {
+                delete $scope.newHospital.job[obj];
+              }
+            }
+            console.log('You are sure', $scope.newHospital);
+
+          } else {
+            console.log('You are not sure');
+          }
+        });
+      };
+
+      var uid = firebase.auth().currentUser.uid;
+      var usersRef = firebase.database().ref("user").child('jobber/' + uid + '/interest');
+      usersRef.on('value', function (snap) {
+        $scope.newHospital = snap.val();
+
+      });
+      $scope.createHospital = function () {
+        for (var obj in $scope.newHospital.time) {
+          $scope.keyjob = $scope.newHospital.time[obj];
+          console.log('obj', $scope.keyjob);
+          if ($scope.keyjob == false) {
+            delete $scope.newHospital.time[obj];
+          }
+        }
+        console.log($scope.newHospital);
+        usersRef.set($scope.newHospital);
+        $cordovaToast.showShortTop('Lưu!');
+        usersRef.update({
+          done: "true"
+        });
+        $scope.modalSettings.hide();
+      };
+
+
+    });
+  };
+
+
+
+  $scope.showShift = function () {
+    $ionicPopup.confirm({
+      title: 'Ca làm việc',
+      scope: $scope,
+      // template: 'Are you sure you want to eat this ice cream?',
+      templateUrl: 'templates/popups/collect-shift.html',
+      cssClass: 'animated bounceInUp dark-popup',
+      okType: 'button-small button-calm bold',
+      okText: 'Done',
+      cancelType: 'button-small'
+    }).then(function (res) {
+      if (res) {
+        for (var obj in $scope.newHospital.shift) {
+          $scope.keyjob = $scope.newHospital.shift[obj];
+          console.log('obj', $scope.keyjob);
+          if ($scope.keyjob == false) {
+            delete $scope.newHospital.shift[obj];
+          }
+        }
+        $scope.userData.time = $scope.newHospital.shift
+      } else {
+        console.log('You are not sure');
+      }
+    });
   }
+
+  $scope.showJob = function () {
+    $ionicPopup.confirm({
+      title: 'Lựa chọn vị trí mà bạn muốn ',
+      scope: $scope,
+      // template: 'Are you sure you want to eat this ice cream?',
+      templateUrl: 'templates/popups/collect-job.html',
+      cssClass: 'animated bounceInUp dark-popup',
+      okType: 'button-small button-calm bold',
+      okText: 'Xong ',
+      cancelType: 'button-small'
+    }).then(function (res) {
+      if (res) {
+        for (var obj in $scope.newHospital.job) {
+          $scope.keyjob = $scope.newHospital.job[obj];
+          console.log('obj', $scope.keyjob);
+          if ($scope.keyjob == false) {
+            delete $scope.newHospital.job[obj];
+          }
+        }
+        console.log('You are sure', $scope.newHospital);
+        $scope.userData.job = $scope.newHospital.job
+
+      } else {
+        console.log('You are not sure');
+      }
+    });
+  };
+
+
+  $scope.showJobExp = function (card) {
+    $ionicPopup.confirm({
+      title: 'Lựa chọn vị trí bạn đã làm',
+      scope: $scope,
+      // template: 'Are you sure you want to eat this ice cream?',
+      templateUrl: 'templates/popups/collect-job.html',
+      cssClass: 'animated bounceInUp dark-popup',
+      okType: 'button-small button-calm bold',
+      okText: 'Xong ',
+      cancelType: 'button-small'
+    }).then(function (res) {
+      if (res) {
+        for (var obj in $scope.newHospital.job) {
+          $scope.keyjob = $scope.newHospital.job[obj];
+          console.log('obj', $scope.keyjob);
+          if ($scope.keyjob == false) {
+            delete $scope.newHospital.job[obj];
+          }
+        }
+        console.log('You are sure', $scope.newHospital);
+        card.job = $scope.newHospital.job
+
+      } else {
+        console.log('You are not sure');
+      }
+    });
+  };
+
 });

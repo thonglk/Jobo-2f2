@@ -1,9 +1,5 @@
-<ion-view title="Cập nhật thông tin" hide-back-button="true" ng-init="init()">
-  <ion-nav-buttons side="right" class="has-header">
-    <button ng-click="submit()" class="button button-icon icon No Icon"> Done</button>
-  </ion-nav-buttons>
-  <ion-content padding="true" class="has-header" scroll="true">
-
+<ion-view title="Cập nhật thông tin" id="page11" ng-init="init()">
+  <ion-content padding="true" class="has-header">
     <div class="card">
       <div class="item item-divider">
         Thông tin liên hệ
@@ -50,6 +46,7 @@
         <label class="item item-select item-stacked-label">
           <span class="input-label">Giới tính</span>
           <select ng-model="userInfo.sex">
+            <option ng-value="male">Không</option>
             <option ng-value="male">Nam</option>
             <option ng-value="female">Nữ</option>
           </select>
@@ -57,12 +54,12 @@
 
         <span class="input-label">Chiều cao</span>
         <div class="input-group">
-          <input ng-model="userData.height" class="form-control input-number" type="text">
+          <input class="form-control input-number" type="text">
           <span class="input-group-addon span-number">cm</span>
         </div>
         <span class="input-label">Cân nặng</span>
         <div class="input-group">
-          <input ng-model="userData.weight" class="form-control input-number" type="text">
+          <input class="form-control input-number" type="text">
           <span class="input-group-addon span-number">kg</span>
         </div>
       </div>
@@ -98,6 +95,10 @@
           <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
         </ion-item>
 
+        <!--<label class="item item-input item-stacked-label">-->
+        <!---->
+        <!--<input ng-model="userData.languages" type="text" placeholder="" ng-click="collectLanguages()">-->
+        <!--</label>-->
       </div>
     </div>
 
@@ -109,26 +110,24 @@
       <div class="list form-modify">
         <span class="input-label">Thu nhập mong muốn</span>
         <div class="input-group">
-          <input ng-model="userData.expect_salary" class="form-control input-number" type="text">
+          <input class="form-control input-number" type="text">
           <span class="input-group-addon span-number">VNĐ/tháng</span>
         </div>
-
-        <span class="input-label">Nơi làm việc mong muốn</span>
-        <ion-item class=" item-icon-right" ng-click="collectIndustry()">
-          <span class="gotham-book" ng-if="!userData.industry">Nhấn để thêm</span>
-          <span class="gotham-book" ng-repeat="(key,value) in userData.industry">{{dataIndustry[key]}},</span>
-          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-        </ion-item>
+        <label class="item item-input item-stacked-label">
+          <span class="input-label">Nơi làm việc mong muốn</span>
+          <input ng-model="userData.industry" type="search" placeholder="">
+        </label>
         <span class="input-label">Công việc mong muốn</span>
-        <ion-item class=" item-icon-right" ng-click="collectJob()">
-          <span class="gotham-book" ng-if="!userData.job">Nhấn để thêm</span>
-          <button class="gotham-book" ng-repeat="(key,value) in userData.job">{{dataJob[key]}},</button>
+        <ion-item class=" item-icon-right" ng-click="showJob()">
+          <span class="gotham-book" ng-if="!userData.job">Nhấn để thêm công việc</span>
+          <span class="gotham-book" ng-repeat="(key,value) in userData.job">{{dataJob[key]}},</span>
           <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
         </ion-item>
         <span class="input-label">Thời gian đi làm</span>
-        <ion-item class=" item-icon-right" ng-click="collectTime()">
+
+        <ion-item class=" item-icon-right" ng-click="showShift()">
           <span class="gotham-book" ng-if="!userData.time">Nhấn để thêm thời gian</span>
-          <span class="gotham-book" ng-repeat="(key,value) in userData.time">{{dataTime[key]}},</span>
+          <span class="gotham-book" ng-repeat="(key,value) in userData.time">{{time[key]}},</span>
           <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
         </ion-item>
 
@@ -167,9 +166,9 @@
             <span class="input-label">Nơi làm việc</span>
             <input ng-model="card.company" type="text" placeholder="">
           </label>
-          <label class="item item-input item-stacked-label" ng-click="selectJob(card.id)">
+          <label class="item item-input item-stacked-label" ng-click="showJobExp(card)">
             <span class="input-label">Công việc</span>
-            <ion-item class=" item-icon-right">
+            <ion-item class=" item-icon-right" >
               <span class="gotham-book" ng-if="!card.job">Nhấn để thêm công việc</span>
               <span class="gotham-book" ng-repeat="(key,value) in card.job">{{dataJob[key]}},</span>
               <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
@@ -223,6 +222,13 @@
           <p>Video giới thiệu về bản thân, tại sao nhà tuyển dụng nên chọn bạn,...</p>
         </label>
       </div>
+    </div>
+
+
+    <div class="item item-divider">
+      <button class="button icon-left ion-checkmark button-balanced button-small">Submit</button>
+      <button class="button icon-left ion-close button-assertive button-small">Reset</button>
+    </div>
     </div>
   </ion-content>
 </ion-view>

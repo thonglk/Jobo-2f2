@@ -1,0 +1,13 @@
+<div class="item-input-inset">
+  <label class="item-input-wrapper">
+    <i class="icon ion-ios-search placeholder-icon"></i>
+    <input type="search" ng-model="autocompleteSchool.text" placeholder="Vd: Đại học Mở Khoa Du lịch"
+           ng-change="searchSchool()">
+  </label>
+</div>
+<label class="checkbox-inline" ng-repeat="ketqua in ketquasSchool | limitTo:3 ">
+  <ion-list class="list-borderless">
+    <ion-radio ng-value="ketqua" ng-click="setSelectedSchool(ketqua)">{{ketqua.name}}
+    </ion-radio>
+  </ion-list>
+</label>

@@ -1,53 +1,81 @@
-<ion-view title="Tài khoản cá nhân" id="page18">
-  <ion-content padding="false" class="has-header">
-    <ion-list id="eAccount-list16">
-      <ion-item class="item-divider" id="eAccount-list-item-divider4"> Tài khoản</ion-item>
-      <ion-item class="item-avatar item-icon-right" id="eAccount-list-item69">
-        <i class="icon ion-images"></i>
-      </ion-item>
-      <ion-item id="eAccount-list-item25" ng-click="editname()">Tên đầy đủ
-        <span class="item-note">{{usercurent.name}}</span>
-      </ion-item>
-    </ion-list>
-    <ion-list id="eAccount-list18">
-      <ion-item class="item-divider" id="eAccount-list-item-divider5"> Liên hệ</ion-item>
-      <ion-item id="eAccount-list-item38">Email
-        <span class="item-note">{{usercurent.email}}</span>
-      </ion-item>
-      <ion-item class="dark" id="eAccount-list-item39" ng-click="editphone()">SĐT
-        <span class="item-note">{{usercurent.phone}}</span>
-      </ion-item>
-    </ion-list>
-    <ion-list id="eAccount-list19">
-      <ion-item class="item-divider" id="eAccount-list-item-divider6"> Cài đặt</ion-item>
-      <ion-toggle toggle-class="toggle-positive" id="eAccount-toggle2">Ẩn hiện thị</ion-toggle>
-    </ion-list>
+<ion-view title="Cài đặt" id="page18">
+<ion-content>
+  <div class="item item-divider">
+    Nhận thông báo mới khi
+  </div>
+  <ul class="list">
+    <li class="item item-toggle">
+      Tin nhắn mới
+      <label class="toggle toggle-assertive">
+        <input ng-model="setting.notiMes" type="checkbox">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
+    </li>
+  </ul>
+  <ul class="list">
+    <li class="item item-toggle">
+      Nhà tuyển dụng muốn tuyển bạn
+      <label class="toggle toggle-assertive">
+        <input ng-model="setting.notiInvite" type="checkbox">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
+    </li>
+  </ul>
+  <ul class="list">
 
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <div class="padding color-gray">CONTACT US</div>
-    <ion-item class="text-center" href="mailto:contact@joboapp.com">Help & Support</ion-item>
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <ion-item class="text-center" href="mailto:contact@joboapp.com">Give Us Feedback</ion-item>
+    <li class="item item-toggle">
+      Có nhà tuyển dụng tương hợp với bạn
+      <label class="toggle toggle-assertive">
+        <input ng-model="setting.notiMatch" type="checkbox">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
+    </li>
+  </ul>
+  <ul class="list">
+    <li class="item item-toggle">
+      Có công việc mới
+      <label class="toggle toggle-assertive">
+        <input ng-model="setting.notiJob" setting.notiMatchtype="checkbox">
+        <div class="track">
+          <div class="handle"></div>
+        </div>
+      </label>
+    </li>
 
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <ion-item class="text-center" ng-click="share()">Share Jobo</ion-item>
 
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <div class="padding color-gray">Legal</div>
-    <ion-item class="item-icon-right">
-      Privacy Policy
-      <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-    </ion-item>
-    <ion-item class="item-icon-right">
-      Terms of Service
-      <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-    </ion-item>
-    <ion-item class="item-icon-right ">
-      Licenses
-      <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-    </ion-item>
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <ion-item ng-click="doLogout()" class="text-center">Logout</ion-item>
+  </ul>
+
+  <p style="margin-top: 4px;">&nbsp;</p>
+  <div class="padding color-gray">CONTACT US</div>
+  <ion-item class="text-center" href="mailto:contact@joboapp.com">Help & Support</ion-item>
+  <p style="margin-top: 4px;">&nbsp;</p>
+  <ion-item class="text-center" href="mailto:contact@joboapp.com">Give Us Feedback</ion-item>
+
+  <p style="margin-top: 4px;">&nbsp;</p>
+  <ion-item class="text-center" ng-click="share()">Share Jobo</ion-item>
+
+  <p style="margin-top: 4px;">&nbsp;</p>
+  <div class="padding color-gray">Legal</div>
+  <ion-item class="item-icon-right">
+    Privacy Policy
+    <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+  </ion-item>
+  <ion-item class="item-icon-right">
+    Terms of Service
+    <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+  </ion-item>
+  <ion-item class="item-icon-right ">
+    Licenses
+    <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+  </ion-item>
+  <p style="margin-top: 4px;">&nbsp;</p>
+  <ion-item ng-click="doLogout()" class="text-center">Logout</ion-item>
 
   </ion-content>
 </ion-view>

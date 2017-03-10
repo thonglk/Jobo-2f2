@@ -97,6 +97,11 @@ var app = angular.module('starter', [
         controller: "esignupController"
       })
 
+      .state('signup', {
+        url: '/signup/:id',
+        templateUrl: 'templates/signup.html',
+        controller: 'signupCtrl'
+      })
 
       .state('reset', {
         url: '/reset',
@@ -168,12 +173,12 @@ var app = angular.module('starter', [
           }
         }
       })
-      .state('employer.activity', {
-        url: '/activity',
+      .state('employer.notification', {
+        url: '/notification',
         views: {
-          'tab-activity': {
-            templateUrl: 'employer/tab-activity.html',
-            controller: 'eActivityCtrl'
+          'tab-notification': {
+            templateUrl: 'employer/tab-notification.html',
+            controller: 'eNotificationCtrl'
           }
         }
       })
@@ -197,6 +202,13 @@ var app = angular.module('starter', [
         controller: 'pricingCtrl'
       })
 
+      .state('store', {
+        url: '/store',
+        templateUrl: 'employer/store.html',
+        controller: 'storeCtrl'
+
+      })
+
       .state('convert', {
         url: '/convert',
         templateUrl: 'templates/convert.html',
@@ -212,8 +224,8 @@ var app = angular.module('starter', [
       })
 
 
-      .state('sprofile', {
-        url: '/sprofile',
+      .state('profile', {
+        url: '/profile',
         templateUrl: 'jobseeker/sprofile.html',
         controller: 'sprofileCtrl'
 
@@ -247,12 +259,12 @@ var app = angular.module('starter', [
           }
         }
       })
-      .state('jobseeker.activity', {
-        url: '/activity',
+      .state('jobseeker.notification', {
+        url: '/notification',
         views: {
-          'tab-activity': {
-            templateUrl: 'jobseeker/tab-activity.html',
-            controller: 'sActivityCtrl'
+          'tab-notification': {
+            templateUrl: 'jobseeker/tab-notification.html',
+            controller: 'sNotificationCtrl'
           }
         }
       })
@@ -276,6 +288,20 @@ var app = angular.module('starter', [
           }
         }
       })
+      .state('jobseeker.setting', {
+        url: '/setting',
+        views: {
+          'tab-account': {
+            templateUrl: 'jobseeker/setting.html',
+            controller: 'sSettingCtrl'
+          }
+        }
+      })
+      .state('viewstore', {
+        url: '/viewstore/:id',
+        templateUrl: 'jobseeker/modals/viewstore.html',
+        controller: 'ViewStoreCtrl'
+      })
 
 
 // if none of the above states are matched, use this as the fallback
@@ -290,9 +316,19 @@ var app = angular.module('starter', [
 
 
       $rootScope.CONFIG = CONFIG;
-      $rootScope.dataJob = CONFIG.data.job;
-      $rootScope.time = CONFIG.data.time;
-      $rootScope.industry = CONFIG.data.industry;
+      $rootScope.dataJob = []
+      angular.forEach(CONFIG.data.job, function (card) {
+        $rootScope.dataJob.push(card)
+
+      })
+
+      $rootScope.dataTime = CONFIG.data.time;
+
+      $rootScope.dataIndustry = [];
+      angular.forEach(CONFIG.data.industry, function (card) {
+        $rootScope.dataIndustry.push(card)
+      })
+
       $rootScope.dataLanguages = {english: "Tiếng Anh"};
 
 
@@ -355,8 +391,6 @@ var app = angular.module('starter', [
                   $state.go(data.goto)
                 }
                 $snackbar.show(options);
-
-
               }
             }
           );
@@ -368,14 +402,12 @@ var app = angular.module('starter', [
 
       }
 
-
       function getTheToken() {
         FCMPlugin.getToken(
           function (token) {
             if (token) {
               $rootScope.tokenuser = token;
               console.log("I got the token: " + token);
-
             } else {
               console.log("null token");
               $timeout(getTheToken, 1000);
@@ -406,203 +438,9 @@ var app = angular.module('starter', [
               message: "Không có kết nối internet",
               messageColor: 'red'
             };
-
             $snackbar.show(options);
           }
         });
       }, 2000)
-
     }
-  )
-/*
-
-
-
- // Ionic Starter App
-
- // angular.module is a global place for creating, registering and retrieving Angular modules
- // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
- // the 2nd parameter is an array of 'requires'
- // 'starter.services' is found in services.js
- // 'starter.controllers' is found in controllers.js
- var app = angular.module('starter', ['ionic', 'firebase', 'starter.configs', 'ngCordova', 'ui.mask'
- , 'angular-cache'
- , 'monospaced.elastic'
- , 'starter.controllers'
- , 'starter.services'
- , 'starter.directives'
- , 'monospaced.elastic'
- , 'ksSwiper'
- , 'ionic.contrib.ui.tinderCards2'
- , 'ionic.cloud'
- ])
-
- .config(function ($ionicCloudProvider) {
- $ionicCloudProvider.init({
- "core": {
- "app_id": "3063d2c3"
- }
- });
- })
-
-
- .run(function ($ionicPlatform, $timeout, $rootScope, $state, $ionicDeploy, $cordovaSpinnerDialog, $ionicPopup) {
- $ionicPlatform.ready(function () {
- if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
- cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
- cordova.plugins.Keyboard.disableScroll(true);
-
- }
-
- if (window.StatusBar) {
- // org.apache.cordova.statusbar required
- StatusBar.styleDefault();
- }
-
- });
- })
-
- //
- // .config(function ($provide, $ionicConfigProvider, $compileProvider) {
- //   $ionicConfigProvider.tabs.position('bottom');
- //   // $ionicConfigProvider.scrolling.jsScrolling(false);
- //   // $translateProvider.useStaticFilesLoader({
- //   //     prefix: 'l10n/',
- //   //     suffix: '.json'
- //   //   });
- //   // $translateProvider.preferredLanguage("en");
- //   // $translateProvider.fallbackLanguage("en");
- //   $ionicConfigProvider.scrolling.jsScrolling(false);
- //   $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|ftp|cdvfile|file|filesystem|blob):|data:image\//);
- //   $ionicConfigProvider.backButton.text(null).icon('ion-chevron-left color-white');
- // })
- // //
-
-
- .run(function ($rootScope, $ionicLoading) {
- $ionicLoading.show({
- template: '<p>Đang tải dữ liệu...!</p><ion-spinner></ion-spinner>'
- });
-
- firebase.database().ref('data').on('value', function (snap) {
- $rootScope.dataJob = snap.val().job;
- $rootScope.time = snap.val().time;
- $rootScope.industry = snap.val().industry;
- $ionicLoading.hide()
- })
-
-
- })
- .config(function ($stateProvider, $urlRouterProvider) {
-
-
- // Ionic uses AngularUI Router which uses the concept of states
- // Learn more here: https://github.com/angular-ui/ui-router
- // Set up the various states which the app can be in.
- // Each state's controller can be found in controllers.js
- $stateProvider
-
- // setup an abstract state for the tabs directive
- .state('tab', {
- url: '/tab',
- abstract: true,
- templateUrl: 'templates/tabs.html'
- })
-
- // Each tab has its own nav history stack:
- .state('login', {
- url: '/login',
- templateUrl: "templates/login.html",
- controller: "loginController"
- })
- .state('ssignup', {
- url: '/ssignup',
- templateUrl: "templates/signup/seekersignup.html",
- controller: "ssignupController"
- })
- .state('esignup', {
- url: '/esignup',
- templateUrl: "templates/signup/esignup.html",
- controller: "esignupController"
- })
-
-
- .state('reset', {
- url: '/reset',
- templateUrl: "templates/resetemail.html",
- controller: "resetController"
- })
-
-
- .state('intro', {
- url: '/intro',
- templateUrl: "templates/intro.html",
- controller: "introController"
- })
- .state('edash', {
- url: '/edash',
- templateUrl: "templates/dash/edash.html",
- controller: "edashCtrl"
- })
- .state('sdash', {
- url: '/sdash',
- templateUrl: 'templates/dash/sdash.html',
- controller: 'DashCtrl'
- })
-
-
- .state('schat-detail', {
- url: '/schats/:chatId',
- templateUrl: 'templates/chat/schat-detail.html',
- controller: 'sChatDetailCtrl'
- })
- .state('echat-detail', {
- url: '/echats/:chatId',
- templateUrl: 'templates/chat/echat-detail.html',
- controller: 'eChatDetailCtrl'
- })
- .state('sprofile', {
- url: '/sprofile',
- templateUrl: "templates/profile/sprofile.html",
- controller: "sprofileCtrl"
-
- })
-
- .state('eviewprofile', {
- url: '/eviewprofile/:id',
- templateUrl: 'templates/modals/view/eprofile.html',
- controller: 'eViewProfileCtrl'
- })
- .state('eprofile', {
- url: '/eprofile',
- templateUrl: "templates/profile/eprofile.html",
- controller: "eprofileCtrl"
-
- })
-
- .state('sviewprofile', {
- url: '/sviewprofile/:id',
- templateUrl: 'templates/modals/view/sprofile.html',
- controller: 'sViewProfileCtrl'
- })
- .state('eAccount', {
- url: '/eAccount',
- templateUrl: "templates/account/eAccount.html",
- controller: "eAccountCtrl"
-
- })
- .state('sAccount', {
- url: '/sAccount',
- templateUrl: "templates/account/sAccount.html",
- controller: "sAccountCtrl"
-
- })
-
- // if none of the above states are matched, use this as the fallback
- $urlRouterProvider.otherwise('intro');
-
- });
-
-
-
- */
+  );
