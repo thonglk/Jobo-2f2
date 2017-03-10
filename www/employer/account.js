@@ -1,6 +1,6 @@
 "use strict";
 
-app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup, $ionicLoading,$ionicPlatform) {
+app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, CONFIG, $ionicModal, $http, $ionicSlideBoxDelegate, $ionicActionSheet, $cordovaCamera, $ionicPopover, $state, $ionicPopup, $ionicLoading, $ionicPlatform) {
 
   // Config Slide function
   $scope.lockSlide = function () {
@@ -23,20 +23,18 @@ app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, 
   // End Config Slide function
 
   $scope.init = function () {
-      AuthUser.employer()
-        .then(function (result) {
-            console.log(result)
+    AuthUser.employer()
+      .then(function (result) {
+          console.log(result)
           $scope.loadCurrentStore(result.storeIdCurrent)
-            $scope.getListStore(result.userid);
-            $scope.getListJob(result.storeIdCurrent);
-          }, function (error) {
-            console.log(error)
+          $scope.getListStore(result.userid);
+          $scope.getListJob(result.storeIdCurrent);
+        }, function (error) {
+          console.log(error)
 
-            // error
-          }
-        );
-
-
+          // error
+        }
+      );
   };
 
   //Set Current Store
@@ -76,13 +74,11 @@ app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, 
     var jobListRef = firebase.database().ref('job/' + $rootScope.storeIdCurrent);
     jobListRef.on('value', function (snap) {
       $timeout($rootScope.jobList = snap.val()
-      ,
-      100)
+        ,
+        100)
       console.log($rootScope.jobList);
     });
   };
-
-
   // Change Store
 
   // .fromTemplateUrl() method
@@ -165,7 +161,6 @@ app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, 
         })
       };
 
-
       $scope.setSelectedAddress = function (selected) {
         $scope.address = selected;
         console.log($scope.address)
@@ -176,7 +171,6 @@ app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $rootScope, 
         $scope.store.location.lng = $scope.address.geometry.location.lng;
         $scope.store.industry = $scope.storeIndustry;
         console.log($scope.store)
-
       };
 
       $scope.submitStore = function (storeCreate) {
