@@ -3,11 +3,11 @@ app.controller('sInterviewCtrl', function ($q, $scope, $rootScope, CONFIG, $stat
 
 
   $scope.init = function () {
-    AuthUser.employer()
+    AuthUser.user()
       .then(function (result) {
           console.log(result)
 
-          var interviewRef = firebase.database().ref('activity/interview').orderByChild('storeId').equalTo($rootScope.storeIdCurrent)
+          var interviewRef = firebase.database().ref('activity/interview').orderByChild('userId').equalTo($rootScope.userid)
           interviewRef.on('value', function (snap) {
             var data = snap.val()
             $scope.interviewList = [];

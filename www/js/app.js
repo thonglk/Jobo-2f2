@@ -86,17 +86,6 @@ var app = angular.module('starter', [
 
     // Authentication
 
-      .state('ssignup', {
-        url: '/ssignup',
-        templateUrl: "templates/signup/seekersignup.html",
-        controller: "ssignupController"
-      })
-      .state('esignup', {
-        url: '/esignup',
-        templateUrl: "templates/signup/employersignup.html",
-        controller: "esignupController"
-      })
-
       .state('signup', {
         url: '/signup/:id',
         templateUrl: 'templates/signup.html',
@@ -255,7 +244,7 @@ var app = angular.module('starter', [
         views: {
           'tab-chats': {
             templateUrl: 'jobseeker/chat-detail.html',
-            controller: 'eChatDetailCtrl'
+            controller: 'sChatDetailCtrl'
           }
         }
       })

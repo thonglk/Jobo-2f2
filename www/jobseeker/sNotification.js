@@ -1,9 +1,9 @@
 "use strict";
-app.controller('InterviewCtrl', function ($q, $scope, $rootScope, CONFIG, $stateParams, $ionicActionSheet, $timeout, $ionicScrollDelegate, $ionicSlideBoxDelegate, $firebaseArray, $ionicPopup, $http, $ionicLoading, AuthUser) {
+app.controller('sNotificationCtrl', function ($q, $scope, $rootScope, CONFIG, $stateParams, $ionicActionSheet, $timeout, $ionicScrollDelegate, $ionicSlideBoxDelegate, $firebaseArray, $ionicPopup, $http, $ionicLoading, AuthUser) {
 
 
   $scope.init = function () {
-    AuthUser.employer()
+    AuthUser.user()
       .then(function (result) {
           console.log(result)
 

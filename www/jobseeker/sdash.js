@@ -61,7 +61,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
     if (!$scope.newfilter) {
       $scope.newfilter = {};
     }
-    $scope.clearFilter =function () {
+    $scope.clearFilter = function () {
       $scope.newfilter = {}
     }
     $ionicModal.fromTemplateUrl('jobseeker/modals/filter.html', {
@@ -146,7 +146,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
           params: $scope.newfilter
         }).then(function successCallback(response) {
           console.log("respond", response.data);
-          $rootScope.storeData = response.data;
+          $rootScope.storeCard = response.data;
           $ionicLoading.hide();
         })
       } else {
@@ -203,31 +203,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
       $scope.selectedJob[id][key] = true;
     }
   };
-  /*  asdas = {
-   $$hashKey: "object:39"
 
-   address: "195 Đội Cấn, Ba Đình, Hà Nội, Vietnam"
-
-   createdAt: 1488170787774
-
-   createdBy: "j2sLCo7HsOdN7mPkGQSjFPLoOfx2"
-
-   distance: 2.1
-
-   industry: "banle"
-
-   job: {banhang: true, chamsockhachhang: true}
-
-   location: {lat: 21.035079, lng: 105.823692}
-
-   photourl: "img/restaurant.png"
-
-   starCount: 0
-
-   storeKey: "-Kdxt195aFPl0LOBrtFd"
-
-   storeName: "Cowoboy Jack"
-   }*/
 
   $scope.like = function (card, action) {
 
@@ -240,7 +216,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
         status: 1,
         jobstore: $scope.selectedJob[likedId]
       });
-      itsAMatch($rootScope.storeIdCurrent, likedId)
+      itsAMatch(likedId, $rootScope.userid)
     } else {
       likeActivity.update({
         createdAt: new Date().getTime(),
@@ -255,13 +231,13 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
   };
 
   $scope.chatto = function (id) {
-    $state.go("employer.chats", {to: id, slide: 1})
+    $state.go("employer.chats", {to: id})
   };
 
   $scope.limit = 5;
 
   function itsAMatch(storeid, userid) {
-    $ionicModal.fromTemplateUrl('employer/modals/ematch.html', {
+    $ionicModal.fromTemplateUrl('jobseeker/modals/smatch.html', {
       scope: $scope,
       animation: 'animated _fadeOut',
       hideDelay: 920
@@ -278,10 +254,6 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
       userRef.once('value', function (snap) {
         $scope.userData = snap.val()
       });
-
-      $scope.chatto = function (id) {
-        $state.go("employer.chats", {to: id, slide: 1})
-      };
 
       $scope.hideMatch = function () {
         $scope.modalMatch.hide();

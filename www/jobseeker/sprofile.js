@@ -28,7 +28,7 @@ app.controller("sprofileCtrl", function ($scope,
             if (!$rootScope.userData) {
               var userRef = firebase.database().ref('user/' + $rootScope.userid)
               userRef.once('value', function (snap) {
-                var userInfo = snap.val()
+                var userInfo = snap.val();
                 console.log(userInfo)
                 if (userInfo) {
                   $rootScope.userData = {email: userInfo.email, phone: userInfo.phone, photourl: userInfo.photourl}
@@ -191,12 +191,9 @@ app.controller("sprofileCtrl", function ($scope,
     $scope.searchSchool = function () {
 
       $scope.URL = 'https://maps.googleapis.com/maps/api/place/textsearch/json?query=' + $scope.autocompleteSchool.text + '&language=vi&type=university&components=country:VN&sensor=true&key=' + CONFIG.APIKey;
-      $http({
-        method: 'GET',
-        url: $scope.URL
-      }).then(function successCallback(response) {
+      $http.jsonp($scope.URL).then(function successCallback(response) {
 
-        $scope.ketquasSchool = response.data.results;
+        $scope.ketquasSchool = JSON.stringify(response).data.results
         console.log($scope.ketquasSchool);
       })
     };

@@ -331,9 +331,12 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
   .controller('signupCtrl', function ($scope, $rootScope, $stateParams, $http, $ionicLoading, $ionicSlideBoxDelegate) {
 
     var type = $stateParams.id;
-
+    $scope.slideChanged = function (index) {
+      console.log($ionicSlideBoxDelegate.currentIndex()
+      )
+    }
     $scope.type = type;
-
+    console.log('type', type)
     $scope.doSignup = function (userSignup) {
 
       $rootScope.registering = true;
@@ -355,14 +358,12 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
         });
         console.log("create successful");
         $ionicLoading.hide();
-        if ($scope.type = 1){
-          $ionicSlideBoxDelegate.slide(2);
-        }
-        if ($scope.type = 2){
+        if ($scope.type == 1) {
           $ionicSlideBoxDelegate.slide(1);
         }
-
-
+        if ($scope.type == 2) {
+          $ionicSlideBoxDelegate.slide(2);
+        }
 
       }, function (error) {
         $ionicLoading.hide();
@@ -380,8 +381,6 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
           return false;
         }
       });
-
-
     };// end $scope.doSignup()
 
 
