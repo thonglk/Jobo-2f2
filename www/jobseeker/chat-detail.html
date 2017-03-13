@@ -7,9 +7,9 @@
 <ion-view hide-nav-bar="true" ng-init="init()">
   <ion-content>
     <ion-header-bar class="bar-light">
-      <i class="button icon-left ion-chevron-left button-clear" ui-sref="employer.chats"></i>
+      <i class="button icon-left ion-chevron-left button-clear" ui-sref="jobseeker.chats"></i>
 
-      <h1 class="title" ng-click="viewProfile(chatedData.userid)" style="text-align: center">{{chatedData.name}}</h1>
+      <h1 class="title" ng-click="viewProfile(storeData.storeId)" style="text-align: center">{{storeData.storeName}}</h1>
       <i class="button icon-right ion-ios-calendar button-clear animated shake"
          style="position: absolute;right: 40px" ion-datetime-picker ng-model="timeInterview"
          ng-change="setInterview(timeInterview)"></i>
@@ -17,7 +17,7 @@
 
     </ion-header-bar>
     <ion-item class="item item-body" id="activity-list-item54" ng-if="messages.interview" style="margin-top: 44px">
-      <p style="margin-top:0px;color:#000000;">Bạn và {{chatedData.name}} sẽ có buổi phỏng vấn lúc
+      <p style="margin-top:0px;color:#000000;">Bạn và {{storeData.storeName}} sẽ có buổi phỏng vấn lúc
         <strong>{{messages.interview.interview | date: "H:mm dd-MM-yyyy"}}</strong> tại
         <strong>{{messages.interview.place}}</strong>
       </p></ion-item>
@@ -28,9 +28,9 @@
       <div class="list card" id="page3-card25" style=>
         <div class="item item-body" id="page3-list-item-container18">
           <div id="page3-markdown20" style="text-align:center;" class="show-list-numbers-and-dots">
-            <p style="margin-top:0px;">{{chatedData.name}} rất phù hợp với vị trí <span
+            <p style="margin-top:0px;">{{storeData.storeName}} muốn tuyển bạn vào vị trí <span
               ng-repeat="(key,value) in chatUser.job">{{dataJob[key]}}</span> Tips: Hãy bắt đầu trò chuyện với
-              {{chatedData.name}} và đặt lịch phỏng vấn!
+              {{storeData.storeName}} và đặt lịch phỏng vấn!
             </p>
           </div>
         </div>
@@ -38,7 +38,7 @@
       <div ng-repeat="message in messages" class="message-wrapper"
            on-hold="onMessageHold($event, $index, message)">
 
-        <div ng-if="chatUser.userid === message.sender">
+        <div ng-if="storeData.storeName === message.sender">
           <div ng-if="Status[message.key]" style="color: darkgrey;
     font-size: xx-small;
 text-align: center;">{{timeConverter(message.createdAt)}}
@@ -63,7 +63,7 @@ text-align: center;">{{timeConverter(message.createdAt)}}
 ">{{CONFIG.StatusChat[message.status]}}
         </div>
 
-        <div ng-if="storeIdCurrent === message.sender && message.type == 0">
+        <div ng-if="userid === message.sender && message.type == 0">
           <div ng-if="Status[message.key]" style="color: darkgrey;
     font-size: xx-small;
 text-align: center;">{{timeConverter(message.createdAt)}}
@@ -71,7 +71,7 @@ text-align: center;">{{timeConverter(message.createdAt)}}
 
           <div>
             <img ng-click="showProfile()" class="profile-pic right"
-                 ng-src="{{storeDataCurrent.photourl}}" onerror="onProfilePicError(this)"/>
+                 ng-src="{{userData.photourl}}" onerror="onProfilePicError(this)"/>
           </div>
 
           <div class="chat-bubble right" ng-click="showStatus(message.key)">

@@ -11,6 +11,7 @@ app.controller("sprofileCtrl", function ($scope,
                                          $cordovaCapture,
                                          $cordovaToast,
                                          $sce,
+                                         $state,
                                          $timeout,
                                          $firebaseArray,
                                          $ionicLoading,
@@ -21,17 +22,21 @@ app.controller("sprofileCtrl", function ($scope,
     AuthUser.user()
       .then(function (result) {
           console.log(result)
-          var profileRef = firebase.database().ref('profile/' + $rootScope.userid)
+          var profileRef = firebase.database().ref('profile/' + $rootScope.userid);
           profileRef.once('value', function (snap) {
             $rootScope.userData = snap.val();
             console.log($rootScope.userData);
             if (!$rootScope.userData) {
-              var userRef = firebase.database().ref('user/' + $rootScope.userid)
+              var userRef = firebase.database().ref('user/' + $rootScope.userid);
               userRef.once('value', function (snap) {
                 var userInfo = snap.val();
                 console.log(userInfo)
                 if (userInfo) {
-                  $rootScope.userData = {email: userInfo.email, phone: userInfo.phone, photourl: userInfo.photourl}
+                  $rootScope.userData = {
+                    email: userInfo.email,
+                    phone: userInfo.phone,
+                    photourl: userInfo.photourl
+                  }
                   console.log($rootScope.userData);
 
                 }
@@ -77,44 +82,32 @@ app.controller("sprofileCtrl", function ($scope,
   };
 
 
-  $scope.addMoreExp = function (exp) {
-    if (!exp) {
-      var a = 1;
-      $scope.userData.experience = {}
-      $scope.userData.experience[a] = {}
-      $scope.userData.experience[a].id = 1
-    } else {
-      var stt;
-      for (var i in exp) {
-          stt = i
-
-      }
-      return new Promise(function (resolve) {
-        resolve(stt)
-
-      }).then(function (stt) {
-        if (!stt) {
-          stt = 0
-        }
-        var n = Number(stt) + 1
-        exp[n] = {id: n}
-        $timeout(function () {
-          console.log(exp)
-        },100)
-      })
-
+  $scope.addMoreExp = function () {
+    if(!$scope.userData.experience){
+      $scope.userData.experience = {};
     }
-  }
-
-  $scope.deleteExp = function (exp) {
     var stt;
-    for (var i in exp) {
+    for (var i in $scope.userData.experience) {
       stt = i
     }
-    delete exp[stt]
-    $timeout(function () {
-      console.log(exp)
-    },100)
+    return new Promise(function (resolve) {
+      resolve(stt)
+
+    }).then(function (stt) {
+      if (!stt) {
+        stt = 0
+      }
+      var n = Number(stt) + 1
+      $scope.userData.experience[n] = {id: n}
+      $timeout(function () {
+        console.log($scope.userData.experience)
+      }, 10)
+    })
+  }
+
+  $scope.deleteExp = function (card) {
+    delete $scope.userData.experience[card];
+    $state.reload()
   }
 
   // Search Address

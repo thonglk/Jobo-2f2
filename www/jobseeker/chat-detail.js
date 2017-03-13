@@ -1,6 +1,6 @@
 "use strict";
 app
-  .controller("sChatDetailCtrl", ["$scope", '$rootScope', "chatMessages", "$stateParams", "AuthUser", "$ionicActionSheet", "$timeout", "$ionicScrollDelegate", "$firebaseArray", "$ionicPopup", "$http", '$interval', '$ionicLoading', function ($scope, $rootScope, chatMessages, $stateParams, AuthUser, $ionicActionSheet, $timeout, $ionicScrollDelegate, $firebaseArray, $ionicPopup, $http, $interval, $ionicLoading) {
+  .controller("sChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "AuthUser", "$ionicActionSheet", "$timeout", "$ionicScrollDelegate", "$firebaseArray", "$ionicPopup", "$http", '$interval', '$ionicLoading', function ($scope, $rootScope, $stateParams, AuthUser, $ionicActionSheet, $timeout, $ionicScrollDelegate, $firebaseArray, $ionicPopup, $http, $interval, $ionicLoading) {
 
     $scope.init = function () {
       $ionicLoading.show({
@@ -8,25 +8,25 @@ app
       });
       $scope.chatedId = $stateParams.chatId;
 
-      AuthUser.employer().then(function (result) {
-        $scope.loadMessage($rootScope.storeIdCurrent, $scope.chatedId)
-        var storeDataRef = firebase.database().ref('store/' + $rootScope.storeIdCurrent);
-        storeDataRef.on('value', function (snap) {
-          $rootScope.storeData = snap.val()
+      AuthUser.user().then(function (result) {
+        $scope.loadMessage($scope.chatedId, $rootScope.userid)
+        console.log($rootScope.userid)
+        var userDataRef = firebase.database().ref('profile/' + $rootScope.userid);
+        userDataRef.on('value', function (snap) {
+          $rootScope.userData = snap.val()
         });
-        var employerDataRef = firebase.database().ref('user/' + $rootScope.userid);
-        employerDataRef.on('value', function (snap) {
-          $timeout(
-            $rootScope.employerData = snap.val()
-            , 100);
-        })
       });
 
-      var chatedRef = firebase.database().ref('user/' + $scope.chatedId);
+      var chatedRef = firebase.database().ref('store/' + $scope.chatedId);
       chatedRef.on('value', function (snap) {
         $timeout(
-          $scope.chatedData = snap.val()
+          $scope.storeData = snap.val()
           , 100);
+        firebase.database().ref('user/' + $scope.storeData.createdBy).once('value',function (snapshot) {
+          $timeout(
+            $scope.chatedData = snapshot.val()
+            , 100);
+        })
       });
       $ionicLoading.hide();
 
@@ -96,13 +96,13 @@ app
     }
 
     $scope.sendMessage = function () {
-      var newPostKey = firebase.database().ref().child('chat/' + $rootScope.storeIdCurrent + ":" + $scope.chatedId).push().key;
-      var newPostRef = firebase.database().ref().child('chat/' + $rootScope.storeIdCurrent + ":" + $scope.chatedId + '/' + newPostKey)
+      var newPostKey = firebase.database().ref().child('chat/' + $scope.chatedId + ":" + $rootScope.userid).push().key;
+      var newPostRef = firebase.database().ref().child('chat/' + $scope.chatedId + ":" + $rootScope.userid + '/' + newPostKey)
       var message = {
         key: newPostKey,
         createdAt: new Date().getTime(),
         text: $scope.input.message,
-        sender: $rootScope.storeIdCurrent,
+        sender: $rootScope.userid,
         status: 0,
         type: 0
 
@@ -138,7 +138,7 @@ app
     }
     // this prob seems weird here but I have reasons for this in my app, secret!
     $scope.viewProfile = function (msg) {
-      window.location.href = '#/viewprofile/' + msg
+      window.location.href = '#/viewstore/' + msg
     };
 
     // I emit this event from the monospaced.elastic directive, read line 480
@@ -160,16 +160,16 @@ app
 
     $scope.setInterview = function (timeInterview) {
       console.log(timeInterview);
-      var timeInterviewRef = firebase.database().ref('activity/' + $rootScope.storeIdCurrent + ":" + $scope.chatedId)
+      var timeInterviewRef = firebase.database().ref('activity/' + $scope.chatedId + ":" + $rootScope.userid)
       timeInterviewRef.update({interview: new Date().getTime()});
-      var newPostRef = firebase.database().ref().child('activity/interview/' + $rootScope.storeIdCurrent + ":" + $scope.chatedId)
+      var newPostRef = firebase.database().ref().child('activity/interview/' + $scope.chatedId + ":" + $rootScope.userid)
 
       var message = {
         createdAt: new Date().getTime(),
         interview: timeInterview,
-        place: $rootScope.storeData.address,
-        userId: $scope.chatedId,
-        storeId: $rootScope.storeIdCurrent,
+        place: $scope.storeData.address,
+        userId: $rootScope.userid,
+        storeId: $scope.chatedId,
         status: 0,
         type: 1
       };
@@ -224,7 +224,7 @@ app
 
       // An elaborate, custom popup
       var myPopup = $ionicPopup.show({
-        templateUrl: 'employer/popup/contact.html',
+        templateUrl: 'templates/popups/contact.html',
         title: "Liên hệ",
         scope: $scope,
         buttons: [{text: 'Cancel'}

@@ -48,10 +48,10 @@
         <ion-list id="match-list32" ng-repeat="card in reactList.match">
           <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
             <img src="{{card.photourl}}">
-            <h2>{{card.name}}</h2>
-            <p style="white-space:normal;">Vị trí mong muốn:
-            <p ng-repeat="(key,value) in card.jobUser">{{dataJob[key]}}</p></p>
-            <i class="icon ion-chatbubbles" ui-sref="employer.chat-detail({chatId: card.userid})"></i>
+            <h2>{{card.storeName}}</h2>
+            <p style="white-space:normal;">Vị trí
+            <p ng-repeat="(key,value) in card.jobStore">{{dataJob[key]}}</p></p>
+            <i class="icon ion-chatbubbles" ui-sref="jobseeker.chat-detail({chatId: card.storeId})"></i>
             <p>{{timeAgo(card.matchedAt)}}</p>
           </ion-item>
         </ion-list>

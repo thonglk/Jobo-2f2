@@ -9,13 +9,13 @@
           <div class="text-center" style="margin-top:45px;">
             <img ng-src="{{userData.photourl}}" style="margin-right:10px;" height="130" width="130"
                  class="img-matched animated bounceInLeft" alt="">
-            <img ng-src="{{storeData.storeId}}" height="130" width="130" class="img-matched animated bounceInRight"
+            <img ng-src="{{storeData.photourl}}" height="130" width="130" class="img-matched animated bounceInRight"
                  alt="">
           </div>
           <div class="text-center match-buttons">
             <a href="#/jobseeker.chats/{{storeData.storeId}}" ng-click="hideMatch()">
-              <button ng-click="chatto(storeData.storeId)" class="jobo-button jobo-button-block  jobo-button-calm"><i
-                class="ion-chatbubbles font-130"></i> Chat với {{storeData.storeId}}
+              <button class="jobo-button jobo-button-block  jobo-button-calm"><i
+                class="ion-chatbubbles font-130"></i> Chat với {{storeData.storeName}}
               </button>
             </a>
             <button ng-click="hideMatch()" class="button button-block button-stable button-outline"

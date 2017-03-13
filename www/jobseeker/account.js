@@ -15,6 +15,10 @@ app.controller('AccountCtrl', function (AuthUser, $timeout, $scope, $ionicPlatfo
           firebase.database().ref('profile/' + result.userid).on('value', function (snap) {
             $scope.userData = snap.val()
           })
+        firebase.database().ref('static/' + result.userid).on('value', function (snap) {
+          $scope.staticData = snap.val()
+        })
+
         }, function (error) {
           console.log(error)
           // error

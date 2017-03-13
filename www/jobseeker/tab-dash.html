@@ -4,7 +4,7 @@
       <button class="button button-outline icon-left ion-android-options button-balanced" ng-click="filterSearch()">Lọc
       </button>
     </div>
-    <div ng-if="usercard.length == 0 && userdistance">
+    <div ng-if="storeCard.length == 0">
       <p style="    margin: 20px;
     text-align: center;
     padding-top: 50px;
@@ -12,7 +12,7 @@
       > Không có ứng viên nào đạt yêu cầu của bạn, hãy thay đổi bộ lọc tìm kiếm hoặc chỉ tìm những ứng viên xung
         quanh và không quan trọng vị trí</p>
       <div class="padding">
-        <button ng-click="changefilter()" class="jobo-button jobo-button-block jobo-button-calm">Tìm ứng viên xung
+        <button ng-click="filterSearch()" class="jobo-button jobo-button-block jobo-button-calm">Tìm ứng viên xung
           quanh
         </button>
       </div>
@@ -38,7 +38,7 @@
             <div style="
     height: 250px;
 ">
-              <a href="#/viewstore/{{card.storeKey}}"><img src="{{ card.photourl }}" style="width: 100%"></a>
+              <a href="#/viewstore/{{card.storeId}}"><img src="{{ card.photourl }}" style="width: 100%"></a>
             </div>
           </div>
           <div ng-show="card.likeMe" class="padding animated bounceInUp">
@@ -51,8 +51,8 @@
           </ion-item>
           <div class="padding" ng-if="card.job">
             <label ng-repeat="(key,value) in card.job">
-              <button ng-click="applyThis(card.storeKey,key)"
-                class="button margin-top-5 button-outline button-small button-positive">{{dataJob[key]}}
+              <button ng-click="applyThis(card.storeId,key)"
+                class="button margin-top-5 button-outline button-small {{selectedJob[card.storeId][key] ? 'button-positive' : 'button-outline' }}" >{{dataJob[key]}}
               </button>
             </label>
           </div>

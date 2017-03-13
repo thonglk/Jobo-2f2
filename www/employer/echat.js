@@ -22,19 +22,19 @@ app.controller('eChatsCtrl', function ($q, $scope, $rootScope, CONFIG, $statePar
   // Get list
   $scope.getListReact = function (store) {
     if (!$scope.reactList) {
-      var reactRef = firebase.database().ref('activity/like').orderByChild('userId').equalTo($rootScope.userid)
+      var reactRef = firebase.database().ref('activity/like').orderByChild('storeId').equalTo($rootScope.storeIdCurrent)
       reactRef.on('value', function (snap) {
         var data = snap.val()
         $scope.reactList = {};
         $scope.reactList.like = [];
         $scope.reactList.liked = [];
         $scope.reactList.match = [];
-        $scope.reactStore = {};
+        $scope.reactUser = {};
 
         angular.forEach(data, function (card) {
-          var reActRef = firebase.database().ref('store/' + card.storeId);
+          var reActRef = firebase.database().ref('user/' + card.userId);
           reActRef.once('value', function (snap) {
-            $scope.reactStore[card.storeId] = snap.val();
+            $scope.reactUser[card.storeId] = snap.val();
             if (card.status == 1) {
 
               // match
@@ -122,14 +122,6 @@ app.controller('eChatsCtrl', function ($q, $scope, $rootScope, CONFIG, $statePar
         }
       }
 
-      // var months = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'];
-      // var year = a.getFullYear();
-      // var month = months[a.getMonth()];
-      // // var date = a.getDate();
-      // // var hour = a.getHours();
-      // // var min = a.getMinutes();
-      // // var sec = a.getSeconds();
-      // var time = hour + ' : ' + min + ' ' + date + '/' + month + '/' + year;
       return time;
     }
 

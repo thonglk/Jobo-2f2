@@ -201,20 +201,21 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
         $scope.selectedJob[id] = {}
       }
       $scope.selectedJob[id][key] = true;
+      console.log($scope.selectedJob[id][key])
     }
   };
 
 
   $scope.like = function (card, action) {
 
-    var likedId = card.storeKey;
+    var likedId = card.storeId;
     var likeActivity = firebase.database().ref('activity/like/' + likedId + ':' + $rootScope.userid);
 
     if (card.likeMe) {
       likeActivity.update({
         matchedAt: new Date().getTime(),
         status: 1,
-        jobstore: $scope.selectedJob[likedId]
+        jobUser: $scope.selectedJob[likedId]
       });
       itsAMatch(likedId, $rootScope.userid)
     } else {
@@ -224,7 +225,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
         status: action,
         jobUser: $scope.selectedJob[likedId],
         employerId: card.createdBy,
-        storeId: card.storeKey,
+        storeId: likedId,
         userId: $rootScope.userid,
       })
     }
@@ -250,7 +251,7 @@ app.controller('sDashCtrl', function ($scope, $state, $firebaseArray, $http
         $scope.storeData = snap.val()
       });
 
-      var userRef = firebase.database().ref('/user/' + userid);
+      var userRef = firebase.database().ref('/profile/' + userid);
       userRef.once('value', function (snap) {
         $scope.userData = snap.val()
       });

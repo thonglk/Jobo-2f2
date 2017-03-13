@@ -161,7 +161,7 @@
       <div class="item item-divider">
         Kinh nghiệm làm việc
       </div>
-      <div ng-repeat="card in userData.experience">
+      <div ng-repeat="card in userData.experience track by $index">
         <div class="list form-modify">
           <label class="item item-input item-stacked-label">
             <span class="input-label">Nơi làm việc</span>
@@ -196,14 +196,15 @@
             </label>
           </li>
         </ul>
-      </div>
-      <div class="item item-divider">
-        <button ng-click="addMoreExp(userData.experience)" class="button button-small button-outline button-positive">
-          Thêm
-        </button>
-        <button ng-click="deleteExp(userData.experience)" class="button button-small button-outline button-assertive">
+        <button ng-click="deleteExp(card.id)" class="button button-small button-outline button-assertive">
           Xóa
         </button>
+      </div>
+      <div class="item item-divider">
+        <button ng-click="addMoreExp()" class="button button-small button-outline button-positive">
+          Thêm
+        </button>
+
       </div>
 
     </div>

@@ -305,18 +305,12 @@ var app = angular.module('starter', [
 
 
       $rootScope.CONFIG = CONFIG;
-      $rootScope.dataJob = []
-      angular.forEach(CONFIG.data.job, function (card) {
-        $rootScope.dataJob.push(card)
-
-      })
+      $rootScope.dataJob = CONFIG.data.job;
 
       $rootScope.dataTime = CONFIG.data.time;
 
-      $rootScope.dataIndustry = [];
-      angular.forEach(CONFIG.data.industry, function (card) {
-        $rootScope.dataIndustry.push(card)
-      })
+      $rootScope.dataIndustry = CONFIG.data.industry;
+
 
       $rootScope.dataLanguages = {english: "Tiếng Anh"};
 
