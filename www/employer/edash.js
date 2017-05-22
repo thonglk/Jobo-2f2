@@ -10,86 +10,146 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   , $ionicPlatform
   , $ionicPopover
   , $log
+  , $sce
   , $rootScope
   , $ionicModal
   , $ionicSlideBoxDelegate
   , $ionicPopup
   , $timeout) {
 
-
-  $scope.initSlide = function () {
-    var slidesPerView;
-    $scope.width = $window.innerWidth;
-    if ($scope.width > 1024) {
-      slidesPerView = 3
-    }
-    if ($scope.width <= 1024 && $scope.width > 767) {
-      slidesPerView = 2
-    }
-
-    if ($scope.width <= 767) {
-      slidesPerView = 1
-
-    }
-    return slidesPerView
-  }
-
   $scope.init = function () {
-
-    $ionicPlatform.registerBackButtonAction(function (event) {
-      event.preventDefault();
-    }, 100);
-    $rootScope.registering = false;
-
-
-    var user = firebase.auth().currentUser;
-
-    if (user) {
-      // User is signed in.
-      $rootScope.userid = user.uid;
-      console.log("i'm in " + $rootScope.userid);
-
-
-      var tokenRef = firebase.database().ref("token/" + $rootScope.userid);
-      if ($rootScope.tokenuser) {
-        tokenRef.update({
-          userid: $rootScope.userid,
-          tokenId: $rootScope.tokenuser
-
-        })
-      }
-      ;
-
-      if (!$rootScope.usercurent) {
-        var userRef = firebase.database().ref('user/' + $rootScope.userid);
-        userRef.once('value', function (snapshot) {
-          $rootScope.usercurent = snapshot.val();
-          $rootScope.storeIdCurrent = $rootScope.usercurent.currentStore;
-          $rootScope.loadCurrentStore();
-          console.log(" with " + $rootScope.storeIdCurrent)
-
-          $scope.getUserFiltered()
-        });
-      } else {
-        $scope.getUserFiltered()
-      }
-      $rootScope.loadCurrentStore = function () {
-        var storeDataCurrent = firebase.database().ref('store/' + $rootScope.storeIdCurrent);
-        storeDataCurrent.on('value', function (snap) {
-          $rootScope.storeDataCurrent = snap.val()
-          console.log($rootScope.storeDataCurrent);
-        });
-      }
-
+    $ionicLoading.show({
+      template: '<ion-spinner></ion-spinner><br>' + ' Đang tải ứng viên...',
+    })
+    if ($rootScope.storeData) {
+      $scope.initData($rootScope.storeData)
 
     } else {
-      // No user is signed in.
+
+      $scope.$on('storeListen', function (event, storeData) {
+        console.log('Init data', storeData);
+        $scope.initData(storeData)
+      });
     }
 
+  };
 
+  $scope.initData = function (storeData) {
+    if (!storeData) {
+      $state.go('store', {id: null})
+      $cordovaToast.showShortTop('Hãy tạo cửa hàng đầu tiên của bạn')
+    } else if (!$rootScope.storeData.job) {
+      $state.go('store', {id: 'job'})
+      $cordovaToast.showShortTop('Bạn đang cần tuyển vị trí gì?')
 
+    } else {
+      $rootScope.usercard = []
+
+      $rootScope.newfilter = {
+        job: $rootScope.service.getfirst($rootScope.storeData.job),
+        userId: $rootScope.storeId,
+        sort: 'match',
+        p: 1
+      }
+      $scope.getUserFiltered($rootScope.newfilter)
+    }
   }
 
+
+
+  $rootScope.newfilterFilter = function (type, key) {
+    $rootScope.newfilter[type] = key
+    $rootScope.newfilter.p = 1
+
+    if ($rootScope.newfilter.experience == false) {
+      delete $rootScope.newfilter.experience
+    }
+
+    if ($rootScope.newfilter.figure == false) {
+      delete $rootScope.newfilter.figure
+    }
+
+    console.log($rootScope.newfilter)
+    $rootScope.usercard = []
+    $scope.getUserFiltered($rootScope.newfilter)
+  }
+  $scope.loading = false;
+  $scope.loadMore = function () {
+    console.log('request load')
+    if (!$scope.loading && $rootScope.newfilter) {
+      $scope.loading = true;
+
+      console.log('loading')
+      $rootScope.newfilter.p++
+      $scope.getUserFiltered($rootScope.newfilter);
+      $timeout(function () {
+        $scope.loading = false;
+      }, 500)
+    }
+  }
+
+  $rootScope.maxMatchUser = 0
+
+
+  $scope.getUserFiltered = function (newfilter) {
+    console.log('filtering..', newfilter)
+
+    $scope.loading = true
+    $http({
+      method: 'GET',
+      url: CONFIG.APIURL + '/api/users',
+      params: newfilter
+    }).then(function successCallback(response) {
+      console.log("respond", response);
+      $scope.response = response.data;
+      if ($rootScope.maxMatchUser == 0) {
+        $rootScope.maxMatchUser = $scope.response.data[0].match
+        console.log($rootScope.maxMatchUser)
+      }
+
+      $timeout(function () {
+        if (!$rootScope.usercard) {
+          $rootScope.usercard = []
+        }
+        for (var i in $scope.response.data) {
+          var profileData = $scope.response.data[i]
+          $scope.response.data[i].matchPer = Math.round($scope.response.data[i].match * 100 / $rootScope.maxMatchUser)
+
+          if (profileData.act) {
+            var ref = 'activity/like/' + $rootScope.storeId + ':' + profileData.userId
+            firebase.database().ref(ref).on('value', function (snap) {
+              $scope.response.data[i].act = snap.val()
+            })
+          }
+          firebase.database().ref('profile/' + profileData.userId + '/presence').on('value', function (snap) {
+            console.log(snap.val())
+            $scope.response.data[i].presence = snap.val()
+          })
+
+        }
+        $rootScope.usercard = $rootScope.usercard.concat($scope.response.data);
+        $timeout(function () {
+          console.log('$rootScope.usercard', $rootScope.usercard)
+          $scope.swiper.update();
+          $ionicLoading.hide()
+          $scope.loading = false
+          if($rootScope.newfilter.p == 1){
+            $cordovaToast.showShortTop('Chúng tôi đã tìm thấy ' + $scope.response.total + ' ứng viên phù hợp với vị trí của bạn')
+          }
+        })
+
+
+      })
+    }, function (error) {
+      console.log(error)
+      $ionicLoading.hide()
+      $scope.loading = false
+
+
+    })
+
+
+  };
 
   $scope.$back = function () {
     window.history.back();
@@ -98,76 +158,26 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
     console.log('ready');
     $scope.swiper = swiper;
     $scope.swiper.update();
-
   };
-
-
 
   $scope.onTouch = function (swiper) {
     $scope.swiper = swiper;
-    $scope.swiper.update();
-
-    console.log($scope.swiper.activeIndex);
-    if ($scope.swiper.activeIndex == $scope.limit - 1) {
-      $scope.limit = $scope.limit + 5;
+    console.log('touched', $scope.swiper.activeIndex);
+    if ($scope.swiper.activeIndex == $rootScope.usercard.length - 5) {
+      console.log('load more')
+      $scope.loadMore()
     }
-  };
-//
-// //Tinh khoang cach
-// function getDistanceFromLatLonInKm(lat1, lon1, lat2, lon2) {
-//   var R = 6371; // Radius of the earth in km
-//   var dLat = deg2rad(lat2 - lat1);  // deg2rad below
-//   var dLon = deg2rad(lon2 - lon1);
-//   var a =
-//       Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-//       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
-//       Math.sin(dLon / 2) * Math.sin(dLon / 2)
-//     ;
-//   var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-//   var x = R * c; // Distance in km
-//   var n = parseFloat(x);
-//   x = Math.round(n * 10) / 10;
-//   return x;
-// }
-//
-// function deg2rad(deg) {
-//   return deg * (Math.PI / 180)
-// }
-//
-// //end tinh khoang cach
-
-  $scope.getUserFiltered = function () {
-    // $ionicLoading.show({
-    //   template: '<p>Đang tải dữ liệu ứng viên...</p><ion-spinner></ion-spinner>'
-    // });
-    var filtersRef = firebase.database().ref('filter/' + $rootScope.userid);
-    filtersRef.on('value', function (snap) {
-      $scope.newfilter = snap.val();
-
-      if ($scope.newfilter) {
-        $scope.newfilter.userid = $rootScope.storeIdCurrent;
-        console.log($scope.newfilter);
-        $http({
-
-          method: 'GET',
-          url: CONFIG.APIURL + '/api/users',
-          params: $scope.newfilter
-        }).then(function successCallback(response) {
-          console.log("respond", response.data);
-          $scope.usercard = response.data;
-          $ionicLoading.hide();
-        })
-
-      } else {
-        $ionicLoading.hide();
-      }
-    });
-  };
-
-
+  }
+  $scope.onRelease = function () {
+    console.log('released');
+  }
+  $scope.showVideo = function (user) {
+    $scope.showVid = user.userId
+    $scope.videoTrusted = $sce.trustAsResourceUrl(user.videourl)
+  }
   $scope.editjob = function () {
-    if (!$scope.newfilter) {
-      $scope.newfilter = {};
+    if (!$rootScope.newfilter) {
+      $rootScope.newfilter = {};
     }
     $ionicModal.fromTemplateUrl('employer/modals/filter.html', {
       scope: $scope,
@@ -180,25 +190,24 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         $scope.modalProfile.hide();
 
       };
-      $scope.clearFilter =function () {
-        $scope.newfilter = {}
+      $scope.clearFilter = function () {
+        $rootScope.newfilter = {}
       }
-
-      $scope.selectjob = function (selectedjob) {
-        $scope.newfilter.job = selectedjob;
-        console.log('select', $scope.newfilter)
-
-      };
-
 
 
       $scope.showjob = function () {
+        if (!$scope.newHospital) {
+          $scope.newHospital = {}
+        }
+        if ($rootScope.newfilter.job) {
+          $scope.newHospital.job = $rootScope.newfilter.job
 
+        }
         $ionicPopup.confirm({
           title: 'Vị trí bạn đang cần tuyển',
           scope: $scope,
           // template: 'Are you sure you want to eat this ice cream?',
-          templateUrl: 'employer/popup/select-job.html',
+          templateUrl: 'templates/popups/select-job.html',
           cssClass: 'animated bounceInUp dark-popup',
           okType: 'button-small button-dark bold',
           okText: 'Done',
@@ -206,17 +215,19 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         }).then(function (res) {
           if (res) {
             console.log('You are sure');
-            console.log('select', $scope.newfilter)
+            $rootScope.newfilter.job = $scope.newHospital.job;
+            console.log('select', $rootScope.newfilter);
+
           } else {
             console.log('You are not sure');
           }
         });
       };
       $scope.showtime = function () {
-        $scope.selecttime = function (selectedtime) {
-          $scope.newfilter.time = selectedtime;
-          console.log('select', $scope.newfilter)
-        };
+        if (!$scope.newHospital) {
+          $scope.newHospital = {}
+        }
+        $scope.newHospital.time = $rootScope.newfilter.time;
         $ionicPopup.confirm({
           title: 'Ca làm việc',
           scope: $scope,
@@ -229,23 +240,36 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         }).then(function (res) {
           if (res) {
             console.log('You are sure');
+            $rootScope.newfilter.time = $scope.newHospital.time;
+            console.log('select', $rootScope.newfilter);
 
           } else {
             console.log('You are not sure');
           }
         });
       };
-      $scope.createHospital = function () {
-        var uid = firebase.auth().currentUser.uid;
-        var filtersRef = firebase.database().ref('filter/' + uid);
+      $scope.createHospital = function (newfilter) {
+        $ionicLoading.show({
+          template: '<ion-spinner></ion-spinner><br>' + ' Đang lọc ứng viên...',
+        })
+        console.log('$rootScope.newfilter', $rootScope.newfilter)
+        console.log('newfilter', newfilter)
 
-        console.log($scope.newfilter);
-        filtersRef.set($scope.newfilter)
+
+        if ($rootScope.newfilter.public) {
+          var newJobRef = firebase.database().ref('store/' + $rootScope.storeId + '/job/' + $rootScope.newfilter.job);
+          newJobRef.update(true)
+          var jobRef = firebase.database().ref('job/' + $rootScope.storeId + ':' + $rootScope.newfilter.job);
+          jobRef.update($rootScope.newfilter)
+        }
         $scope.modalProfile.hide();
-        $scope.getUserFiltered();
+        $rootScope.usercard = []
+        $scope.getUserFiltered($rootScope.newfilter);
+        $rootScope.service.Ana('filter', $rootScope.newfilter)
       };
     });
   };
+
   $scope.gotosprofile = function (id) {
     window.location.href = "#/viewprofile/" + id
   };
@@ -298,39 +322,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
     }
   };
 
-  $scope.like = function (card, action) {
-
-    var likedId = card.userid;
-    var likeActivity = firebase.database().ref('activity/like/' + $rootScope.storeIdCurrent + ':' + likedId);
-
-    if (card.likeMe) {
-      likeActivity.update({
-        matchedAt: new Date().getTime(),
-        status: 1,
-        jobstore: $scope.selectedJob[likedId]
-
-      });
-      itsAMatch($rootScope.storeIdCurrent, likedId)
-    } else {
-      likeActivity.update({
-        createdAt: new Date().getTime(),
-        type: 1,
-        status: action,
-        jobStore: $scope.selectedJob[likedId],
-        employerId: $rootScope.userid,
-        storeId:$rootScope.storeIdCurrent,
-        userId: likedId
-      })
-    }
-  };
-
-  $scope.chatto = function (id) {
-    $state.go("employer.chats", {to:id,slide:1})
-  };
-
-  $scope.limit = 5;
-
-  function itsAMatch(storeid, userid) {
+  function itsAMatch(storeid, userId) {
     $ionicModal.fromTemplateUrl('employer/modals/ematch.html', {
       scope: $scope,
       animation: 'animated _fadeOut',
@@ -344,13 +336,13 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         $scope.storeData = snap.val()
       });
 
-      var userRef = firebase.database().ref('/user/' + userid);
+      var userRef = firebase.database().ref('/user/' + userId);
       userRef.once('value', function (snap) {
         $scope.userData = snap.val()
       });
 
       $scope.chatto = function (id) {
-        $state.go("employer.chats", {to:id,slide:1})
+        $state.go("employer.chats", {to: id, slide: 1})
       };
 
       $scope.hideMatch = function () {

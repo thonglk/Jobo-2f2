@@ -15,7 +15,7 @@ app.controller('pricingCtrl', function ($scope, $ionicModal,$rootScope) {
       $scope.modalProfile = modal;
       $scope.modalProfile.show();
       $scope.data = data;
-      console.log($scope.data, $rootScope.userid)
+      console.log($scope.data, $rootScope.userId)
 
       $scope.totalprice = function () {
         if ($scope.data.month) {
@@ -35,7 +35,7 @@ app.controller('pricingCtrl', function ($scope, $ionicModal,$rootScope) {
           var activityBuyRef = firebase.database().ref('activity/buy/' + activityBuykey);
           activityBuyRef.update({
             key: activityBuykey,
-            userid: $rootScope.userid,
+            userId: $rootScope.userId,
             data: $scope.data,
             createAt: firebase.database.ServerValue.TIMESTAMP,
             status: 0

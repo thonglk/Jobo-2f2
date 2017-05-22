@@ -44,8 +44,8 @@
 text-align: center;">{{timeConverter(message.createdAt)}}
           </div>
           <div>
-            <img ng-click="viewProfile(chatUser.userid)" class="profile-pic left"
-                 ng-src="{{chatUser.photourl}}" onerror="onProfilePicError(this)"/>
+            <img ng-click="viewProfile(chatUser.userId)" class="profile-pic left"
+                 ng-src="{{chatUser.avatar}}" onerror="onProfilePicError(this)"/>
           </div>
 
           <div class="chat-bubble left" ng-click="showStatus(message.key)">
@@ -63,7 +63,7 @@ text-align: center;">{{timeConverter(message.createdAt)}}
 ">{{CONFIG.StatusChat[message.status]}}
         </div>
 
-        <div ng-if="userid === message.sender && message.type == 0">
+        <div ng-if="userId === message.sender && message.type == 0">
           <div ng-if="Status[message.key]" style="color: darkgrey;
     font-size: xx-small;
 text-align: center;">{{timeConverter(message.createdAt)}}
@@ -71,7 +71,7 @@ text-align: center;">{{timeConverter(message.createdAt)}}
 
           <div>
             <img ng-click="showProfile()" class="profile-pic right"
-                 ng-src="{{userData.photourl}}" onerror="onProfilePicError(this)"/>
+                 ng-src="{{userData.avatar}}" onerror="onProfilePicError(this)"/>
           </div>
 
           <div class="chat-bubble right" ng-click="showStatus(message.key)">

@@ -1,13 +1,13 @@
 <ion-view hide-nav-bar="true" ng-init="init()">
   <ion-header-bar align-title="center" class="bar-light">
 
-    <h1 ng-click="openPopover($event)" class="title">{{userData.name}}
+    <h1 class="title">{{userData.name}}
     </h1>
 
   </ion-header-bar>
   <ion-content>
     <div class="profile-container">
-      <img ng-click="showProfile()" ng-src="{{userData.photourl}}" class="profile-image" width="100">
+      <img ng-click="showProfile()" ng-src="{{userData.avatar || 'img/macdinh.jpg'}}" class="profile-image" width="100">
       <img
         ui-sref="profile"
         ng-src="img/edit.png"
@@ -16,17 +16,16 @@
     </div>
 
     <div class="text-center padding" style="margin-top:22px;">
-      <h3>{{userData.name}}</h3>
-      <h4>Ionic</h4>
+      <!--<h3>{{userData.name}}</h3>-->
       <p class="color-gray">{{staticData.likedCount}} , {{staticData.MatchedCount}}, {{staticData.MatchCount}}
     </div>
 
     <ion-list class="text-center uppercase">
       <ion-item class="color-red" style="top: 30px;" ui-sref="profile">
-        Edit Profile
+        Cập nhật hồ sơ
       </ion-item>
       <ion-item class="color-red" style="top: 30px;" ui-sref="jobseeker.setting">
-        Settings
+        Cài đặt
       </ion-item>
     </ion-list>
   </ion-content>

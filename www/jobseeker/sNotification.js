@@ -7,7 +7,7 @@ app.controller('sNotificationCtrl', function ($q, $scope, $rootScope, CONFIG, $s
       .then(function (result) {
           console.log(result)
 
-        var notificationRef = firebase.database().ref('notification/' + $rootScope.userid)
+        var notificationRef = firebase.database().ref('notification/' + $rootScope.userId)
         notificationRef.on('value', function (snap) {
           $timeout(function () {
             $scope.notification = snap.val()

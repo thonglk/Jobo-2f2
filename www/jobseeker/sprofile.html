@@ -18,14 +18,12 @@
           <span class="input-label">Ngày sinh</span>
           <input ng-model="userData.birth" type="date">
         </label>
-        <div class="list list-inset">
-          <span class="input-label">Địa chỉ</span>
-
-          <label class="item item-input">
-            <i class="icon ion-search placeholder-icon input-icon"></i>
-            <input type="text" ng-model="userData.address" placeholder="Search" ng-click="selectAddress()">
-          </label>
-        </div>
+        <span class="item-label">Địa chỉ</span>
+        <ion-item class="input-item item-icon-right" ng-click="selectAddress()">
+          <span class="gotham-book" ng-if="!userData.address">Thêm địa chỉ của bạn</span>
+          <span class="gotham-book" ng-if="userData.address">{{userData.address}}</span>
+          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+        </ion-item>
         <label class="item item-input item-stacked-label">
           <span class="input-label">Email</span>
           <input ng-disabled="userData.email" ng-model="userData.email" type="email" placeholder="">
@@ -43,15 +41,18 @@
         Thông tin cá nhân
       </div>
       <div class="profile-container" style="margin-bottom: 30px">
-        <img ng-click="updateavatar()" ng-src="{{userData.photourl}}" class="profile-image" width="100">
+        <img ng-click="updateavatar()" ng-src="{{userData.avatar || 'img/macdinh.jpg'}}" class="profile-image"
+             width="100">
+
       </div>
 
       <div class="list form-modify">
-        <label class="item item-select item-stacked-label">
+        <label class="item item-select" id="job-select6">
           <span class="input-label">Giới tính</span>
-          <select ng-model="userInfo.sex">
-            <option ng-value="male">Nam</option>
-            <option ng-value="female">Nữ</option>
+          <select ng-model="newfilter.sex">
+            <option ng-repeat="(key,value) in CONFIG.data.sex" value="{{key}}">
+              {{value}}
+            </option>
           </select>
         </label>
 
@@ -68,7 +69,7 @@
       </div>
       <ul class="list">
         <li class="item item-toggle">
-          Ngoại hình ưu nhìn
+          Ngoại hình ưa nhìn
           <label class="toggle toggle-assertive">
             <input ng-model="userData.figure" type="checkbox">
             <div class="track">
@@ -83,16 +84,15 @@
         Trình độ học vấn
       </div>
       <div class="list form-modify list-inset">
-        <div class="list list-inset">
-          <span class="input-label">Trường</span>
+        <span class="item-label">Trường</span>
+        <ion-item class="input-item item-icon-right" ng-click="selectSchool()">
+          <span class="gotham-book" ng-if="!userData.school">Nhấn để thêm</span>
+          <span class="gotham-book" ng-if="userData.school">{{userData.school}}</span>
+          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+        </ion-item>
 
-          <label class="item item-input">
-            <i class="icon ion-search placeholder-icon input-icon"></i>
-            <input type="text" ng-model="userData.school" placeholder="Search" ng-click="selectSchool()">
-          </label>
-        </div>
-        <span class="input-label">Ngoại ngữ</span>
-        <ion-item class=" item-icon-right" ng-click="collectLanguages()">
+        <span class="item-label">Ngoại ngữ</span>
+        <ion-item class="input-item item-icon-right " ng-click="collectLanguages()">
           <span class="gotham-book" ng-if="!userData.languages">Nhấn để thêm ngoại ngữ</span>
           <span class="gotham-book" ng-repeat="(key,value) in userData.languages">{{dataLanguages[key]}},</span>
           <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
@@ -107,35 +107,35 @@
       </div>
 
       <div class="list form-modify">
-        <span class="input-label">Thu nhập mong muốn</span>
+        <span class="item-label">Thu nhập mong muốn</span>
         <div class="input-group">
           <input ng-model="userData.expect_salary" class="form-control input-number" type="text">
           <span class="input-group-addon span-number">VNĐ/tháng</span>
         </div>
 
-        <span class="input-label">Nơi làm việc mong muốn</span>
-        <ion-item class=" item-icon-right" ng-click="collectIndustry()">
+        <span class="item-label">Nơi làm việc mong muốn</span>
+        <ion-item class="input-item item-icon-right" ng-click="collectIndustry()">
           <span class="gotham-book" ng-if="!userData.industry">Nhấn để thêm</span>
           <span class="gotham-book" ng-repeat="(key,value) in userData.industry">{{dataIndustry[key]}},</span>
           <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
         </ion-item>
-        <span class="input-label">Công việc mong muốn</span>
-        <ion-item class=" item-icon-right" ng-click="collectJob()">
+        <span class="item-label">Công việc mong muốn</span>
+        <ion-item class="input-item item-icon-right" ng-click="collectJob()">
           <span class="gotham-book" ng-if="!userData.job">Nhấn để thêm</span>
           <button class="gotham-book" ng-repeat="(key,value) in userData.job">{{dataJob[key]}},</button>
           <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
         </ion-item>
-        <span class="input-label">Thời gian đi làm</span>
-        <ion-item class=" item-icon-right" ng-click="collectTime()">
+        <span class="item-label">Thời gian đi làm</span>
+        <ion-item class="input-item item-icon-right" ng-click="collectTime()">
           <span class="gotham-book" ng-if="!userData.time">Nhấn để thêm thời gian</span>
           <span class="gotham-book" ng-repeat="(key,value) in userData.time">{{dataTime[key]}},</span>
           <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
         </ion-item>
 
         <div class="list">
-          <span class="input-label">Khoảng cách di chuyển: {{userData.distance}} km</span>
+          <span class="item-label">Khoảng cách di chuyển: {{userData.distance}} km</span>
 
-          <div class="item range range-positive">
+          <div class="item input-item range range-positive">
             <i class="icon ion-ios-sunny-outline"></i>
             <input ng-model="userData.distance" type="range" name="volume" min="0" max="50" value="33">
             <i class="icon ion-ios-sunny"></i>
@@ -161,17 +161,18 @@
       <div class="item item-divider">
         Kinh nghiệm làm việc
       </div>
-      <div ng-repeat="card in userData.experience track by $index">
+      <div ng-repeat="card in tempoExperience">
         <div class="list form-modify">
           <label class="item item-input item-stacked-label">
             <span class="input-label">Nơi làm việc</span>
             <input ng-model="card.company" type="text" placeholder="">
           </label>
-          <label class="item item-input item-stacked-label" ng-click="selectJob(card.id)">
-            <span class="input-label">Công việc</span>
-            <ion-item class=" item-icon-right">
+          <label class="item item-input item-stacked-label" ng-click="selectExpJob(card.id)">
+            <span class="item-label">Công việc</span>
+            <ion-item class="input-item item-icon-right">
               <span class="gotham-book" ng-if="!card.job">Nhấn để thêm công việc</span>
-              <span class="gotham-book" ng-repeat="(key,value) in card.job">{{dataJob[key]}},</span>
+              <span class="gotham-book" ng-if="card.job">{{dataJob[card.job]}}</span>
+
               <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
             </ion-item>
           </label>
@@ -185,7 +186,6 @@
           </label>
         </div>
         <ul class="list">
-
           <li class="item item-toggle">
             Đến nay
             <label class="toggle toggle-assertive">
@@ -196,9 +196,10 @@
             </label>
           </li>
         </ul>
-        <button ng-click="deleteExp(card.id)" class="button button-small button-outline button-assertive">
+        <button ng-click="deleteExp(card.id)" class="button button-small button-outline button-assertive pull-right">
           Xóa
         </button>
+        <hr style="margin-top: 50px">
       </div>
       <div class="item item-divider">
         <button ng-click="addMoreExp()" class="button button-small button-outline button-positive">

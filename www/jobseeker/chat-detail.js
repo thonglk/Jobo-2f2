@@ -9,9 +9,9 @@ app
       $scope.chatedId = $stateParams.chatId;
 
       AuthUser.user().then(function (result) {
-        $scope.loadMessage($scope.chatedId, $rootScope.userid)
-        console.log($rootScope.userid)
-        var userDataRef = firebase.database().ref('profile/' + $rootScope.userid);
+        $scope.loadMessage($scope.chatedId, $rootScope.userId)
+        console.log($rootScope.userId)
+        var userDataRef = firebase.database().ref('profile/' + $rootScope.userId);
         userDataRef.on('value', function (snap) {
           $rootScope.userData = snap.val()
         });
@@ -96,13 +96,13 @@ app
     }
 
     $scope.sendMessage = function () {
-      var newPostKey = firebase.database().ref().child('chat/' + $scope.chatedId + ":" + $rootScope.userid).push().key;
-      var newPostRef = firebase.database().ref().child('chat/' + $scope.chatedId + ":" + $rootScope.userid + '/' + newPostKey)
+      var newPostKey = firebase.database().ref().child('chat/' + $scope.chatedId + ":" + $rootScope.userId).push().key;
+      var newPostRef = firebase.database().ref().child('chat/' + $scope.chatedId + ":" + $rootScope.userId + '/' + newPostKey)
       var message = {
         key: newPostKey,
         createdAt: new Date().getTime(),
         text: $scope.input.message,
-        sender: $rootScope.userid,
+        sender: $rootScope.userId,
         status: 0,
         type: 0
 
@@ -160,15 +160,15 @@ app
 
     $scope.setInterview = function (timeInterview) {
       console.log(timeInterview);
-      var timeInterviewRef = firebase.database().ref('activity/' + $scope.chatedId + ":" + $rootScope.userid)
+      var timeInterviewRef = firebase.database().ref('activity/' + $scope.chatedId + ":" + $rootScope.userId)
       timeInterviewRef.update({interview: new Date().getTime()});
-      var newPostRef = firebase.database().ref().child('activity/interview/' + $scope.chatedId + ":" + $rootScope.userid)
+      var newPostRef = firebase.database().ref().child('activity/interview/' + $scope.chatedId + ":" + $rootScope.userId)
 
       var message = {
         createdAt: new Date().getTime(),
         interview: timeInterview,
         place: $scope.storeData.address,
-        userId: $rootScope.userid,
+        userId: $rootScope.userId,
         storeId: $scope.chatedId,
         status: 0,
         type: 1

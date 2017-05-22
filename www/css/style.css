@@ -1,5 +1,14 @@
 /*Authentication*/
 
+.filterHeader {
+  text-align: center;
+  margin: 0px;
+  padding-top: 30px;
+  padding-bottom: 15px;
+  background: #f5f5f5;
+  color: dimgrey;
+}
+
 .input-group {
   display: flex;
   width: 100%;
@@ -15,18 +24,18 @@ input.form-control.input-number {
   border: 1px solid #ddd;
   padding: 0px 16px;
 }
+
 .form-modify label input:focus, input.form-control.input-number:focus {
-  color: #9faecb ;
+  color: #9faecb;
   background-color: #fff;
-  border-color: #8ad4ee ;
+  border-color: #8ad4ee;
   outline: none;
 }
 
-.span-number{
+.span-number {
   padding: 6px 10px;
   background: #ccc;
 }
-
 
 .input-group-addon {
   padding: 0.5rem 0.75rem;
@@ -40,7 +49,7 @@ input.form-control.input-number {
   border: 1px solid #e1e6ef;
 }
 
-.input-icon{
+.input-icon {
   border: 1px solid #ddd;
   border-right: 0;
   padding: 5px 10px 5px 10px;
@@ -57,40 +66,42 @@ input.form-control.input-number {
   color: #222;
   font-weight: 500;
 }
+
 /*card*/
 
-.form-mod{
+.form-mod {
   border-right: 1px solid #ddd;
   border-left: 1px solid #ddd;
   border-bottom: 1px solid #ddd
 }
-.form-modify{
+
+.form-modify {
   padding: 16px;
   margin-bottom: 0px;
 }
-.form-modify label{
+
+.form-modify label {
   border: 0;
   padding: 0;
 }
-.form-modify label span{
+
+.form-modify label span {
   margin-bottom: 5px;
 }
 
-.form-modify label input{
+.form-modify label input {
   padding: 0px 10px;
   margin-bottom: 10px;
   border: 1px solid #ddd;
   border-radius: 0;
 }
 
-.form-mod button{
+.form-mod button {
   border-radius: 0;
 }
+
 wrap
-
-
-
-/*/h3/*/
+  /*/h3/*/
 h3.with-line {
   border-bottom: 1px solid #d6d6d6;
   color: #666;
@@ -100,9 +111,11 @@ h3.with-line {
   line-height: 39px;
   width: 100%;
 }
+
 h3 {
   font-size: 20px;
 }
+
 /* Empty. Add your own CSS if you like */
 .cover {
   background: #1A9CC7; /* fallback for old browsers */
@@ -114,6 +127,7 @@ h3 {
 .cover .list:last-child.card {
   margin-bottom: 0px;
 }
+
 /*
 .info{
 padding-left: 20px;
@@ -229,7 +243,6 @@ padding-left: 20px;
     padding: 0px;
   }
 
-
 }
 
 @media screen and (max-width: 767px) {
@@ -248,10 +261,11 @@ padding-left: 20px;
     margin: 0;
   }
 
-  .col-25.respon-log .card{
+  .col-25.respon-log .card {
     box-shadow: none;
   }
-  .bor-out{
+
+  .bor-out {
     padding: 20px 0px !important;
   }
 }
@@ -266,6 +280,7 @@ padding-left: 20px;
 header .header-content .header-content-inner .list-badges {
   margin-bottom: 25px;
 }
+
 header .header-content .header-content-inner .list-badges img {
   height: 50px;
   margin-bottom: 25px;
@@ -275,23 +290,28 @@ section.download .badges .badge-link {
   display: block;
   margin-bottom: 25px;
 }
+
 section.download .badges .badge-link:last-child {
   margin-bottom: 0;
 }
+
 section.download .badges .badge-link img {
   height: 60px;
 }
+
 @media (min-width: 768px) {
   section.download .badges .badge-link {
     display: inline-block;
     margin-bottom: 0;
   }
 }
+
 @media (min-width: 768px) {
   section.download h2 {
     font-size: 70px;
   }
 }
+
 .item-image.logo img {
   max-width: 175px;
 }
@@ -327,15 +347,15 @@ section.download .badges .badge-link img {
   padding-right: 20px;
 }
 
-a{
+a {
   text-decoration: none;
 }
 
-.forgot-pass{
+.forgot-pass {
   font-size: 14px;
 }
 
-.bor-out p{
+.bor-out p {
   text-align: center;
   position: relative;
 }
@@ -346,8 +366,8 @@ a{
   padding: 0px 10px;
 }
 
-.bor-out p:before{
-  content:"";
+.bor-out p:before {
+  content: "";
   position: absolute;
   bottom: 3px;
   left: 0;
@@ -358,7 +378,6 @@ a{
 }
 
 /*end*/
-
 
 img {
   object-fit: cover;
@@ -389,8 +408,28 @@ img {
   src: url('../fonts/gotham/SVN-Gotham Book.otf');
 }
 
+@font-face {
+  font-family: 'HelveticaNeue';
+  src: url('../fonts/HelveticaNeue.otf');
+}
+
+@font-face {
+  font-family: 'HelveticaNeueLight';
+  src: url('../fonts/HelveticaNeue-Light.otf');
+}
+
+@font-face {
+  font-family: 'HelveticaNeueMedium';
+  src: url('../fonts/HelveticaNeue-Medium.otf');
+}
+
+@font-face {
+  font-family: 'HelveticaNeueUltraLight';
+  src: url('../fonts/HelveticaNeue-UltraLight.otf');
+}
+
 .font-default {
-  font-family: "Helvetica Neue", "Roboto", "Segoe UI", sans-serif !important;
+  font-family: 'HelveticaNeue', "Roboto", "Segoe UI", sans-serif !important;
 }
 
 body {
@@ -399,19 +438,24 @@ body {
   font-weight: normal;
   line-height: 1.5;
   color: #374767;
-  background-color: #f2f4f8; !important;}
-
-
-html, body, div, applet, object, iframe, h1, h2, h3, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, i, u, center, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, fieldset, figure, figcaption, footer, header, button, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
-  font-family: 'gotham-book';
+  background-color: #f2f4f8;
+!important;
 }
 
-h4, h5, h6, p {
-  font-family: 'gotham-light';
+html, body, h2, legend, div, applet, object, iframe, h3, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, i, u, center, dl, dt, dd, ol, ul, li, fieldset, form, label, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, fieldset, figure, figcaption, footer, header, button, hgroup, menu, nav, output, ruby, section, summary, time, mark, audio, video {
+  font-family: 'HelveticaNeueLight';
+}
+
+h1 {
+  font-family: 'HelveticaNeueUltraLight' !important;
+}
+
+h3, h4, h5, h6, p {
+  font-family: 'HelveticaNeueLight' !important;
 }
 
 span {
-  font-family: 'gotham-book';
+  font-family: "Helvetica Neue";
 }
 
 hr {
@@ -668,11 +712,8 @@ textarea.about-me {
 
 .jobo-button {
   border-color: transparent;
-  background-color: #f8f8f8;
-  color: #444;
   position: relative;
   display: inline-block;
-  margin: 0;
   padding: 0 12px;
   min-width: 52px;
   min-height: 47px;
@@ -688,8 +729,6 @@ textarea.about-me {
 }
 
 .jobo-button.jobo-button-block {
-  margin-top: 10px;
-  margin-bottom: 10px;
   width: 100%
 }
 
@@ -700,6 +739,12 @@ textarea.about-me {
   background: linear-gradient(to left, #1FBDF1, #39DFA5); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 
   color: #fff;
+}
+
+.button-vip {
+  color: white;
+  background: -webkit-linear-gradient(to left, #7b4397, #dc2430);
+  background: linear-gradient(to left, #7b4397, #dc2430);
 }
 
 .jobo-button.jobo-button-calm.active, .jobo-button.jobo-button-calm.activated {
@@ -819,6 +864,15 @@ textarea.about-me {
   z-index: 100;
 }
 
+.tinder-buttons2 {
+  padding: 10px;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  text-align: center;
+  z-index: 100;
+}
+
 .tinder-button {
   width: 80px;
   height: 80px;
@@ -839,7 +893,7 @@ textarea.about-me {
 
 .tinder-button:nth-child(1) {
   margin-left: 4px;
-  background: url(../img/delete.png);
+  background: url(../img/share.png);
   background-color: white;
   background-size: 30px;
   background-position: center;
@@ -848,7 +902,7 @@ textarea.about-me {
 
 .tinder-button:nth-child(3) {
   margin-left: -4px;
-  background: url(../img/heart.png);
+  background: url(../img/apply.png);
   background-color: white;
   background-size: 30px;
   background-position: center;
@@ -2024,9 +2078,12 @@ body {
 }
 
 .button-clicked {
-  background-color: #1FBDF1; !important;
-  box-shadow: none; !important;
-  color: #fff; !important;
+  background-color: #1FBDF1;
+!important;
+  box-shadow: none;
+!important;
+  color: #fff;
+!important;
 }
 
 .logo-color {
@@ -2086,4 +2143,141 @@ body {
   background-color: #ffff00;
 }
 
+.btn-facebook {
+  color: #ffffff;
+  background: #3b5998
+}
+
+.input-item {
+  border: 1px solid !important;
+  padding: 5px !important;
+  margin: 10px 0px !important;
+  border-color: #dddddd !important;
+}
+
+. item-label {
+  padding: 7px 10px 7px 0px;
+  max-width: 200px;
+  width: 35%;
+  color: #444;
+  font-size: 16px;
+}
+
+.button-primary {
+  background: #20a8d8;
+  color: #ffffff
+}
+
+.form-login {
+  margin: 30px auto
+}
+
+.login-item {
+  border: 1px silver !important;
+}
+
+.pull-right {
+  float: right;
+}
+
+.jobseeker-card .title {
+  margin: 0;
+  padding: 0 0 10px;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.jobseeker-card .sub_title {
+  margin: 0;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.back-button {
+  position: absolute;
+  left: 10px;
+  top: 20px;
+  z-index: 5;
+  color: white;
+  font-size: xx-large;
+}
+
+.ex-em, .hobby, .time-work {
+  padding: 10px 5px;
+  border-top: 1px solid #1FBDF1;
+}
+
+.bar .title {
+  font-weight: bold;
+  background: #1FBDF1;
+  background: -webkit-linear-gradient(to left, #1FBDF1, #39DFA5);
+  background: linear-gradient(to left, #1FBDF1, #39DFA5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-icon {
+  background: -webkit-linear-gradient(to left, #1FBDF1, #39DFA5);
+  background: linear-gradient(to left, #1FBDF1, #39DFA5);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.loading-container .loading {
+
+  background-color: transparent;
+!important;
+
+}
+
+.spinner svg {
+  width: 40px;
+!important;
+  height: 40px;
+!important;
+}
+
+ion-tabs.tabs-color-active-energized .tab-item.tab-item-active, ion-tabs.tabs-color-active-energized .tab-item.active, ion-tabs.tabs-color-active-energized .tab-item.activated {
+  color: #39DFA5;
+!important;
+}
+
+ion-tabs.tabs-striped.tabs-color-active-energized .tab-item.tab-item-active, ion-tabs.tabs-striped.tabs-color-active-energized .tab-item.active, ion-tabs.tabs-striped.tabs-color-active-energized .tab-item.activated {
+  border-color: #39DFA5;
+  color: #39DFA5;
+!important;
+}
+
+.content-section {
+  border-bottom: 1px solid #dfdfdf;
+  padding: 25px 30px;
+}
+
+.job-header {
+  overflow: hidden;
+  padding: 30px 215px 30px 50px;
+  position: relative;
+}
+
+.content-container {
+  box-sizing: border-box;
+}
+
+.content-minor-section:last-child, .content-minor-section-fat:last-child, .content-section:last-child {
+  border-bottom-width: 0;
+}
+
+.job-description-container {
+  padding: 45px 50px 65px;
+}
+
+.job-description-container {
+  width: 100%;
+}
+
+.content-section {
+  border-bottom: 1px solid #dfdfdf;
+  padding: 25px 30px;
+}
 

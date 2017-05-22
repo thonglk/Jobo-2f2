@@ -2,11 +2,6 @@
   <ion-content>
     <div style="padding-top: 20px">
       <div class="row responsive-md intro">
-        <div class="col-offset-25 col-25 respon-log">
-          <div class="item-image img-slide-insta">
-            <img src="img/phone.png">
-          </div>
-        </div>
         <div class="col-25 respon-log">
           <ion-slide-box show-pager="false" ng-init="lockSlide()">
             <ion-slide style="padding: 5px">
@@ -17,20 +12,22 @@
                   </div>
                   <div class="form-login">
                     <div class="list">
-                        <a ng-href="#/signup/2">
+                      <a ng-href="#/signup/1">
+                        <button class="jobo-button button-block button-primary">Tôi muốn tuyển dụng</button>
+                      </a>
+                      <div class="spacer" style="height:10px;"></div>
+                      <a ng-href="#/signup/2">
 
                         <button class="jobo-button jobo-button-block jobo-button-calm">Tôi muốn tìm việc
                         </button>
                       </a>
-                      <a ng-href="#/signup/1">
-                        <button class="jobo-button button-block button-balanced">Tôi muốn tuyển dụng</button>
-                      </a>
 
 
                     </div>
-                    <!--<p><span>Hoặc</span></p>-->
-                    <!--<button ng-click="facebookLogin()" id="login-button26" class="button button-positive  button-block icon-left ion-social-facebook">Đăng ký bằng Facebook</button>-->
-                    <!--<button ng-click="googleLogin()" id="login-button48" class="button button-assertive  button-block icon-left ion-social-googleplus">Đăng ký bằng Google</button>-->
+                    <p><span>Hoặc</span></p>
+                    <button ng-click="facebookLogin()" id="login-button26"
+                            class="jobo-button jobo-button-block btn-facebook">Đăng ký bằng Facebook
+                    </button>
 
                   </div>
                 </div>
@@ -43,58 +40,59 @@
               </div>
 
             </ion-slide>
+
             <ion-slide>
-              <ion-slide style="padding: 5px">
-                <div class="card">
-                  <div class="bor-out">
 
-                    <form name="form_login" ng-submit="doLogin(userLogin)" novalidate>
-                      <div class="list">
+              <form name="form_signup">
+                <div class="padding" style="margin: 20px 0">
+                  <div class="bor-out list">
 
-                        <label class="item item-input">
-                          <input type="email" ng-model="userLogin.username" id="user_name" placeholder="Email">
-                        </label>
 
-                        <label class="item item-input">
-                          <input type="password" ng-model="userLogin.password" id="user_pass"
-                                 placeholder="Mật khẩu">
-                        </label>
-
-                      </div>
-                      <button type="submit" class="jobo-button jobo-button-block jobo-button-calm"
-                              ng-disabled="!userLogin.username || !userLogin.password || userLogin.username === '' ||userLogin.password === ''">
-                        Đăng nhập
-                      </button>
-                      <p><span>Hoặc</span></p>
-                      <button ng-click="facebookLogin()" id="login-button26" class="button button-positive  button-block icon-left ion-social-facebook">Đăng ký bằng Facebook</button>
-                      <button ng-click="Gotosignup()" id="login-button48" class="button button-assertive  button-block icon-left ion-social-googleplus">Đăng ký bằng Google</button>
-                    </form>
-
+                    <label class="item item-input" style="margin: 10px">
+                      <input type="email" ng-model="userSignup.username" id="cuser_name" placeholder="Email">
+                    </label>
+                    <label class="item item-input" style="margin: 10px">
+                      <input type="password" ng-model="userSignup.password" id="cuser_pass" placeholder="Password">
+                    </label>
 
                   </div>
+                  <button ng-click="doLogin(userSignup)" class="jobo-button jobo-button-block jobo-button-calm"
+                          ng-disabled="!userSignup.username || userSignup.username === '' || !userSignup.password || userSignup.password === ''">
+                    Đăng nhập
+                  </button>
+
+
                 </div>
-                <div class="card">
-                  <div class="padding sign-up-link">
-                    <p class="asklogin">Chưa có tài khoản? <a href="" ng-click="slideTo(0)" title="">Đăng ký</a></p>
-                  </div>
+
+              </form>
+              <div class="text-center">
+                <p><span>Hoặc</span></p>
+              </div>
+              <button ng-click="facebookLogin(type)" id="login-button26"
+                      class="jobo-button jobo-button-block btn-facebook">Đăng nhập bằng Facebook
+              </button>
+
+              <div class="card">
+                <div class="padding sign-up-link">
+                  <p class="asklogin">Chưa có tài khoản? <a href="" ng-click="slideTo(0)" title="">Đăng ký</a></p>
                 </div>
-              </ion-slide>
+              </div>
+            </ion-slide>
 
           </ion-slide-box>
 
 
-          <div class="get-app">
-            <p>Tải ứng dụng</p>
-            <div class="badges">
-              <a class="badge-link" href="https://play.google.com/store/apps/details?id=com.ambius.jobo"><img
-                src="img/google-play-badge.svg" alt="" style="width: 135px"></a>
-              <a class="badge-link" href="https://itunes.apple.com/us/app/jobo-tim-viec-nhanh/id1180445871"><img
-                src="img/app-store-badge.svg" alt=""></a>
-            </div>
-          </div>
+          <!--  <div class="get-app">
+              <p>Tải ứng dụng</p>
+              <div class="badges">
+                <a class="badge-link" href="https://play.google.com/store/apps/details?id=com.ambius.jobo"><img
+                  src="img/google-play-badge.svg" alt="" style="width: 135px"></a>
+                <a class="badge-link" href="https://itunes.apple.com/us/app/jobo-tim-viec-nhanh/id1180445871"><img
+                  src="img/app-store-badge.svg" alt=""></a>
+              </div>
+            </div>-->
         </div>
       </div>
     </div>
   </ion-content>
 </ion-view>
-

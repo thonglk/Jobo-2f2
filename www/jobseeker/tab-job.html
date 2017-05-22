@@ -1,0 +1,78 @@
+
+<!--<div ng-if="!interviewList" style="align-content: center" >-->
+<!--<p style="    margin: 20px;-->
+<!--text-align: center;-->
+<!--padding-top: 50px;-->
+<!--" class="ng-binding"-->
+<!--&gt; Bạn chưa tương tác với bất kì nhà tuyển dụng nào</p>-->
+<!--<div class="padding">-->
+<!--<button ui-sref="jobseeker.dash" class="jobo-button jobo-button-block jobo-button-calm">-->
+<!--Lọc công việc-->
+<!--</button>-->
+<!--</div>-->
+<!--</div>-->
+<!--<div class="list card" id="interview-card210" ng-repeat="card in interviewList">-->
+<!--<ion-item id="interview-list-item58">Ứng viên {{card.name}}</ion-item>-->
+<!--<ion-item class="item-icon-left" id="interview-list-item65">-->
+<!--<i class="icon ion-ios-time-outline"></i>{{card.interview | date: hh:mm+' '+dd/mm/yyyy}}-->
+<!--</ion-item>-->
+<!--<ion-item class="item-icon-left" id="interview-list-item66">-->
+<!--<i class="icon ion-location"></i>{{card.place}}-->
+<!--</ion-item>-->
+<!--<ion-item ng-if="card.status == 1" class="item-icon-left item-icon-right positive" id="interview-list-item67">-->
+<!--<i class="icon ion-android-clipboard"></i>-->
+<!--<span class="item-note">Thành công</span>-->
+<!--<i class="icon ion-android-done"></i>-->
+<!--</ion-item>-->
+<!--<ion-item ng-if="card.status == -1" class="item-icon-left item-icon-right assertive" id="interview-list-item68">-->
+<!--<i class="icon ion-android-clipboard"></i>Kết quả-->
+<!--<span class="item-note">Trượt</span>-->
+<!--<i class="icon ion-android-cancel"></i>-->
+<!--</ion-item>-->
+<!--</div>-->
+<ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()">
+  <ion-header-bar align-title="center" class="bar-light">
+    <h1 class="title" ng-click="editjob()">{{CONFIG.data.job[newfilter.job] || 'Khám phá'}}
+    </h1>
+  </ion-header-bar>
+
+  <ion-content scroll="false">
+    <div ng-hide="storeCard.length > 0" style="align-content: center">
+      <p style="    margin: 20px;
+    text-align: center;
+    padding-top: 50px;
+" class="ng-binding">Hãy bắt đầu chọn công việc đang tuyển phù hợp xung quanh bạn</p>
+      <div class="padding">
+        <button ui-sref="jobseeker.dash" class="jobo-button jobo-button-block jobo-button-calm">
+          Bạn cần tìm việc gì?
+        </button>
+      </div>
+    </div>
+
+    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)">
+      <ks-swiper-slide class="swiper-slide" ng-repeat="card in storeCard">
+        <div class="card">
+          <a href="#/view/store/{{card.storeId}}">
+            <img ng-src="{{card.avatar || '/img/ava-background/ava_'+ card.industry +'.png'}}" style="width: 100%; height: 250px">
+          </a>
+
+
+          <div class="item jobseeker-card">
+            <i class="ion-flash color-coral font-150 pull-right" ng-if="card.act.status == 0 && card.act.type == 2"></i>
+            <h3 class="title">{{card.storeName || 'Your Name Here'}} <span class="ion-record color-green"
+                                                                           style="font-size: xx-small"
+                                                                           ng-if="card.presence.status == 'online'"></span>
+            </h3>
+            <p>
+              <span ng-repeat="(key,value) in card.job">{{dataJob[key]}}, </span>
+            </p>
+            <p>
+              {{card.distance}} km</p>
+          </div>
+        </div>
+
+      </ks-swiper-slide>
+    </ks-swiper-container>
+
+  </ion-content>
+</ion-view>

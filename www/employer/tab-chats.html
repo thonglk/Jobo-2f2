@@ -1,65 +1,99 @@
-<ion-view title="match" hide-nav-bar="true" id="page20" ng-init="init()">
-  <ion-header-bar>
-    <div id="match-button-bar7" class="button-bar">
-      <button ng-click="swiperto(0)" id="match-button50"
-              class="button button-positive  button-block button-clear {{swiper.activeIndex == 0 ? 'color-red' : 'color-gray'}}">
-        Đã thích
-      </button>
-      <button ng-click="swiperto(1)" id="match-button50"
-              class="button button-positive  button-block button-clear {{swiper.activeIndex == 1 ? 'color-red' : 'color-gray'}}">
-        Ứng tuyển
-      </button>
-      <button ng-click="swiperto(2)" id="match-button51"
-              class="button button-positive  button-block button-clear {{swiper.activeIndex == 2 ? 'color-red' : 'color-gray'}}">
-        Tương hợp
-      </button>
+<ion-view title="Danh sách tương tác" id="page20" hide-back-button="true">
+  <ion-content class="has-header" scroll="true">
+    <div>
+      <div class="item item-divider">
+        Đã tương hợp
+      </div>
+      <div class="callout padding text-muted text-center" ng-show="reactList.match.length == 0">
+        <small><b>Bạn chưa tương hợp với ứng viên nào</b>
+        </small>
+      </div>
+      <ion-list id="match-list32" ng-repeat="card in reactList.match">
+        <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
+          <img src="{{card.userAvatar || '/img/macdinh.jpg'}}">
+          <h2>{{card.userName}} <span class="ion-record color-green" style="font-size: xx-small" ng-if="card.presence == 'online'"></span>
+          </h2>
+          <small ng-hide="card.jobUser" class="text-muted">Đang tìm công việc bất kỳ</small>
+          <small class="text-muted" ng-repeat="(key,value) in card.jobUser" ng-show="card.jobUser">
+            {{dataJob[key]}}
+          </small>
+          <br>
+
+          <small><b>{{service.timeAgo(card.matchAt || card.createdAt)}}</b></small>
+        </ion-item>
+      </ion-list>
     </div>
+    <div>
+      <div class="item item-divider">
+        Đã ứng tuyển
+      </div>
+      <div class="callout padding text-muted text-center" ng-show="reactList.liked.length == 0">
+        <small><b>Bạn chưa có ứng viên nào ứng tuyển</b>
+        </small>
+      </div>
+      <ion-list id="match-list32" ng-repeat="card in reactList.liked">
+        <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
+          <img src="{{card.userAvatar || '/img/macdinh.jpg'}}">
+          <h2>{{card.userName}} <span class="ion-record color-green" style="font-size: xx-small"
+                                      ng-if="card.presence == 'online'"></span>
+          </h2>
+          <small ng-hide="card.jobUser" class="text-muted">Đang tìm công việc bất kỳ</small>
+          <small class="text-muted" ng-repeat="(key,value) in card.jobUser" ng-show="card.jobUser">
+            {{dataJob[key]}}
+          </small>
+          <br>
 
-  </ion-header-bar>
-  <ion-content padding="false" class="manual-ios-statusbar-padding">
-
-    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)">
-      <ks-swiper-slide class="swiper-slide">
-        <ion-list id="match-list32" ng-repeat="card in reactList.like">
-          <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
-            <img src="{{card.photourl}}">
-            <h2>{{card.name}}</h2>
-            <p style="white-space:normal;">Vị trí đề xuất:
-            <p ng-repeat="(key,value) in card.jobStore">{{dataJob[key]}}</p></p>
-            <i class="icon ion-checkmark-circled" ng-click="like()"></i>
-            <p>{{timeAgo(card.likeAt)}}</p>
-          </ion-item>
-
-        </ion-list>
-      </ks-swiper-slide>
-      <ks-swiper-slide class="swiper-slide">
-        <ion-list id="match-list32" ng-repeat="card in reactList.liked">
-          <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
-            <img src="{{card.photourl}}">
-            <h2>{{card.name}}</h2>
-            <p style="white-space:normal;">Vị trí:
-            <p ng-repeat="(key,value) in card.job">{{dataJob[key]}}</p></p>
-            <i class="icon ion-chatbubbles" ng-click="chatTo(card.userid)"></i>
-            <p>{{timeAgo(card.likeAt)}}</p>
-          </ion-item>
-        </ion-list>
-      </ks-swiper-slide>
-      <ks-swiper-slide class="swiper-slide">
-        <ion-list id="match-list32" ng-repeat="card in reactList.match">
-          <ion-item class="item-thumbnail-left item-icon-right" id="match-list-item29" href-inappbrowser="profile">
-            <img src="{{card.photourl}}">
-            <h2>{{card.name}}</h2>
-            <p style="white-space:normal;">Vị trí mong muốn:
-            <p ng-repeat="(key,value) in card.jobUser">{{dataJob[key]}}</p></p>
-            <i class="icon ion-chatbubbles" ui-sref="employer.chat-detail({chatId: card.userid})"></i>
-            <p>{{timeAgo(card.matchedAt)}}</p>
-          </ion-item>
-        </ion-list>
-      </ks-swiper-slide>
-    </ks-swiper-container>
+          <small><b>{{service.timeAgo(card.likeAt || card.createdAt)}}</b></small>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div>
+      <div class="item item-divider">
+        Đã gửi yêu cầu
+      </div>
+      <div class="callout padding text-muted text-center" ng-show="reactList.like.length == 0">
+        <small><b>Bạn chưa gửi yêu cầu cho ứng viên nào, hãy chủ động tìm họ</b>
+        </small>
+      </div>
+      <ion-list id="match-list32" ng-repeat="card in reactList.like">
+        <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
+          <img src="{{card.userAvatar || '/img/macdinh.jpg'}}">
+          <h2>{{card.userName}} <span class="ion-record color-green" style="font-size: xx-small"
+                                      ng-if="card.presence == 'online'"></span>
+          </h2>
+          <small ng-hide="card.jobStore" class="text-muted">Đang tìm công việc bất kỳ</small>
+          <small class="text-muted" ng-repeat="(key,value) in card.jobStore" ng-show="card.jobStore">
+            {{dataJob[key]}}
+          </small>
+          <br>
+          <small><b>{{service.timeAgo(card.likeAt || card.createdAt)}}</b></small>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div>
+      <div class="item item-divider">
+        Đang tìm việc gấp
+      </div>
+      <div class="callout padding text-muted text-center" ng-show="onlineList.length == 0">
+        <small><b>Không có ai</b>
+        </small>
+      </div>
+      <ion-list id="match-list32" ng-repeat="card in onlineList">
+        <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
+          <img src="{{card.avatar || '/img/macdinh.jpg'}}">
+          <h2>{{card.name || 'Your Name Here'}} <span class="ion-record color-green" style="font-size: xx-small"
+                                                      ng-if="card.presence.status == 'online'"></span>
+          </h2>
+          <small ng-hide="card.job" class="text-muted">Đang tìm công việc bất kỳ</small>
+          <small class="text-muted" ng-repeat="(key,value) in card.job" ng-show="card.job">
+            {{dataJob[key]}}
+          </small>
+          <br>
+          <small><b>{{service.timeAgo(card.presence.at)}}</b></small>
+        </ion-item>
+      </ion-list>
+    </div>
   </ion-content>
 
-
-  </ion-content>
 </ion-view>
 

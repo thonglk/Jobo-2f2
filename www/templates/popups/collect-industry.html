@@ -1,11 +1,7 @@
 <div class="item-input-inset">
-  <label class="item-input-wrapper">
-    <i class="icon ion-ios-search placeholder-icon"></i>
-    <input force-lower-case type="text" class="bold" ng-model="search" ng-value="search" ng-change="filterResults(search)">
-  </label>
 </div>
 
-<ion-list ng-repeat="(key, value) in dataIndustry | filter:search ">
+<ion-list ng-repeat="(key, value) in dataIndustry">
 
   <ion-checkbox style="border: hidden" id="{{ key }}" value="{{ key }}" ng-model="newHospital.industry[key]">{{ value }}
   </ion-checkbox>

@@ -1,21 +1,38 @@
-<ion-list id="contact-list15">
-  <ion-item class="item-avatar item-icon-right light" style=" background: -webkit-linear-gradient(to left, #1FBDF1 , #39DFA5); /* Chrome 10-25, Safari 5.1-6 */
+<div ng-if="chatUser.act.showContact">
+  <ion-list id="contact-list15">
+    <ion-item class="item-avatar item-icon-right light" style=" background: -webkit-linear-gradient(to left, #1FBDF1 , #39DFA5); /* Chrome 10-25, Safari 5.1-6 */
   background: linear-gradient(to left, #1FBDF1 , #39DFA5);"
-            id="jobo-list-item10">
-    <img src='{{chatedData.photourl}}'>
-    <h2light>{{chatedData.name}}
-    </h2light>
-  </ion-item>
-  <ion-item class="item-icon-left" id="contact-list-item48" href="tel:{{chatedData.phone}}">
-    <i class="icon ion-ios-telephone"></i>{{chatedData.phone}}
-  </ion-item>
-  <ion-item class="item-icon-left" id="contact-list-item49" href="mailto:{{chatedData.email}}">
-    <i class="icon ion-android-mail"></i>{{chatedData.email}}
-  </ion-item>
-</ion-list>
-<div id="contact-button-bar4" class="button-bar">
-  <a href="tel:{{chatedData.mobile}}" id="contact-button44"
-     class="button button-positive  button-block icon ion-ios-telephone"></a>
-  <a href="mailto:{{chatedData.email}}" id="contact-button45"
-     class="button button-calm  button-block icon ion-android-mail"></a>
+              id="jobo-list-item10">
+      <img src="{{chatUser.avatar  || '/img/macdinh.jpg'}}">
+      <h2light>{{chatUser.name}}
+      </h2light>
+    </ion-item>
+    <ion-item class="item-icon-left" id="contact-list-item48" href="tel:{{contact.phone}}">
+      <i class="icon ion-ios-telephone"></i>{{contact.phone}}
+    </ion-item>
+    <ion-item class="item-icon-left" id="contact-list-item49" href="mailto:{{contact.email}}">
+      <i class="icon ion-android-mail"></i>{{contact.email}}
+    </ion-item>
+  </ion-list>
+  <div id="contact-button-bar4" class="button-bar">
+    <a href="tel:{{contact.phone}}" id="contact-button44"
+       class="button button-positive  button-block icon ion-ios-telephone"></a>
+    <a href="mailto:{{contact.email}}" id="contact-button45"
+       class="button button-calm  button-block icon ion-android-mail"></a>
+  </div>
+
+</div>
+
+<div ng-hide="chatUser.act.showContact">
+  <div class="collaborators text-center" data-no-turbolink="">
+    <h6><b>-30.000đ/ứng viên</b></h6>
+    <span> để xem SĐT, Email, Facebook và chat với ứng viên</span>
+    <div class="btn-area text-center">
+      <button ng-click="confirmShow()" data-dismiss="modal" type="button"
+              class="btn button-vip " style="color: white;">
+       Lấy thông tin liên hệ
+      </button>
+    </div>
+    <br><span> Số dư hiện tại của bạn: <b>{{userData.credit || 0}}.000đ</b></span>
+  </div>
 </div>

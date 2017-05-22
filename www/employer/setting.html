@@ -1,13 +1,18 @@
-<ion-view title="Cài đặt" id="page18">
+<ion-view title="Cài đặt" id="page18" ng-init="init()">
+
+  <ion-nav-buttons side="right" class="has-header">
+    <button ng-click="submit()" class="button button-clear">Lưu</button>
+  </ion-nav-buttons>
+
   <ion-content>
     <div class="card">
       <div class="item item-divider">
         Thông tin liên hệ
       </div>
       <div class="profile-container">
-        <img ng-click="showProfile()" ng-src="{{userData.photourl}}" class="profile-image" width="100">
+        <img ng-click="updateavatar()" ng-src="{{userData.avatar}}" class="profile-image" width="100">
         <img
-          ui-sref="profile"
+          ng-click="updateavatar()"
           ng-src="img/edit.png"
           class="profile-edit"
           width="30">
@@ -42,7 +47,7 @@
         <li class="item item-toggle">
           Tin nhắn mới
           <label class="toggle toggle-assertive">
-            <input ng-model="setting.notiMes" type="checkbox">
+            <input ng-model="userData.notiMes" type="checkbox">
             <div class="track">
               <div class="handle"></div>
             </div>
@@ -53,7 +58,7 @@
         <li class="item item-toggle">
           Nhà tuyển dụng muốn tuyển bạn
           <label class="toggle toggle-assertive">
-            <input ng-model="setting.notiInvite" type="checkbox">
+            <input ng-model="userData.notiInvite" type="checkbox">
             <div class="track">
               <div class="handle"></div>
             </div>
@@ -65,7 +70,7 @@
         <li class="item item-toggle">
           Có nhà tuyển dụng tương hợp với bạn
           <label class="toggle toggle-assertive">
-            <input ng-model="setting.notiMatch" type="checkbox">
+            <input ng-model="userData.notiMatch" type="checkbox">
             <div class="track">
               <div class="handle"></div>
             </div>
@@ -76,7 +81,7 @@
         <li class="item item-toggle">
           Có công việc mới
           <label class="toggle toggle-assertive">
-            <input ng-model="setting.notiJob" setting.notiMatchtype="checkbox">
+            <input ng-model="userData.notiJob" type="checkbox">
             <div class="track">
               <div class="handle"></div>
             </div>

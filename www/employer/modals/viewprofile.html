@@ -1,263 +1,154 @@
-<ion-modal-view>
-  <ion-header-bar>
-    <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="$back()">Back</a>
-    <h1 class="title">{{userData.name}}</h1>
-  </ion-header-bar>
+<ion-modal-view ng-init="init()">
   <ion-content>
+    <i class="back-button ion-ios-close" ng-click="$back()"></i>
     <div class="list">
-      <div class="item item-image">
-
-        <img ng-src="{{userData.photourl}}">
-      </div>
+      <ks-swiper-container initial-slide="0" pagination-is-active="true" pagination-cls="color-red" loop="false"
+                           show-nav-buttons="false" parallax="true" slides-per-view="1" space-between="0"
+                           pagination-clickable="false" swiper="swiper" on-ready="onReadySwiper(swiper)"
+                           on-touch="onReadySwiper(swiper)">
+        <ks-swiper-slide class="swiper-slide" ng-repeat="photo in profileData.photo">
+          <img ng-src="{{photo || 'img/macdinh.jpg'}}" class="swiper-images">
+        </ks-swiper-slide>
+      </ks-swiper-container>
       <ion-list class="list-borderless">
         <ion-item class="item-icon-right">
-          <h2 class="font-130">{{userData.name}}</h2>
-          <div id="profile-markdown7" class="show-list-numbers-and-dots">
+          <h2 class="font-130">{{profileData.name}}</h2>
+          <p>
+          <ul style="list-style-type: none;padding-left: 0px;">
+            <li>
+              <i class="ion-location"></i> {{service.shortAddress(profileData.address)}}
+            </li>
+            <li ng-show="profileData.birth">
+              <i class="ion-pin"></i> {{profileData.birth | date: 'y'}}
+            </li>
+            <li ng-show="profileData.sex">
+              <i class="ion-person"></i> {{profileData.sex}}
+            </li>
+            <li ng-show="profileData.figure || profileData.height || profileData.weight ">
+              <i class="ion-heart"></i> <span ng-show="profileData.figure"> Ngoại hình khá -</span>
+              {{profileData.height ? profileData.height + ' cm - ':''}} {{profileData.weight ?
+              profileData.weight + ' kg':''}}
+            </li>
 
-            <p><i class="ion-location"></i> {{userData.address}} </p>
-          </div>
-
-          <div id="profile-markdown36" class="show-list-numbers-and-dots" ng-if="userData.birth">
-            <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-android-calendar"></i>
-              {{calculateAge(userData.birth)}} tuổi
-            </p>
-          </div>
+          </ul>
+          </p>
 
         </ion-item>
       </ion-list>
       <div class="padding animated bounceInUp">
-        <span>{{userData.description}}</span>
-
-        <hr>
-        <h4>Thông tin cá nhân
-        </h4>
-        <span>
-          Chiều cao: {{userData.height}}
-          <br>
-                    Cân nặng: {{userData.weight}}
-                    <br>
-
-       <button ng-if="userData.figure" class="button margin-top-5 button-outline button-small button-assertive">              Ngoại hình ưa nhìn
-</button>
-
-        </span>
-
-        <hr>
-        <div id="profile-markdown35" class="show-list-numbers-and-dots" ng-if="userData.school">
-          <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-university"></i>
-            {{userData.school}}
-          </p>
+        <div style="  padding-bottom: 10px;
+"><span>{{profileData.description}}</span>
         </div>
-        <h4>Kinh nghiệm làm việc
-        </h4>
-        <span>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-          tempor incididunt ut labore et dolore magna aliqua.
-        </span>
 
-        <hr>
-        <h4>Trình độ học vấn
-        </h4>
-        <span>
-          <div ng-if="userData.school">
-          Trường: {{userData.school}}
-          <br></div>
-           <div ng-if="userData.languages">
-          Ngoại ngữ: {{userData.school}}
-          <br></div>
-        </span>
-        <hr>
-        <h4>
-          Mong muốn tìm việc
-        </h4>
-        <span>
+        <div class="hobby" ng-show="profileData.school || profileData.languages">
+          <h3><i class="ion-university"></i> Trình độ học vấn
+          </h3>
 
-        <div ng-if="userData.industry">
-          Nơi làm việc mong muốn: {{userData.school}}
-          <br></div>
-        <div ng-if="userData.job">
-          Công việc mong muốn: {{userData.school}}
-          <br></div>
-        <div ng-if="userData.expectSalary">
-          Mức lương mong muốn: {{userData.expectSalary}}
-          <br></div>
-        <div ng-if="userData.time">
-          Hình thức làm việc: {{userData.time}}
-          <br></div>
-        <div ng-if="userData.expectSalary">
-          Khoảng cách di chuyển: {{userData.expectSalary}}
-          <br></div>
-        <div ng-if="userData.status">
-          Trạng thái tìm việc: {{userData.status}}
-          <br></div>
+          <ul style="list-style-type: none;padding-left: 0px;">
+
+            <li ng-show="profileData.school"><strong>Trường:</strong> {{profileData.school}}
+
+            </li>
+            <li ng-show="profileData.languages"><strong>Ngoại ngữ:</strong>
+              <span ng-repeat="(key,value) in profileData.languages">{{dataLanguages[key]}}</span>
+            </li>
+          </ul>
+
+        </div>
+        <div class="hobby" ng-show="profileData.experience">
+          <h3><i class="ion-briefcase"></i> Kinh nghiệm làm việc
+          </h3>
+
+          <ul>
+            <li ng-repeat="card in profileData.experience">
+              <div class="row">
+                <div class="col-xs-12 col-sm-3">
+                  <p>{{card.start | date : "MM/y"}}
+                    <i class="fa fa-level-down"></i><br>
+                    {{card.end == true ? 'Đến nay': card.end | date : "MM/y"}}
+                  </p>
+                </div>
+                <div class="col-xs-12 col-sm-9" style="margin-left: 20px;">
+                  <h4 style="margin-top: 0px">{{card.company}}</h4>
+                  <p>{{dataJob[card.job]}}</p>
+                </div>
+              </div>
+            </li>
+          </ul>
+
+        </div>
+
+        <div class="hobby">
+          <h3> <i class="ion-heart"></i> Mong muốn</h3>
+          <div ng-if="profileData.job" style="margin: 5px 0"><strong>Vị trí:</strong>
+            <span ng-repeat="(key,value) in profileData.job">{{dataJob[key]}}, </span></div>
+          <div ng-if="profileData.industry" style="margin: 5px 0"><strong>Lĩnh vực:</strong>
+            <span ng-repeat="(key,value) in profileData.industry">{{dataIndustry[key]}}, </span></div>
+          <div ng-if="profileData.working_type" style="margin: 5px 0"><strong>Hình thức:</strong>
+            {{CONFIG.data.working_type[profileData.working_type]}}
+          </div>
+          <div ng-if="profileData.time" style="margin: 5px 0"><strong>Thời gian sẵn sàng:</strong>
+            <span ng-repeat="(key,value) in profileData.time">{{dataTime[key]}}, </span></div>
+          <div ng-if="profileData.expect_salary" style="margin: 5px 0"><strong>Mức lương mong
+            muốn:</strong>
+            {{profileData.expect_salary + ' triệu đồng/tháng'}}
+          </div>
+
+          <div ng-if="profileData.expect_distance" style="margin: 5px 0">Đi lại trong bán kính
+            <strong> {{profileData.expect_distance}} km</strong>
+
+          </div>
+        </div>
         </span>
-        <hr>
-        <!--</div>-->
-        <h4 style="text-align: center">Tuyển ứng viên này vào vị trí
-        </h4>
-        <span>
-          <button
-            class="button margin-top-5 button-outline button-small button-assertive">I fucking love Science</button>
-        <button class="button margin-top-5 button-outline button-small button-assertive">Ionic</button>
-        <button class="button margin-top-5 button-outline button-small button-assertive">Meanwhile in Australia</button>
-        <button class="button margin-top-5 button-outline button-small button-assertive">GaijinPot</button>
-      </span>
         <hr>
       </div>
     </div>
-    <p style="margin-top: 30px;">&nbsp;</p>
-    <button style="margin-top: 0px; margin-bottom: 0px" ng-click="like()" class="jobo-button jobo-button-block jobo-button-calm"><i class="ion-android-checkbox-outline"></i> Ứng tuyển
-    </button>
-  </ion-content>
 
+  </ion-content>
+  <ion-footer-bar style="padding: 0">
+    <div class="post-meta" style="width: 100%;display: flex" ng-show="jobOffer[profileData.userId]">
+      <button ng-click="like(profileData,0,key)"
+              type="button"
+              class="button button-outline button-small button-assertive" style="border-radius: 0; margin: 5px"
+              ng-repeat="(key,value) in storeData.job">{{dataJob[key]}}
+      </button>
+    </div>
+    <div style="width: 100%;display: flex">
+
+      <button ng-click="service.chatToUser(profileData.userId)"
+              ng-if="profileData.act.status == 1"
+              type="button"
+              class="button button-vip" style="width:100%">Liên hệ
+      </button>
+
+      <button ng-click="jobOffer[profileData.userId] = true"
+              ng-if="profileData.act.status == 0 && profileData.act.type == 2"
+              ng-hide="jobOffer[profileData.userId]"
+              type="button"
+              class="button button-balanced" style="width:100%;">Chọn ứng viên này
+      </button>
+
+
+      <button ng-disabled="profileData.act.status == 0 && profileData.act.type == 1"
+              type="button" ng-if="profileData.act.status == 0 && profileData.act.type == 1"
+              class="button button-energized" style="width:100%">Đang chờ phản hồi...
+      </button>
+      <button ng-click="jobOffer[profileData.userId] = true"
+              ng-hide="myself || profileData.act || type == 0 || jobOffer[profileData.userId]"
+              type="button"
+              class="jobo-button jobo-button-block jobo-button-calm" style="color: white;">
+        <i class="fa fa-thumbs-up"></i>Tuyển ứng viên
+      </button>
+      <button ui-sref="profile ({id:'update'})"
+              ng-if="myself" type="button"
+              class="jobo-button jobo-button-block jobo-button-calm" style="color: white;">
+        Sửa hồ sơ
+      </button>
+      <button ui-sref="intro"
+              ng-if="type == 0" type="button"
+              class="jobo-button jobo-button-block jobo-button-calm" style="color: white;">
+        Tuyển và liên hệ
+      </button>
+    </div>
+  </ion-footer-bar>
 </ion-modal-view>
-<!--Contact GitHub API Training Shop Blog About
-© 2017 GitHub, Inc. Terms Privacy Security Status Help
-<ion-modal-view>
-  <ion-header-bar>
-    <a class="button icon-left ion-chevron-left button-clear button-dark" ng-click="$back()">Back</a>
-<h1 class="title">{{userData.name}}</h1>
-  </ion-header-bar>
-  <ion-content>
-
-
-    <div id="profile-container5">
-      <div class="list">
-        <div class="item item-image">
-
-          <img ng-src="{{userData.photourl}}">
-        </div>
-        <ion-list class="list-borderless">
-          <ion-item>
-
-            <div class="item item-body" id="profile-list-item-container8">
-              <div id="profile-markdown7" class="show-list-numbers-and-dots">
-
-                <p><i class="ion-location"></i> {{userData.address}} </p>
-              </div>
-              <div id="profile-markdown35" class="show-list-numbers-and-dots" ng-if="userData.school">
-                <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-university"></i>
-                  {{userData.school}}
-                </p>
-              </div>
-              <div id="profile-markdown36" class="show-list-numbers-and-dots" ng-if="userData.birth">
-                <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-android-calendar"></i>
-                  {{calculateAge(userData.birth)}} tuổi
-                </p>
-              </div>
-              <div id="profile-markdown36" class="show-list-numbers-and-dots" ng-if="userData.figure">
-                <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-male"></i>
-                  Ngoại hình ưa nhìn
-                </p>
-              </div>
-              <div id="profile-markdown36" class="show-list-numbers-and-dots" ng-if="userData.experience">
-                <p style="margin-top:0px;color:#000000;font-size:12px;"><i class="ion-ribbon-a"></i>
-                  Đã có kinh nghiệm
-                </p>
-              </div>
-            </div>
-      </div>
-    </div>
-    <div class="list card" id="profile-card23" style="
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-" ng-if="userData.jobhistory">
-      <ion-item class="item-icon-left" id="profile-list-item15">
-        <i class="icon ion-briefcase"></i>Kinh nghiệm làm việc
-      </ion-item>
-
-      <div class="item item-body" id="profile-list-item-container9" ng-repeat="job in userData.jobhistory">
-        <div class="row">
-          <div class="col col-75">
-            <div id="profile-markdown8">
-              <p style="margin-top:0px;color:#000000;">
-                <strong ng-repeat="(key,value) in job.title">{{dataJob[key]}},</strong> - {{job.company}}</p>
-
-              <button id="profile-button5" style="border-radius:0px 0px 0px 0px;"
-                      class="button button-positive button-small button-outline">{{industry[job.industry]}}
-              </button>
-            </div>
-          </div>
-          <div class="col">
-            <p style="margin-top:0px;color:#000000;">
-              {{calculatemonth(job.monthstart)}} - {{calculatemonth(job.monthend)}}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div ng-if="userData.videourl && userData.stars[userid]" class="list card" id="profile-card27" style="
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-">
-      <ion-item class="item-icon-left" id="profile-list-item21">
-        <i class="icon ion-ios-videocam"></i>Video giới thiệu
-
-      </ion-item>
-      <div style="position:relative;overflow:hidden;padding-bottom:56.25%;height:0;" id="profile-video1">
-        <iframe class="youtube-player" type="text/html" ng-src="{{trustSrc(usercurent.videourl)}}" allowfullscreen
-                autoplay="false"
-                frameborder="0">
-        </iframe>
-      </div>
-    </div>
-
-    <div ng-if="userData.job" class="list card" id="profile-card29" style="
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-">
-      <ion-item class="item-icon-left" id="profile-list-item23">
-        <i class="icon ion-ios-briefcase"></i>Sở thích công việc
-
-      </ion-item>
-      <div class="item item-body" id="profile-list-item-container21" >
-        <label ng-repeat="(key,value) in userData.job">
-          <button class="button margin-top-5 button-outline button-small button-positive">{{dataJob[key]}}</button>
-        </label>
-
-      </div>
-    </div>
-    <div ng-if="userData.shift" class="list card" id="profile-card29" style="
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-">
-      <ion-item class="item-icon-left " id="profile-list-item23">
-        <i class="icon ion-ios-timer"></i>Thời gian phù hợp
-
-      </ion-item>
-      <div class="item item-body" id="profile-list-item-container21" >
-
-        <label ng-repeat="(key,value) in userData.shift">
-          <button class="button margin-top-5 button-outline button-small button-positive">{{time[key]}}</button>
-        </label>
-
-      </div>
-    </div>
-    <div ng-if="userData.distance" class="list card" id="profile-card29" style="
-    margin-left: 0px;
-    margin-right: 0px;
-    margin-top: 10px;
-    margin-bottom: 20px;
-">
-      <ion-item class="item-icon-left " id="profile-list-item23">
-        <i class="icon ion-android-bicycle"></i>Khoảng cách di chuyển: {{userData.distance}} km
-
-      </ion-item>
-    </div>
-    <div style="height: 250px"></div>
-  </ion-content>
-  <div class="ptinder-buttons" ng-if="!usercurent.stars[userid]">
-    <div id="profile2-button-bar9" class="button-bar">
-      <button id="profile2-button61" class="button button-positive  button-block icon ion-android-checkbox-outline"> Tuyển ứng viên</button>
-      <button id="profile2-button62" class="button button-dark  button-block">Ẩn</button>
-    </div>
-  </div>
-</ion-modal-view>-->

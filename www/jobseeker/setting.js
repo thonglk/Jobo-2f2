@@ -1,18 +1,22 @@
 'use strict';
 app.controller("sSettingCtrl", function ($scope, $ionicModal, $http, $ionicLoading, $state, $cordovaSocialSharing) {
+
   $ionicLoading.show({
     template: '<ion-spinner class="spinner-positive"></ion-spinner>'
   });
   var uid = firebase.auth().currentUser.uid;
   $scope.uid = firebase.auth().currentUser.uid;
   console.log('im', $scope.uid)
-  var userRef = firebase.database().ref('user/employer/' + uid)
+  var userRef = firebase.database().ref('user/employer/' + uid);
   userRef.on("value", function (snapshot) {
     $scope.usercurent = snapshot.val();
     console.log('im', $scope.usercurent)
     $ionicLoading.hide()
   });
 
+  $scope.$back = function () {
+    window.history.back();
+  };
 
   $scope.share = function () {
     $cordovaSocialSharing

@@ -1,26 +1,23 @@
-<ion-view hide-nav-bar="true" >
+<ion-view hide-nav-bar="true" ng-init="init()">
   <ion-header-bar align-title="center" class="bar-light">
 
-    <h1 ng-click="openPopover($event)" class="title">{{storeData.storeName}}
+    <h1 ng-click="openPopover($event)" class="title">{{storeData.storeName}}<small class="icon ion-arrow-down-b color-coral"></small>
     </h1>
 
   </ion-header-bar>
   <ion-content ng-init="init()">
     <div class="profile-container">
-      <img ng-click="showProfile()" ng-src="{{storeData.photourl}}" class="profile-image" width="100">
+      <img ng-click="showProfile()" ng-src="{{storeData.avatar || 'img/store.png'}}" class="profile-image" width="100" height="100">
+
       <img
-        ui-sref="profile"
+        ui-sref="store"
         ng-src="img/edit.png"
         class="profile-edit"
         width="30">
     </div>
 
     <div class="text-center padding" style="margin-top:22px;">
-      <h4>Ionic</h4>
-      <p class="color-gray">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua.</p>
-      <p class="color-gray">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua...</p>
+
     </div>
 
     <ion-list class="text-center uppercase">
@@ -31,10 +28,9 @@
         Cài đặt
       </ion-item>
       <ion-item class="color-pastel-blue" style="top: 30px;" ui-sref="pricing">
-        Get Plus
+        Số dư hiện tại của bạn: <b>{{userData.credit || 0}}.000đ</b>
       </ion-item>
     </ion-list>
-  </ion-content>
   </ion-content>
 </ion-view>
 

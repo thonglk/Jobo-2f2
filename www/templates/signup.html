@@ -1,21 +1,23 @@
-<ion-view title="Đăng ký" hide-nav-bar="true" hide-back-button="true" cache-view="false" nav-transition="none"
+<ion-view title="Đăng ký" cache-view="false" nav-transition="none"
           id="page20">
   <ion-content scroll="true" class=" manual-remove-top-padding">
 
     <ion-slide-box show-pager="false" on-slide-changed="slideChanged(index)">
       <ion-slide>
+        <p class="text-center" style="margin-top: 10px" ng-if="type== 1">Đăng ký tài khoản nhà tuyển dụng</p>
+        <p class="text-center" style="margin-top: 10px" ng-if="type== 2">Đăng ký tài khoản người tìm việc</p>
 
         <form name="form_signup">
           <div class="padding">
-            <div class="list">
+            <div class="bor-out list">
 
-              <label class="item item-input">
-                <input type="number" ng-model="userSignup.phone" id="userSignup.phone" placeholder="Số điện thoại">
+              <label class="item item-input" style="margin: 10px">
+                <input type="tel" ng-model="userSignup.phone" id="userSignup.phone" placeholder="Số điện thoại">
               </label>
-              <label class="item item-input">
+              <label class="item item-input" style="margin: 10px">
                 <input type="email" ng-model="userSignup.username" id="cuser_name" placeholder="Email">
               </label>
-              <label class="item item-input">
+              <label class="item item-input" style="margin: 10px">
                 <input type="password" ng-model="userSignup.password" id="cuser_pass" placeholder="Password">
               </label>
 
@@ -24,12 +26,18 @@
                     ng-disabled="!userSignup.username || userSignup.username === '' || !userSignup.password || userSignup.password === '' || !userSignup.phone || userSignup.phone === ''">
               Đăng ký
             </button>
+
+
           </div>
 
         </form>
-        <button ng-click="facebookLogin(type)" class="jobo-button jobo-button-block jobo-button-calm"> Đăng nhập bằng
-          Facebook
-        </button>
+        <div class="padding text-center">
+          <p><span>Hoặc</span></p>
+          <button ng-click="facebookLogin(type)" id="login-button26"
+                  class="jobo-button jobo-button-block btn-facebook">Đăng ký bằng Facebook
+          </button>
+        </div>
+
 
 
       </ion-slide>
@@ -49,7 +57,7 @@
             Vuốt sang phải để xem nhà tuyển dụng tiếp theo
           </p>
         </div>
-        <button ng-click="addStore()" class="jobo-button jobo-button-block jobo-button-calm">Tạo cửa hàng!</button>
+        <button ui-sref="store" class="jobo-button jobo-button-block jobo-button-calm">Tạo cửa hàng!</button>
 
       </ion-slide>
       <ion-slide>

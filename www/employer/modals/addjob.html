@@ -1,0 +1,85 @@
+<ion-modal-view title="Lựa chọn ">
+  <ion-header-bar align-title="center">
+    <div class="buttons" ng-click="cancel()">
+      <button class="button button-clear button-dark ">Hủy</button>
+    </div>
+    <h1 class="title"> Thêm vị trí
+    </h1>
+    <div class="buttons" ng-click="createHospital()">
+      <button class="button button-clear button-calm">Done</button>
+    </div>
+  </ion-header-bar>
+  <ion-content>
+    <div class="filterHeader" id="job-list-item-divider16"><h4>Vị trí bạn cần tuyển?</h4></div>
+    <ion-item class="item-icon-right" ng-click="showjob()">
+      <span ng-hide="newfilter.job" class="gotham-book">Công việc</span>
+      <span class="gotham-book">{{dataJob[newfilter.job]}}</span>
+      <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+    </ion-item>
+    <label class="item item-select" id="job-select6">
+      <span class="input-label">Hình thức</span>
+      <select ng-model="newfilter.working_type">
+        <option ng-repeat="(key,value) in CONFIG.data.working_type" value="{{key}}">
+          {{value}}
+        </option>
+      </select>
+    </label>
+    <label class="item item-input" id="job-input9">
+      <span class="input-label">Lương</span>
+      <input ng-model="newfilter.salary" type="number" placeholder="đơn vị: triệu VND">
+    </label>
+
+
+    <label class="item item-input" id="job-input15">
+      <span class="input-label">Số lượng</span>
+      <input ng-model="newfilter.unit" type="number" placeholder="">
+    </label>
+    <label class="item item-input" id="job-input15">
+      <span class="input-label">Hạn chót</span>
+      <input ng-model="newfilter.deadline" type="date" placeholder="">
+    </label>
+    <label class="item item-input" id="job-textarea2">
+      <span class="input-label">Mô tả</span>
+      <textarea ng-model="newfilter.description" placeholder="Mô tả về công việc"></textarea>
+    </label>
+
+
+    <div class="filterHeader" id="job-list-item-divider16">
+      <h4>Hãy giúp chúng tôi tìm ra ứng viên cho bạn</h4>
+      <span>Chỉ lựa chọn các tiêu chí bạn cần</span>
+    </div>
+
+    <ion-toggle ng-model="newfilter.figure" toggle-class="toggle-positive" id="job-toggle11">Ưu tiên ngoại hình
+    </ion-toggle>
+    <ion-toggle ng-model="newfilter.experience" toggle-class="toggle-positive" id="job-toggle12">Đã có kinh nghiệm
+    </ion-toggle>
+    <label class="item item-input" id="job-input15">
+      <span class="input-label">Chiều cao tối thiểu (cm)</span>
+      <input ng-model="storeData.job[key].unit" type="number" placeholder="">
+    </label>
+    <label class="item item-select" id="job-select6">
+      <span class="input-label">Giới tính</span>
+      <select ng-model="newfilter.sex">
+        <option ng-repeat="(key,value) in CONFIG.data.sex" value="{{key}}">
+          {{value}}
+        </option>
+      </select>
+    </label>
+    <label class="item item-select" id="job-select6">
+      <span class="input-label">Ngoại ngữ</span>
+      <select ng-model="newfilter.languages">
+        <option ng-repeat="(key,value) in dataLanguages" value="{{key}}">{{dataLanguages[key]}}</option>
+      </select>
+    </label>
+
+
+
+    <div>
+      <button id="profile-button57"
+              class="button button-block" style="color: red"
+              ng-click="clearFilter()">Clear
+      </button>
+
+    </div>
+  </ion-content>
+</ion-modal-view>

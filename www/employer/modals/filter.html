@@ -1,48 +1,91 @@
 <ion-modal-view title="Lựa chọn ">
-
   <ion-header-bar align-title="center">
     <div class="buttons" ng-click="cancel()">
       <button class="button button-clear button-dark ">Hủy</button>
     </div>
-    <h1 class="title" > Lọc ứng viên
+    <h1 class="title"> Lọc ứng viên
     </h1>
     <div class="buttons" ng-click="createHospital()">
       <button class="button button-clear button-calm">Lọc</button>
     </div>
-    <h1 class="title">Lọc ứng viên</h1>
-
+  </ion-header-bar>
   </ion-header-bar>
   <ion-content>
-    <div class="list">
-      <p style="margin-top: 8px;">&nbsp;</p>
-      <div class="padding color-gray">Vị trí cần tuyển</div>
-      <ion-item class="item-icon-right" ng-click="showjob()">
-        <span class="gotham-book">{{dataJob[newfilter.job]}}</span>
-        <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-      </ion-item>
-      <p style="margin-top: 8px;">&nbsp;</p>
-      <div class="padding color-gray">Yêu cầu kinh nghiệm tối thiểu</div>
-      <ion-item class="range range-positive" id="profile-range2">{{newfilter.experience}} tháng
-        <input type="range" on-tap="onTap($event)" on-drag="onTap($event)" value="{{filter.experience}}" min="0"
-               max="50" step="0.5" name="distance" ng-model="newfilter.experience">
-      </ion-item>
-      <p style="margin-top: 8px;">&nbsp;</p>
-      <div class="padding color-gray">Ca làm việc</div>
-      <ion-item class="item-icon-right" ng-click="showtime()">
-        <span class="gotham-book">{{time[newfilter.time]}}</span>
-        <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-      </ion-item>
-    </div>
-    <div class="list">
-
-      <p style="margin-top: 8px;">&nbsp;</p>
-      <div class="padding color-gray">Bán kính tìm kiếm</div>
-      <ion-item class="range range-positive" id="profile-range2">{{newfilter.distance}} km
-        <input type="range" on-tap="onTap($event)" on-drag="onTap($event)" value="{{filter.distance}}" min="0"
-               max="50" step="0.5" name="distance" ng-model="newfilter.distance">
-      </ion-item>
+    <div class="filterHeader" id="job-list-item-divider16"><h4>Vị trí bạn cần tuyển?</h4> </div>
+    <ion-item class="item-icon-right" ng-click="showjob()">
+      <span ng-hide="newfilter.job" class="gotham-book">Công việc</span>
+      <span class="gotham-book">{{dataJob[newfilter.job]}}</span>
+      <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+    </ion-item>
+    <div class="filterHeader" id="job-list-item-divider16">
+      <h4>Hãy giúp chúng tôi tìm ra ứng viên cho bạn</h4>
+      <span>Chỉ lựa chọn các tiêu chí bạn cần</span>
 
     </div>
+    <ion-toggle ng-model="newfilter.figure" toggle-class="toggle-positive" id="job-toggle11">Ưu tiên ngoại hình
+    </ion-toggle>
+    <ion-toggle ng-model="newfilter.experience" toggle-class="toggle-positive" id="job-toggle12">Đã có kinh nghiệm
+    </ion-toggle>
+    <label class="item item-input" id="job-input15">
+      <span class="input-label">Chiều cao tối thiểu (cm)</span>
+      <input ng-model="storeData.job[key].unit" type="number" placeholder="">
+    </label>
+    <ion-item class="range range-positive" id="profile-range2">Bán kính tìm kiếm: {{newfilter.distance}} km
+      <input type="range" on-tap="onTap($event)" on-drag="onTap($event)" value="{{filter.distance}}" min="0"
+             max="50" step="0.5" name="distance" ng-model="newfilter.distance">
+    </ion-item>
+    <label class="item item-select" id="job-select6">
+      <span class="input-label">Giới tính</span>
+      <select ng-model="newfilter.sex">
+        <option></option>
+        <option value="male">Nam</option>
+        <option value="female">Nữ</option>
+      </select>
+    </label>
+    <label class="item item-select" id="job-select6">
+      <span class="input-label">Ngoại ngữ</span>
+      <select ng-model="newfilter.languages">
+        <option ng-repeat="(key,value) in dataLanguages" value="{{key}}">{{dataLanguages[key]}}</option>
+      </select>
+    </label>
+
+    <div class="filterHeader" id="job-list-item-divider16">
+      <h4>Đăng tin tuyển dụng</h4></div>
+    <ion-toggle style="    background-color: rgb(245, 245, 245);
+    border: hidden;" ng-model="newfilter.public" toggle-class="toggle-positive" id="job-toggle11">Đăng công khai công
+      việc này
+    </ion-toggle>
+    <label class="item item-select" id="job-select6">
+      <span class="input-label">Hình thức</span>
+      <select ng-model="newfilter.working_type">
+        <option ng-repeat="(key,value) in CONFIG.data.working_type" value="{{key}}">
+          {{value}}
+        </option>
+      </select>
+    </label>
+    <label class="item item-input" id="job-input9">
+      <span class="input-label">Lương (đơn vị: VND)</span>
+      <input ng-model="newfilter.salary" type="number" placeholder="">
+    </label>
+    <label class="item item-select" id="job-select3">
+      <span class="input-label">Tính theo</span>
+      <select ng-model="newfilter.type">
+        <option value="hour">VND/giờ</option>
+        <option value="month">VND/tháng</option>
+      </select>
+    </label>
+
+
+    <label class="item item-input" id="job-input15">
+      <span class="input-label">Số lượng</span>
+      <input ng-model="newfilter.unit" type="number" placeholder="">
+    </label>
+    <label class="item item-input" id="job-input15">
+      <span class="input-label">Hạn chót</span>
+      <input ng-model="newfilter.deadline" type="date" placeholder="">
+    </label>
+
+
     <div>
       <button id="profile-button57"
               class="button button-block" style="color: red"

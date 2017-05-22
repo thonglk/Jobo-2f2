@@ -1,115 +1,48 @@
 <ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()">
+  <ion-header-bar align-title="center" class="bar-light">
+
+    <h1 class="title" ng-click="editjob()">{{CONFIG.data.job[newfilter.job] || 'Khám phá'}}
+    </h1>
+
+  </ion-header-bar>
   <ion-content scroll="false">
-    <div class="bar" style="border: hidden">
-      <button class="button button-outline icon-left ion-android-options button-balanced" ng-click="editjob()">Lọc
-      </button>
-    </div>
-    <div ng-if="usercard.length == 0">
+
+
+    <div ng-hide="usercard.length > 0" style="align-content: center">
       <p style="    margin: 20px;
     text-align: center;
     padding-top: 50px;
-" class="ng-binding"
-      > Không có ứng viên nào đạt yêu cầu của bạn, hãy thay đổi bộ lọc tìm kiếm hoặc chỉ tìm những ứng viên xung
-        quanh và không quan trọng vị trí</p>
+" class="ng-binding">Hãy bắt đầu lọc hồ sơ các ứng viên và tìm ra người phù hợp cho yêu cầu của bạn</p>
       <div class="padding">
-        <button ng-click="changefilter()" class="jobo-button jobo-button-block jobo-button-calm">Tìm ứng viên xung
-          quanh
-        </button>
-      </div>
-    </div>
-    <div ng-if="!newfilter" style="align-content: center">
-      <p style="    margin: 20px;
-    text-align: center;
-    padding-top: 50px;
-" class="ng-binding"
-      > Hãy bắt đầu lọc hồ sơ các ứng viên và tìm ra người phù hợp cho yêu cầu của bạn</p>
-      <div class="padding">
-        <button ng-click="editjob()" class="button button-outline button-positive button-block">
-          Lọc ứng viên
+        <button ui-sref="employer.dash" class="jobo-button jobo-button-block jobo-button-calm">
+          Bạn cần tuyển vị trí gì?
         </button>
       </div>
     </div>
 
-    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)" slides-per-view="initSlide()">
 
-      <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard | limitTo:limit" end-repeat>
-        <div class="spacer" style="height: 30px"></div>
-        <div class="list card" id="jobo-card24">
-          <ion-item ng-click="gotosprofile(card.userid)" class="item-thumbnail-left item-icon-right light" style=" background: -webkit-linear-gradient(to left, #1FBDF1 , #39DFA5); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to left, #1FBDF1 , #39DFA5);"
-                    id="jobo-list-item10">
-            <img src='{{card.photourl}}'>
-            <h2light>{{card.name}}
+    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)">
+      <!-- <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard | limitTo:limit" end-repeat> -->
+      <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard">
+        <div class="card">
+          <a href="#/view/profile/{{card.userId}}">
+            <img ng-src="{{card.avatar || '/img/macdinh.jpg'}}">
 
-              <p style="color: #FFFFFF"><i class="ion-location"></i> {{ card.distance }} km</p>
-              <p style="color: #FFFFFF"><i class="ion-location"></i> {{ card.distance }} km</p>
+          </a>
 
-
-              <a href="#/viewprofile/{{ card.userid}}" style="color: #ff6961"><i
-                class="icon ion-ios-heart" ng-if="usercurent.stars[card.userid]"></i></a>
-            </h2light>
-            <i
-              class="icon ion-ios-heart" ng-if="card.likeMe"></i>
-
-          </ion-item>
-          <div ng-if="card.jobhistory">
-            <div id="jobo-container1">
-              <ion-list id="jobo-list8">
-                <ion-item class="item-icon-left dark" id="jobo-list-item14">
-                  <i class="icon ion-briefcase"></i>Kinh nghiệm làm việc
-                </ion-item>
-              </ion-list>
-            </div>
-            <div id="jobo-container2">
-              <div class="item item-body" id="jobo-list-item-container15" style="padding-top: 0px;">
-                <div id="jobo-markdown18" class="show-list-numbers-and-dots"
-                     ng-repeat="job in card.jobhistory ">
-                  <p style="margin-top:0px;color:#000000;">
-                    <strong ng-repeat="(key,value) in job.title">{{dataJob[key]}},</strong> - {{job.company}}</p>
-                </div>
-              </div>
-            </div>
-            <hr style="margin-bottom: 0px;">
-          </div>
-          <div id="jobo-container3">
-            <ion-list id="jobo-list12">
-              <ion-item class="item-icon-left" id="jobo-list-item27">
-                <i class="icon ion-android-star"></i>Quan tâm
-              </ion-item>
-            </ion-list>
-          </div>
-          <div id="jobo-container4">
-            <div class="item item-body" id="jobo-list-item-container16"
-                 style="padding-top: 0px;border-bottom-width: 0px;">
-              <label ng-repeat="(key,value) in card.job | myLimitTo:5">
-                <button ng-click="applyThis(card.userid,key)"
-                        class="button margin-top-5 button-small button-positive button-clicked {{selectedJob[card.userid][key] ? 'button-positive' : 'button-outline' }}">
-                  {{dataJob[key]}}
-                </button>
-              </label>
-            </div>
-            <div class="padding">
-              <div id="profile2-button-bar9" class="button-bar">
-                <button ng-click="like(card,0)" id="profile2-button61"
-                        class="button button-positive  button-block icon ion-android-checkbox-outline"> Tuyển ứng viên
-                </button>
-                <button ng-click="like(card,-1)" id="profile2-button62" class="button button-dark  button-block">Ẩn</button>
-              </div>
-            </div>
+          <div class="item jobseeker-card">
+            <i class="ion-flash color-coral font-150 pull-right" ng-if="card.act.status == 0 && card.act.type == 2"></i>
+            <h3 class="title">{{card.name || 'Your Name Here'}} <span class="ion-record color-green" style="font-size: xx-small" ng-if="card.presence.status == 'online'"></span></h3>
+            <p>
+              <span ng-repeat="(key,value) in card.job">{{dataJob[key]}}, </span>
+            </p>
+            <p>
+              {{card.distance}} km</p>
           </div>
         </div>
-        <p class="animated fadeInUp" style="text-align: center;background: -webkit-linear-gradient(#1FBDF1 , #39DFA5);
-   -webkit-background-clip: text;
-   -webkit-text-fill-color: transparent;" ng-if="userliked[card.userid]">Bạn đã thích ứng viên này!</p>
-        <p class="animated fadeInUp" style="text-align: center" ng-if="userdisliked[card.userid]">Bạn đã không thích
-          ứng viên này!</p>
-
 
       </ks-swiper-slide>
     </ks-swiper-container>
 
-    <div class="ptinder-buttons padding" ng-if="usercard.length != 0">
-
-    </div>
   </ion-content>
 </ion-view>
