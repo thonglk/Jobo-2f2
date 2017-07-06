@@ -68,7 +68,7 @@
     <label class="item item-select" id="job-select6">
       <span class="input-label">Ngoại ngữ</span>
       <select ng-model="newfilter.languages">
-        <option ng-repeat="(key,value) in dataLanguages" value="{{key}}">{{dataLanguages[key]}}</option>
+        <option ng-repeat="(key,value) in CONFIG.data.languages" value="{{key}}">{{Lang[key]}}</option>
       </select>
     </label>
 

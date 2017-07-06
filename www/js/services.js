@@ -8,121 +8,109 @@ angular.module('starter.services', [])
     }
   })
 
-  .service('AuthUser', function ($rootScope, $q, $http, CONFIG, $timeout, $state,$cordovaSocialSharing) {
+  .service('AuthUser', function ($rootScope, $q, $http, CONFIG, $timeout, $state, $cordovaSocialSharing, $ionicPopup, $cordovaToast, $ionicLoading, $ionicModal) {
     var messaging = firebase.messaging();
     var db = firebase.database()
 
     this.fcm = function () {
+      checkFCM()
 
-      if ($rootScope.platforms == "app") {
-        FCMPlugin.onTokenRefresh(function (token) {
-          console.log(token)
-          $timeout(getTheToken, 1000);
-        });
-      }
-      function checkFCM() {
-
-        if (typeof FCMPlugin != 'undefined') {
-          $timeout(getTheToken, 1000);
-
-          FCMPlugin.onNotification(
-            function (data) {
-              console.log("data", data);
-              if (data.wasTapped) {
-
-                window.location.href = data.goto;
-                //Notification was received on device tray and tapped by the user.
-              } else {
-
-                var options = {
-                  message: data.body,
-                  buttonName: "Xem thêm",
-                  buttonFunction: $rootScope.goTo
-                };
-                $rootScope.goTo = function () {
-                  $state.go(data.goto)
-                }
-                $snackbar.show(options);
-              }
-            }
-          );
-
-        } else {
-          console.log("null fcm");
-          $timeout(checkFCM, 1000);
-        }
+    }
+    this.$back = function () {
+      window.history.back();
+    };
+    this.saveMobileToken = function () {
+      if (typeof FCMPlugin != 'undefined') {
+        getTheToken()
 
       }
+    }
+    function checkFCM() {
+      if (typeof FCMPlugin != 'undefined') {
+        console.log("check done fcm");
 
-      function getTheToken() {
-        FCMPlugin.getToken(
-          function (token) {
-            if (token) {
-              $rootScope.tokenuser = token;
-              console.log("I got the token: " + token);
-              $rootScope.service.Ana(token, 'get_token', {})
+        FCMPlugin.onNotification(
+          function (data) {
+            console.log("data", data);
+            if (data.wasTapped) {
+
+              window.location.href = data.linktoaction;
+              //Notification was received on device tray and tapped by the user.
             } else {
-              console.log("null token");
-              $timeout(getTheToken, 1000);
-
-
+              $cordovaToast.showShortTop(data.body)
             }
-          },
-          function (err) {
-            console.log('error retrieving token: ' + err);
           }
         );
+        FCMPlugin.onTokenRefresh(function (token) {
+          console.log('tokenRefresh', token)
+          getTheToken()
+        });
+
+        getTheToken()
+
+      } else {
+        console.log("null fcm");
       }
 
     }
 
+    function getTheToken() {
+      FCMPlugin.getToken(
+        function (token) {
+          if (token) {
+            $rootScope.tokenuser = token;
+            console.log("I got the token: " + token);
+            firebase.database().ref('user/' + $rootScope.userId)
+              .update({mobileToken: token})
+            $rootScope.service.Ana('get_token', token)
+          } else {
+            console.log("null token");
+            $timeout(getTheToken, 1000);
+          }
+        },
+        function (err) {
+          console.log('error retrieving token: ' + err);
+        }
+      );
+    }
+    this.getNotification = function (userId) {
+      firebase.database().ref('notification/' + userId).orderByChild('createdAt').limitToFirst(10)
+        .on('value', function (snap) {
+          $timeout(function () {
+            $rootScope.notification = $rootScope.service.ObjectToArray(snap.val())
+            console.log($rootScope.notification)
+            $rootScope.newNoti = $rootScope.service.calNoti($rootScope.notification)
+          })
+        })
+    }
     this.user = function () {
       var output = {},
         deferred = $q.defer();
-      if ($rootScope.userData) {
-        console.log('no Auth');
-        output = $rootScope.userData;
-        if ($rootScope.userData.currentStore) {
-          $rootScope.storeId = $rootScope.userData.currentStore
-        }
-        if (!$rootScope.userData.verifyEmail) {
-          $rootScope.verifyEmail = true
-        }
-        if (!$rootScope.userData.webToken) {
-          $rootScope.webToken = true
-        }
-        $rootScope.type = $rootScope.userData.type;
-        deferred.resolve(output);
+      firebase.auth().onAuthStateChanged(function (user) {
+        console.log('Auth')
+        if (user) {
+          $rootScope.userId = user.uid;
+          firebase.database().ref('user/' + $rootScope.userId)
+            .once('value', function (snap) {
+              $rootScope.userData = snap.val()
+              $rootScope.type = $rootScope.userData.type;
+              if ($rootScope.userData.currentStore) {
+                $rootScope.storeId = $rootScope.userData.currentStore
+              }
+              output = $rootScope.userData;
+              console.log(output)
+              deferred.resolve(output);
+            })
+          // User is signed in.
+        } else {
+          $rootScope.type = 0;
 
-      } else {
-        firebase.auth().onAuthStateChanged(function (user) {
-          console.log('Auth')
-          var firsttime
-          if (user) {
-            $rootScope.userId = user.uid;
-            firebase.database().ref('user/' + $rootScope.userId)
-              .on('value', function (snap) {
-                $rootScope.userData = snap.val()
-                $rootScope.type = $rootScope.userData.type;
-                if ($rootScope.userData.currentStore) {
-                  $rootScope.storeId = $rootScope.userData.currentStore
-                }
-                output = $rootScope.userData;
-                console.log(output)
-                deferred.resolve(output);
-              })
-            // User is signed in.
-          } else {
-            $rootScope.type = 0;
-
-            output = {type: 0}
-            console.log(output)
-            deferred.resolve(output);
-            // No user is signed in.
-          }
-
-        })
-      }
+          output = {type: 0}
+          console.log(output)
+          deferred.resolve(output);
+          // No user is signed in.
+        }
+      });
 
       return deferred.promise;
     }
@@ -162,7 +150,7 @@ angular.module('starter.services', [])
           }
           $rootScope.service.Ana('match', {userId: card.userId, job: jobOffer})
 
-          itsMatch(output.storeId, output.userId)
+          itsMatch(card)
         } else {
           if (card.act && card.act.jobUser) {
 
@@ -234,34 +222,39 @@ angular.module('starter.services', [])
             userId: $rootScope.userId
 
           }
-          itsMatch(output.storeId, output.userId)
+          itsMatch(card);
           $rootScope.service.Ana('match', {storeId: card.storeId, job: jobOffer})
         } else {
           if (card.act && card.act.jobUser) {
             selectedJob = Object.assign(selectedJob, card.act.jobUser)
           }
-          likeActivity.update({
-            likeAt: new Date().getTime(),
-            type: 2,
-            status: action,
-            jobUser: selectedJob,
-            employerId: card.createdBy,
-            storeId: likedId,
-            storeName: card.storeName,
-            storeAvatar: card.avatar || "",
-            userAvatar: $rootScope.userData.avatar || "",
-            userName: $rootScope.userData.name,
-            userId: $rootScope.userId
-          })
-          output = {
-            result: 0,
-            storeId: likedId,
-            userId: $rootScope.userId
+          if ($rootScope.userData.avatar && $rootScope.userData.name) {
+            likeActivity.update({
+              likeAt: new Date().getTime(),
+              type: 2,
+              status: action,
+              jobUser: selectedJob,
+              employerId: card.createdBy,
+              storeId: likedId,
+              storeName: card.storeName,
+              storeAvatar: card.avatar || "",
+              userAvatar: $rootScope.userData.avatar || "",
+              userName: $rootScope.userData.name,
+              userId: $rootScope.userId
+            })
+            output = {
+              result: 0,
+              storeId: likedId,
+              userId: $rootScope.userId
+            }
+            $rootScope.clicked[card.storeId] = true
+            $rootScope.service.Ana('like', {storeId: card.storeId, job: jobOffer})
+            $cordovaToast.showShortTop('Bạn đã ứng tuyển vào ' + card.storeName)
+          } else {
+            $rootScope.service.Ana('like_error', {storeId: card.storeId, job: jobOffer})
+            $cordovaToast.showShortTop('Bạn cần cập nhật ảnh đại diện và tên để ứng tuyển')
+            $state.go('profile')
           }
-          $rootScope.clicked[card.storeId] = true
-          $rootScope.service.Ana('like', {storeId: card.storeId, job: jobOffer})
-          $cordovaToast.showShortTop('Bạn đã ứng tuyển vào ' + card.storeName)
-
         }
         deferred.resolve(output);
         return deferred.promise;
@@ -275,61 +268,9 @@ angular.module('starter.services', [])
 
     }
 
-    this.itsMatch = function (storeId, userId) {
-      ModalService.showModal({
-        templateUrl: 'templates/modals/match.html',
-        controller: 'ModalMatchCtrl',
-        inputs: {
-          storeId: storeId,
-          userId: userId
-        }
-      }).then(function (modal) {
-        modal.element.modal();
-        modal.close.then(function (result) {
-
-        });
-      });
+    this.itsMatch = function (card) {
+      $cordovaToast.showShortCenter(card.storeName + ' và ' + card.userId + ' đã tương hợp với nhau, hãy đặt lịch phỏng vấn!')
     }
-    this.checkPermit = function checkPermit(storeId, userId) {
-      var check = '';
-      var defer = $q.defer()
-      var reactRef = firebase.database().ref('activity/like/' + storeId + ":" + userId)
-      reactRef.once('value', function (snap) {
-        var card = snap.val()
-        if (card) {
-          //có từng react
-          if (card.status == 1) {
-            //đã match
-            check = 'match'
-          } else if (card.status == 0 && card.type == 2) {
-            // user like store
-            check = 'uls'
-
-          } else if (card.status == 0 && card.type == 1) {
-            // store like user
-            check = 'slu'
-
-          } else if (card.status == -1 && card.type == 2) {
-
-            // user dislike store
-            check = 'sdu'
-
-          } else if (card.status == -1 && card.type == 1) {
-            // store dislike user
-            check = 'uds'
-
-          }
-
-        } else {
-          //chưa từng react
-          check = 'yet';
-
-        }
-        defer.resolve(check)
-      })
-      return defer.promise
-    }
-
 
     this.timeAgo = function (timestamp) {
       var time;
@@ -449,7 +390,7 @@ angular.module('starter.services', [])
     };
 
     this.nextLine = function (text) {
-      if(text){
+      if (text) {
         return text.split(/\r\n|\r|\n/g);
       }
     }
@@ -564,70 +505,142 @@ angular.module('starter.services', [])
       return stringJob.substr(0, lengaf);
 
     }
-    this.saveWebToken = function () {
 
-      getToken();
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-          navigator.serviceWorker.register('/firebase-messaging-sw.js').then(function (registration) {
-            // Registration was successful
-            console.log('ServiceWorker registration successful with scope: ', registration);
-            $rootScope.service.Ana('serviceWorker', {registration: 'ServiceWorker registration successful with scope: ' + registration})
 
-          }).catch(function (err) {
-            // registration failed :(
-            $rootScope.service.Ana('serviceWorker', {registration: 'ServiceWorker registration failed: ' + err})
+    this.facebookLogin = function (type) {
 
-            console.log('ServiceWorker registration failed: ', err);
-          });
-        });
+      var fbLoginSuccess = function (userData) {
+        var accessToken = userData.authResponse.accessToken;
+        var credential = firebase.auth.FacebookAuthProvider.credential(accessToken);
+
+        SignInWithCredential(credential);
+        // Sign in with the credential from the Facebook user.
+
+      };
+      facebookConnectPlugin.login(["public_profile"], fbLoginSuccess,
+        function loginError(error) {
+          console.error(error)
+        }
+      );
+
+      function SignInWithCredential(cre) {
+        firebase.auth().signInWithCredential(cre).then(function (result) {
+          $rootScope.userId = result.uid;
+
+          console.log("SignInWithCredential", JSON.stringify(result));
+
+          var userData = {
+            userId: result.uid,
+            name: result.displayName,
+            email: result.email,
+            createdAt: new Date().getTime()
+          };
+
+          checkSignupOrSignIn(userData, type);
+        })
       }
-    }
 
-    function getToken() {
-      messaging.getToken()
-        .then(function (currentToken) {
-          if (currentToken) {
-            if ($rootScope.userId) {
-              firebase.database().ref('user/' + $rootScope.userId).update({webToken: currentToken})
-              $rootScope.service.Ana('getToken', {token: currentToken});
-              console.log('save token')
+      function checkSignupOrSignIn(userData, type) {
+        var userRef = firebase.database().ref("user/" + userData.userId);
+        userRef.once('value', function (snap) {
+          console.log('checkSignupOrSignIn', type, JSON.stringify(snap.val()));
+          if (snap.val()) {
+            console.log('Đăng nhập')
+            type = snap.val().type;
+            if (type == 1) {
+              console.log('employer go to');
+
+              $state.go('employer.dash')
+            }
+            if (type == 2) {
+              $state.go('jobseeker.dash')
+            }
+          } else {
+            console.log('Đăng ký');
+
+            if (!type) {
+
+              // A confirm dialog
+              var confirmPopup = $ionicPopup.confirm({
+                title: 'Bạn là?',
+                cssClass: 'animated bounceInUp dark-popup',
+                template: 'Hãy chọn đúng vai trò sử dụng của bạn,',
+                scope: null, // Scope (optional). A scope to link to the popup content.
+                buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                  text: 'Nhà tuyển dụng',
+                  type: 'button-default',
+                  onTap: function (e) {
+                    type = 1;
+                    return type;
+                  }
+                }, {
+                  text: 'Ứng viên',
+                  type: 'button-positive',
+                  onTap: function (e) {
+                    type = 2;
+                    return type;
+                  }
+                }]
+              });
+
+              confirmPopup.then(function (res) {
+                if (res) {
+                  console.log('You are sure', res);
+                  createDataUser(userRef, userData, type)
+                } else {
+                  console.log('You are not sure');
+                }
+              });
+            }
+            if (type) {
+              console.log('has type');
+
+              if (!userData.email) {
+                // A confirm dialog
+                $ionicPopup.confirm({
+                  title: 'Email của bạn?',
+                  cssClass: 'animated bounceInUp dark-popup',
+                  template: '<label class="item item-input"><input type="email" ng-model="username" id="user_name" placeholder="Email"></label>',
+                  scope: $rootScope, // Scope (optional). A scope to link to the popup content.
+                  buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                    text: 'OK',
+                    type: 'button-default',
+                    onTap: function (e) {
+                      userData.email = $rootScope.username;
+                    }
+                  }]
+                }).then(function (res) {
+                  if (res) {
+                    console.log('You are sure', res);
+                    createDataUser(userRef, userData, type)
+                  } else {
+                    console.log('You are not sure');
+                  }
+                });
+              }
+
+              createDataUser(userRef, userData, type)
             }
 
-          } else {
-            // Show permission request.
-            console.log('No Instance ID token available. Request permission to generate one.');
-            requestPermission();
-            // Show permission UI.
+
           }
         })
-        .catch(function (err) {
-          console.log('An error occurred while retrieving token. ', err);
-        })
-    }
 
+      }
 
-    function requestPermission() {
-      messaging.requestPermission()
-        .then(function () {
-          console.log('Notification permission granted.');
-          // TODO(developer): Retrieve an Instance ID token for use with FCM.
-          // ...
-          getToken();
-          // Get Instance ID token. Initially this makes a network call, once retrieved
-          // subsequent calls to getToken will return from cache.
-
-
-        })
-        .catch(function (err) {
-          $rootScope.service.Ana('requestPermission', {err: err})
-
-          console.log('Unable to get permission to notify.', err);
-        });
-
-
-    }
-
+      function createDataUser(userRef, userData, type) {
+        userData.type = type;
+        userRef.update(userData);
+        console.log("create username successful");
+        $ionicLoading.hide();
+        if (type == 1) {
+          $state.go('store')
+        }
+        if (type == 2) {
+          $state.go('profile')
+        }
+      }
+    };
     this.loadJob = function (storeData) {
       var output = [],
         deferred = $q.defer();
@@ -646,12 +659,16 @@ angular.module('starter.services', [])
 
       return deferred.promise;
     }
-    this.readNoti = function (id) {
+    this.readNoti = function (id,card) {
       if ($rootScope.type == 1) {
         db.ref('notification/' + $rootScope.storeId).child(id).update({update: new Date().getTime()})
       } else if ($rootScope.type == 2) {
         db.ref('notification/' + $rootScope.userId).child(id).update({update: new Date().getTime()})
       }
+      if(card.storeId){
+        $rootScope.setCurrentStore(card.storeId)
+      }
+
     }
     this.calNoti = function (noti) {
       var i = 0
@@ -662,170 +679,24 @@ angular.module('starter.services', [])
       })
       return i
     }
-    $rootScope.pressArrow = function ($event, textmessage) {
-      console.log($event.keyCode);
-      if ($event.keyCode == 13 && textmessage && textmessage.length != 0) {
-        $rootScope.sendMessage(textmessage)
-
-      }
-
-    }
     this.chatToUser = function (chatedId) {
-      $state.go('employer.chat-detail', {chatId: chatedId})
+      $state.go('employer_chat-detail', {chatId: chatedId})
     }
-    this.closeChat = function () {
-      $rootScope.chat = false
-    }
-
     this.chatToStore = function (chatedId) {
-      $rootScope.aside = true
-      $rootScope.chat = true
-
-      if (chatedId) {
-        $rootScope.chatUser = {chatedId: chatedId}
-        //có user cụ thể
-        loadMessage(chatedId, $rootScope.userId);
-      }
-
-      // Get list
-
-      $('#demo').daterangepicker({
-        "singleDatePicker": true,
-        "showDropdowns": true,
-        "timePicker": true,
-        "startDate": "03/16/2017",
-        "endDate": "03/22/2017",
-      }, function (start, end, label) {
-        console.log("New date range selected: '" + start.format() + ' to ' + end.format('YYYY-MM-DD') + 'predefined range: ' + label);
-        var date = new Date(start.format()).getTime()
-        console.log(date)
-        setInterview(date)
-      });
-
-      function setInterview(timeInterview) {
-        console.log(timeInterview);
-        var timeInterviewRef = firebase.database().ref('activity/' + $rootScope.storeId + ":" + chatedId)
-        timeInterviewRef.update({interview: new Date().getTime()});
-        var newPostRef = firebase.database().ref().child('activity/interview/' + $rootScope.storeId + ":" + chatedId)
-
-        var message = {
-          createdAt: new Date().getTime(),
-          interview: timeInterview,
-          place: $rootScope.storeData.address,
-          userId: chatedId,
-          storeId: $rootScope.storeId,
-          status: 0,
-          type: 1
-        };
-        newPostRef.update(message);
-
-      }
-
-      function loadMessage(storeId, chatedId) {
-        var ProfileRef = firebase.database().ref('store/' + storeId);
-        ProfileRef.once('value', function (snap) {
-          $timeout(function () {
-            $rootScope.chatUser.data = snap.val();
-            console.log('$rootScope.chatUser.data', $rootScope.chatUser.data)
-
-            var likeAct = firebase.database().ref('activity/like/' + storeId + ':' + chatedId);
-            likeAct.on('value', function (snap) {
-              $timeout(function () {
-                $rootScope.chatUser.act = snap.val();
-                console.log('$rootScope.profileData.act', $rootScope.chatUser.act)
-              })
-            });
-          })
-        })
-
-        var messageRef = firebase.database().ref('chat/' + storeId + ':' + chatedId);
-        messageRef.on('value', function (snap) {
-          $timeout(function () {
-            $rootScope.chatUser.messages = snap.val();
-            console.log($rootScope.chatUser.messages);
-          })
-        })
-
-
-        var newPostRef = firebase.database().ref().child('activity/interview/' + storeId + ":" + chatedId)
-        newPostRef.on('value', function (snap) {
-          $timeout(function () {
-            $rootScope.chatUser.interview = snap.val();
-
-          })
-        })
-      }
-
-      $rootScope.sendMessage = function (textmessage) {
-        var newPostKey = firebase.database().ref().child('chat/' + chatedId + ":" + $rootScope.userId).push().key;
-        var newPostRef = firebase.database().ref().child('chat/' + chatedId + ":" + $rootScope.userId + '/' + newPostKey)
-        var message = {
-          key: newPostKey,
-          createdAt: new Date().getTime(),
-          text: textmessage,
-          sender: $rootScope.userId,
-          status: 0,
-          type: 0
-        };
-
-
-        // if you do a web service call this will be needed as well as before the viewScroll calls
-        // you can't see the effect of this in the browser it needs to be used on a real device
-        // for some reason the one time blur event is not firing in the browser but does on devices
-
-        //MockService.sendMessage(message).then(function(data) {
-        $rootScope.input.message = '';
-
-        newPostRef.update(message);
-        console.log(message)
-        //});
-      };
-
-      $rootScope.showphone = function (chatedId) {
-        var employerId = $rootScope.chatUser.data.createdBy
-        if ($rootScope.chatUser.act && $rootScope.chatUser.act.status == 1) {
-          var contactRef = firebase.database().ref('user/' + employerId)
-          contactRef.once('value', function (snap) {
-            $timeout(function () {
-              $rootScope.contact = snap.val()
-              if (!$rootScope.showContact) {
-                $rootScope.showContact = {}
-              }
-              $rootScope.showContact[chatedId] = $rootScope.contact.phone + ' | ' + $rootScope.contact.email
-
-            })
-          })
-        } else {
-          $cordovaToast.showShortTop('Bạn chưa tương hợp với nhà tuyển dụng này!')
-        }
-
-      }
-      $rootScope.mustPermit = function () {
-        ModalService.showModal({
-          templateUrl: 'templates/modals/permit.html',
-          controller: 'ModalPermitCtrl'
-        }).then(function (modal) {
-          modal.element.modal();
-          modal.close.then(function (result) {
-            console.log(result)
-
-          });
-        });
-      }
-
-
-      $rootScope.input = {
-        message: localStorage['userMessage-' + chatedId] || ''
-      };
-
-      var messageCheckTimer;
-
-      var footerBar; // gets set in $ionicView.enter
-      var scroller;
-      var txtInput; // ^^^
-
+      $state.go('jobseeker_chat-detail', {chatId: chatedId})
     }
-
+    this.ObjectToArray = function (Object) {
+      var array = []
+      for (var i in Object) {
+        array.push(Object[i])
+      }
+      return array
+    }
+    this.loadLang =  function (lang) {
+      firebase.database().ref('tran/' + lang).once('value', function (snap) {
+        $rootScope.Lang = snap.val()
+      });
+    }
     this.getFreeCredit = function () {
 
       var userRef = firebase.database().ref('user/' + $rootScope.userId)
@@ -855,7 +726,6 @@ angular.module('starter.services', [])
 
       });
     };
-
     this.changePassword = function (password) {
       var user = firebase.auth().currentUser;
       if (password.password == password.password2) {
@@ -877,6 +747,24 @@ angular.module('starter.services', [])
         $cordovaToast.showShortTop('Mật khẩu không trùng')
       }
     }
+
+
+    this.openSupportPopover = function () {
+
+      $ionicModal.fromTemplateUrl('templates/chat-support.html', {
+        scope: $rootScope,
+        animation: 'animated _zoomOut',
+        hideDelay: 920
+      }).then(function (modal) {
+        $rootScope.modalProfile = modal;
+        $rootScope.modalProfile.show();
+        $rootScope.closeSupportPopover = function () {
+          $rootScope.modalProfile.hide();
+        };
+
+      })
+    }
+
     this.logout = function () {
       firebase.auth().signOut().then(function () {
         // Sign-out successful.
@@ -889,19 +777,19 @@ angular.module('starter.services', [])
         console.log(error);
       });
     }
-    this.shareJob = function (message,image,link) {
+    this.shareJob = function (message, image, link) {
+
       $cordovaSocialSharing
         .shareViaFacebook(message, image, link)
-        .then(function(result) {
+        .then(function (result) {
           // Success!
-        }, function(err) {
+        }, function (err) {
           // An error occurred. Show a message to the user
         });
 
     }
 
   });
-;
 
 app.filter('myLimitTo', [function () {
   return function (obj, limit) {

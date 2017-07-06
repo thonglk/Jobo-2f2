@@ -12,9 +12,13 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
     $scope.onReadySwiper = function (swiper) {
       console.log('ready');
       $scope.swiper = swiper;
-      $scope.swiper.update();
-      if ($scope.swiper.activeIndex) {
+      if($scope.swiper){
+        $scope.swiper.update();
+
+      }else {
+        console.log('no swiper')
       }
+
 
     };
 
@@ -34,7 +38,12 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
             })
           } else {
             $scope.profileData.photo = [$scope.profileData.avatar]
-            $scope.swiper.update();
+            if($scope.swiper){
+              $scope.swiper.update();
+
+            }else {
+              console.log('no swiper')
+            }
             console.log('$scope.profileData.photo',$scope.profileData.photo)
 
           }

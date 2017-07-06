@@ -1,6 +1,6 @@
 <ion-modal-view ng-init="init()">
   <ion-content>
-    <i class="back-button ion-ios-close" ng-click="$back()"></i>
+    <i class="back-buttonk ion-ios-close" ng-click="$back()"></i>
     <div class="list">
       <ks-swiper-container initial-slide="0" pagination-is-active="true" pagination-cls="color-red" loop="false"
                            show-nav-buttons="false" parallax="true" slides-per-view="1" space-between="0"
@@ -13,6 +13,10 @@
       <ion-list class="list-borderless">
         <ion-item class="item-icon-right">
           <h2 class="font-130">{{profileData.name}}</h2>
+          <div class="aggregate-rating" ng-if="reviewData">
+            <span>{{ratingModel.average}}</span>/5
+            (<span>{{ratingModel.total}}</span> Reviews)
+          </div>
           <p>
           <ul style="list-style-type: none;padding-left: 0px;">
             <li>
@@ -36,8 +40,8 @@
         </ion-item>
       </ion-list>
       <div class="padding animated bounceInUp">
-        <div style="  padding-bottom: 10px;
-"><span>{{profileData.description}}</span>
+        <div style="padding-bottom: 10px;
+"><span ng-repeat="text in service.nextLine(profileData.description) track by $index">{{text}}<br></span>
         </div>
 
         <div class="hobby" ng-show="profileData.school || profileData.languages">
@@ -50,7 +54,7 @@
 
             </li>
             <li ng-show="profileData.languages"><strong>Ngoại ngữ:</strong>
-              <span ng-repeat="(key,value) in profileData.languages">{{dataLanguages[key]}}</span>
+              <span ng-repeat="(key,value) in profileData.languages">{{Lang[key]}}</span>
             </li>
           </ul>
 
@@ -70,7 +74,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-9" style="margin-left: 20px;">
                   <h4 style="margin-top: 0px">{{card.company}}</h4>
-                  <p>{{dataJob[card.job]}}</p>
+                  <p>{{Lang[card.job]}}</p>
                 </div>
               </div>
             </li>
@@ -79,16 +83,16 @@
         </div>
 
         <div class="hobby">
-          <h3> <i class="ion-heart"></i> Mong muốn</h3>
+          <h3><i class="ion-heart"></i> Mong muốn</h3>
           <div ng-if="profileData.job" style="margin: 5px 0"><strong>Vị trí:</strong>
-            <span ng-repeat="(key,value) in profileData.job">{{dataJob[key]}}, </span></div>
+            <span ng-repeat="(key,value) in profileData.job">{{Lang[key]}}, </span></div>
           <div ng-if="profileData.industry" style="margin: 5px 0"><strong>Lĩnh vực:</strong>
-            <span ng-repeat="(key,value) in profileData.industry">{{dataIndustry[key]}}, </span></div>
+            <span ng-repeat="(key,value) in profileData.industry">{{Lang[key]}}, </span></div>
           <div ng-if="profileData.working_type" style="margin: 5px 0"><strong>Hình thức:</strong>
-            {{CONFIG.data.working_type[profileData.working_type]}}
+            {{Lang[profileData.working_type]}}
           </div>
           <div ng-if="profileData.time" style="margin: 5px 0"><strong>Thời gian sẵn sàng:</strong>
-            <span ng-repeat="(key,value) in profileData.time">{{dataTime[key]}}, </span></div>
+            <span ng-repeat="(key,value) in profileData.time">{{Lang[key]}}, </span></div>
           <div ng-if="profileData.expect_salary" style="margin: 5px 0"><strong>Mức lương mong
             muốn:</strong>
             {{profileData.expect_salary + ' triệu đồng/tháng'}}
@@ -110,7 +114,7 @@
       <button ng-click="like(profileData,0,key)"
               type="button"
               class="button button-outline button-small button-assertive" style="border-radius: 0; margin: 5px"
-              ng-repeat="(key,value) in storeData.job">{{dataJob[key]}}
+              ng-repeat="(key,value) in storeData.job">{{Lang[key]}}
       </button>
     </div>
     <div style="width: 100%;display: flex">

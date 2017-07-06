@@ -1,39 +1,14 @@
 
-<!--<div ng-if="!interviewList" style="align-content: center" >-->
-<!--<p style="    margin: 20px;-->
-<!--text-align: center;-->
-<!--padding-top: 50px;-->
-<!--" class="ng-binding"-->
-<!--&gt; Bạn chưa tương tác với bất kì nhà tuyển dụng nào</p>-->
-<!--<div class="padding">-->
-<!--<button ui-sref="jobseeker.dash" class="jobo-button jobo-button-block jobo-button-calm">-->
-<!--Lọc công việc-->
-<!--</button>-->
-<!--</div>-->
-<!--</div>-->
-<!--<div class="list card" id="interview-card210" ng-repeat="card in interviewList">-->
-<!--<ion-item id="interview-list-item58">Ứng viên {{card.name}}</ion-item>-->
-<!--<ion-item class="item-icon-left" id="interview-list-item65">-->
-<!--<i class="icon ion-ios-time-outline"></i>{{card.interview | date: hh:mm+' '+dd/mm/yyyy}}-->
-<!--</ion-item>-->
-<!--<ion-item class="item-icon-left" id="interview-list-item66">-->
-<!--<i class="icon ion-location"></i>{{card.place}}-->
-<!--</ion-item>-->
-<!--<ion-item ng-if="card.status == 1" class="item-icon-left item-icon-right positive" id="interview-list-item67">-->
-<!--<i class="icon ion-android-clipboard"></i>-->
-<!--<span class="item-note">Thành công</span>-->
-<!--<i class="icon ion-android-done"></i>-->
-<!--</ion-item>-->
-<!--<ion-item ng-if="card.status == -1" class="item-icon-left item-icon-right assertive" id="interview-list-item68">-->
-<!--<i class="icon ion-android-clipboard"></i>Kết quả-->
-<!--<span class="item-note">Trượt</span>-->
-<!--<i class="icon ion-android-cancel"></i>-->
-<!--</ion-item>-->
-<!--</div>-->
 <ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()">
-  <ion-header-bar align-title="center" class="bar-light">
-    <h1 class="title" ng-click="editjob()">{{CONFIG.data.job[newfilter.job] || 'Khám phá'}}
+  <ion-header-bar align-title="left" class="bar-light">
+
+    <h1 class="title" ng-click="editjob()">{{Lang[newfilter.job] || 'Khám phá'}}
     </h1>
+    <button class="button button-outline button-small" ui-sref="jobseeker.dash">
+      Công việc
+    </button>
+
+
   </ion-header-bar>
 
   <ion-content scroll="false">
@@ -64,7 +39,7 @@
                                                                            ng-if="card.presence.status == 'online'"></span>
             </h3>
             <p>
-              <span ng-repeat="(key,value) in card.job">{{dataJob[key]}}, </span>
+              <span ng-repeat="(key,value) in card.job">{{Lang[key]}}, </span>
             </p>
             <p>
               {{card.distance}} km</p>

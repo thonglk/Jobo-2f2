@@ -97,9 +97,8 @@ var app = angular.module('starter', [
         controller: "resetController"
       })
 
-
       .state('intro', {
-        url: '/intro',
+        url: '/intro?id',
         templateUrl: "templates/intro.html",
         controller: "introController"
       })
@@ -108,6 +107,13 @@ var app = angular.module('starter', [
         url: '/dash',
         templateUrl: "templates/dash.html",
         controller: "DashCtrl"
+      })
+
+
+      .state('support', {
+        url: '/support',
+        templateUrl: "templates/chat-support.html",
+        controller: "SupporterCtrl"
       })
       // Employer states
 
@@ -141,14 +147,10 @@ var app = angular.module('starter', [
           }
         }
       })
-      .state('employer.chat-detail', {
-        url: '/chats/:chatId',
-        views: {
-          'tab-chats': {
-            templateUrl: 'employer/chat-detail.html',
-            controller: 'eChatDetailCtrl'
-          }
-        }
+      .state('employer_chat-detail', {
+        url: '/echats/:chatId',
+        templateUrl: 'employer/chat-detail.html',
+        controller: 'eChatDetailCtrl'
       })
 
       .state('employer.account', {
@@ -205,19 +207,13 @@ var app = angular.module('starter', [
 
       })
 
-      .state('convert', {
-        url: '/convert',
-        templateUrl: 'templates/convert.html',
-        controller: 'convertCtrl'
-      })
-
       // Jobseeker states
 
       .state('jobseeker', {
         url: '/jobseeker',
         abstract: true,
         templateUrl: 'jobseeker/tabs.html',
-        controller: 'jobseekerCtrl'
+        controller: 'employerCtrl'
 
       })
 
@@ -244,18 +240,14 @@ var app = angular.module('starter', [
         views: {
           'tab-chats': {
             templateUrl: 'jobseeker/tab-chats.html',
-            controller: 'eChatsCtrl'
+            controller: 'sChatsCtrl'
           }
         }
       })
-      .state('jobseeker.chat-detail', {
-        url: '/chats/:chatId',
-        views: {
-          'tab-chats': {
-            templateUrl: 'jobseeker/chat-detail.html',
-            controller: 'sChatDetailCtrl'
-          }
-        }
+      .state('jobseeker_chat-detail', {
+        url: '/schats/:chatId',
+        templateUrl: 'jobseeker/chat-detail.html',
+        controller: 'sChatDetailCtrl'
       })
       .state('jobseeker.notification', {
         url: '/notification',
@@ -269,7 +261,7 @@ var app = angular.module('starter', [
       .state('jobseeker.job', {
         url: '/job',
         views: {
-          'tab-job': {
+          'tab-dash': {
             templateUrl: 'jobseeker/tab-job.html',
             controller: 'sJobCtrl'
           }
@@ -308,7 +300,7 @@ var app = angular.module('starter', [
   })
 
 
-  .run(function ($rootScope, $ionicLoading, CONFIG, $http, $timeout, $snackbar, $state, $ionicDeploy, $ionicPopup,
+  .run(function ($rootScope, $ionicLoading, CONFIG, $http, $timeout, $snackbar, $state, $ionicDeploy, $ionicPopup, $cordovaToast,
                  AuthUser) {
       function checkPlatform() {
         var ua = navigator.userAgent.toLowerCase();
@@ -326,30 +318,40 @@ var app = angular.module('starter', [
       }
 
       function checkDevice() {
-        var ua = navigator.userAgent.toLowerCase();
-        var android = ua.match(/(Android);?[\s\/]+([\d.]+)?/);
-        var ipad = ua.match(/(iPad).*OS\s([\d_]+)/);
-        var ipod = ua.match(/(iPod)(.*OS\s([\d_]+))?/);
-        var iphone = !ipad && ua.match(/(iPhone\sOS)\s([\d_]+)/);
-        if (ipad || iphone || ipod) {
-          return 'ios'
-        }
-        if (android) {
-          return 'android'
+        var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+        // Windows Phone must come first because its UA also contains "Android"
+        if (/windows phone/i.test(userAgent)) {
+          return "Windows Phone";
         }
 
-      };
+        if (/android/i.test(userAgent)) {
+          return "Android";
+        }
+
+        // iOS detection from: http://stackoverflow.com/a/9039885/177710
+        if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+          return "iOS";
+        }
+
+        return "unknown";
+
+      }
+
       $rootScope.checkAgent = {
         platform: checkPlatform(),
         device: checkDevice() || ''
       }
       console.log('checkAgent', $rootScope.checkAgent)
+      $rootScope.CONFIG = CONFIG;
       firebase.database().ref('config').on('value', function (snap) {
-        if (snap.val() && snap.val().isShowUpdate == 1) {
-          $rootScope.updateversion()
+        $rootScope.CONFIG = snap.val()
+        if (snap.val() && snap.val().isShowUpdate == 1 && $rootScope.checkAgent.device == "iOS") {
+          updateversion()
         }
       });
-      $rootScope.updateversion = function () {
+
+      function updateversion() {
         console.log("checking");
         $ionicDeploy.check().then(function (snapshotAvailable) {
           if (snapshotAvailable) {
@@ -373,38 +375,35 @@ var app = angular.module('starter', [
         });
       };
 
+
+      $rootScope.deviceHeight = window.innerHeight;
       $rootScope.jobOffer = {}
       $rootScope.service = AuthUser;
-      $rootScope.CONFIG = CONFIG;
-      $rootScope.dataJob = CONFIG.data.job;
-      $rootScope.dataTime = CONFIG.data.time;
-      $rootScope.dataIndustry = CONFIG.data.industry;
-      $rootScope.dataLanguages = CONFIG.data.languages;
+      if (!$rootScope.Lang) {
+        $rootScope.lang = window.localStorage.getItem('lang')
+        if (!$rootScope.lang) {
+          $rootScope.lang = 'vi'
+          window.localStorage.setItem('lang', 'vi')
+          $rootScope.service.loadLang($rootScope.lang)
+        } else {
+          console.log('we have,' + $rootScope.lang)
+          $rootScope.service.loadLang($rootScope.lang)
+        }
+      }
 
 
-      var firsttime;
+      $rootScope.$watch('userData', function (newValue, oldValue) {
+        console.log('userData', newValue, oldValue);
+      });
+
       $timeout(function () {
         var connectedRef = firebase.database().ref(".info/connected");
         connectedRef.on("value", function (snap) {
           console.log('connected', snap.val())
           if (snap.val() == true) {
-            var options = {
-              message: "Đã kết nối",
-              messageColor: 'green',
-            };
-            if (!firsttime) {
-              $snackbar.show(options);
-              firsttime = true;
-            }
+            $cordovaToast.showShortTop("Đã kết nối internet")
           } else {
-            var options = {
-              message: "Không có kết nối internet",
-              messageColor: 'red'
-            };
-            if (!firsttime) {
-              $snackbar.show(options);
-              firsttime = true;
-            }
+            $cordovaToast.showShortTop("Không có kết nối internet")
           }
         });
       }, 2000)
@@ -415,10 +414,14 @@ var app = angular.module('starter', [
     $rootScope.service.fcm()
     AuthUser.user().then(function (data) {
       console.log(data);
+      if (!data.mobileToken) {
+        console.log('looking token')
+        $rootScope.service.saveMobileToken()
+      }
 
       if (data.type == 2) {
         loadUserData($rootScope.userId)
-        getNotification($rootScope.userId);
+        $rootScope.service.getNotification($rootScope.userId);
         getUserOnline($rootScope.userId);
 
         $timeout(function () {
@@ -429,7 +432,7 @@ var app = angular.module('starter', [
       }
       if (data.type == 1) {
         loadCurrentStore($rootScope.storeId)
-        getNotification($rootScope.storeId);
+        $rootScope.service.getNotification($rootScope.userId);
         loadListStore($rootScope.userId)
         getStoreOnline($rootScope.storeId)
 
@@ -446,7 +449,7 @@ var app = angular.module('starter', [
           console.log({currentStore: storeId});
           loadCurrentStore($rootScope.storeId)
           getListReact($rootScope.storeId, 'storeId')
-          getNotification($rootScope.storeId);
+          $rootScope.service.getNotification($rootScope.userId);
         };
 
       }
@@ -494,7 +497,6 @@ var app = angular.module('starter', [
             $rootScope.userData = snap.val()
             if (!firsttime) {
               firsttime = true;
-
               console.log('jobseekerTabsCtrl', $rootScope.userData)
               $rootScope.$broadcast('handleBroadcast', $rootScope.userData);
             }
@@ -636,255 +638,10 @@ var app = angular.module('starter', [
           })
         }
       };
-      function getNotification(userId) {
-        firebase.database().ref('notification/' + userId).orderByChild('createdAt').limitToFirst(10)
-          .on('value', function (snap) {
-            $timeout(function () {
-              $rootScope.notification = snap.val()
-              console.log($rootScope.notification)
-              $rootScope.newNoti = $rootScope.service.calNoti($rootScope.notification)
-            })
-          })
-      }
 
       if (data.type == 0) {
       }
     })
 
   })
-  .controller('jobseekerCtrl', function ($rootScope, $timeout, AuthUser, $state, $stateParams) {
-    $rootScope.service.Ana('trackView', {track: $stateParams['#'] || '', state: $state.current.name})
-    $rootScope.service.fcm()
 
-    AuthUser.user().then(function (data) {
-      console.log(data);
-
-      if (data.type == 2) {
-        getUserOnline($rootScope.userId);
-        loadUserData($rootScope.userId)
-        getNotification($rootScope.userId);
-
-        $timeout(function () {
-          getListReact($rootScope.userId, 'userId')
-          getStoreOnlineList()
-
-        }, 1000)
-      }
-      if (data.type == 1) {
-        loadCurrentStore($rootScope.storeId)
-        getNotification($rootScope.storeId);
-        loadListStore($rootScope.userId)
-        getStoreOnline($rootScope.storeId)
-
-
-        $timeout(function () {
-          getProfileOnlineList()
-          getListReact($rootScope.storeId, 'storeId')
-        }, 1000)
-
-        $rootScope.setCurrentStore = function (storeId) {
-          $rootScope.storeId = storeId;
-          var setCurrent = firebase.database().ref('user/' + $rootScope.userId)
-          setCurrent.update({currentStore: storeId});
-          console.log({currentStore: storeId});
-          loadCurrentStore($rootScope.storeId)
-          getListReact($rootScope.storeId, 'storeId')
-          getNotification($rootScope.storeId);
-        };
-
-      }
-
-
-      function getUserOnline(userId) {
-        var userRef = firebase.database().ref('profile/' + userId + '/presence');
-
-
-// Add ourselves to presence list when online.
-        var presenceRef = firebase.database().ref('.info/connected');
-        presenceRef.on("value", function (snap) {
-          if (snap.val()) {
-            // Remove ourselves when we disconnect.
-            var off = {
-              status: 'offline',
-              at: new Date().getTime()
-            }
-
-            userRef.onDisconnect().set(off);
-            var on = {
-              status: 'online',
-              at: new Date().getTime()
-
-            };
-            firebase.database().ref('profile/' + userId + '/name').on('value', function (snap) {
-              var name = snap.val()
-              if (name) {
-                console.log(on);
-                userRef.set(on)
-              }
-            })
-
-
-          }
-        });
-      }
-
-      function loadUserData(userId) {
-        var userRef = firebase.database().ref('profile/' + userId);
-        userRef.on('value', function (snap) {
-          $timeout(function () {
-            $rootScope.userData = snap.val()
-            console.log('jobseekerTabsCtrl', $rootScope.userData)
-            $rootScope.$broadcast('handleBroadcast', $rootScope.userData);
-          })
-        })
-      }
-
-      function getStoreOnlineList() {
-        var time = new Date().getTime() - 24 * 60 * 60 * 1000
-        var onlinelistRef = firebase.database().ref('store').orderByChild('presence/at').startAt(time);
-        onlinelistRef.on("value", function (snap) {
-          $rootScope.onlineList = snap.val()
-          console.log("# of online users = ", $rootScope.onlineList);
-
-        });
-      }
-
-
-      function getProfileOnlineList() {
-        var time = new Date().getTime() - 24 * 60 * 60 * 1000
-        var onlinelistRef = firebase.database().ref('profile').orderByChild('presence/at').startAt(time);
-        onlinelistRef.on("value", function (snap) {
-          $rootScope.onlineList = snap.val()
-          console.log("# of online users = ", $rootScope.onlineList);
-        });
-      }
-
-      function getStoreOnline(storeId) {
-        var userRef = firebase.database().ref('store/' + storeId + '/presence');
-
-
-        var presenceRef = firebase.database().ref('.info/connected');
-        presenceRef.on("value", function (snap) {
-          if (snap.val()) {
-            // Remove ourselves when we disconnect.
-            var off = {
-              status: 'offline',
-              at: new Date().getTime(),
-
-            };
-            userRef.onDisconnect().set(off);
-            var on = {
-              status: 'online',
-              at: new Date().getTime()
-
-            }
-            firebase.database().ref('store/' + storeId + '/storeName').on('value', function (snap) {
-              var storeName = snap.val()
-              if (storeName) {
-                console.log(on)
-                userRef.set(on)
-              }
-            })
-
-
-          }
-        });
-
-
-      }
-
-      function loadCurrentStore(storeId) {
-
-        var storeRef = firebase.database().ref('store/' + storeId);
-        storeRef.on('value', function (snap) {
-          $timeout(function () {
-            $rootScope.storeData = snap.val()
-            $rootScope.$broadcast('storeListen', $rootScope.storeData);
-
-          })
-        })
-      }
-
-      function loadListStore(userId) {
-        var storeListRef = firebase.database().ref('store').orderByChild('createdBy').equalTo(userId);
-        storeListRef.on('value', function (snap) {
-          $timeout(function () {
-            $rootScope.storeList = snap.val()
-            console.log($rootScope.storeList)
-
-          })
-        })
-      }
-
-      function getListReact(pros, type) {
-        if (!$rootScope.reactList) {
-          var reactRef = firebase.database().ref('activity/like').orderByChild(type).equalTo(pros);
-          reactRef.on('value', function (snap) {
-            $timeout(function () {
-              var reactList = snap.val();
-              console.log('reactList', reactList)
-              $rootScope.reactList = {like: [], liked: [], match: []}
-
-              if (type == 'storeId') {
-                angular.forEach(reactList, function (card) {
-                  firebase.database().ref('presence/profile/' + card.userId).on('value', function (snap) {
-                    if (snap.val()) {
-                      card.presence = snap.val().status
-                      card.at = snap.val().at
-                    }
-                  })
-                  if (card.status == 1) {
-                    $rootScope.reactList.match.push(card)
-                  } else if (card.status == 0 && card.type == 1) {
-                    $rootScope.reactList.like.push(card)
-
-                  } else if (card.status == 0 && card.type == 2) {
-                    $rootScope.reactList.liked.push(card)
-
-                  }
-                })
-                console.log($rootScope.reactList)
-              }
-              if (type == 'userId') {
-                angular.forEach(reactList, function (card) {
-                  firebase.database().ref('presence/store/' + card.storeId).on('value', function (snap) {
-                    if (snap.val()) {
-                      card.presence = snap.val().status
-                      card.at = snap.val().at
-                    }
-
-
-                  })
-                  if (card.status == 1) {
-                    $rootScope.reactList.match.push(card)
-                  } else if (card.status == 0 && card.type == 2) {
-                    $rootScope.reactList.like.push(card)
-
-                  } else if (card.status == 0 && card.type == 1) {
-                    $rootScope.reactList.liked.push(card)
-
-                  }
-                })
-                console.log($rootScope.reactList)
-              }
-
-
-            })
-          })
-        }
-      };
-      function getNotification(userId) {
-        firebase.database().ref('notification/' + userId).orderByChild('createdAt').limitToFirst(10)
-          .on('value', function (snap) {
-            $timeout(function () {
-              $rootScope.notification = snap.val()
-              console.log($rootScope.notification)
-              $rootScope.newNoti = $rootScope.service.calNoti($rootScope.notification)
-            })
-          })
-      }
-
-      if (data.type == 0) {
-      }
-    })
-  })

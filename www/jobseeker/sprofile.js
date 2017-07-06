@@ -7,32 +7,53 @@ app.controller("sprofileCtrl", function ($scope,
                                          $cordovaCamera,
                                          $ionicModal,
                                          $http,
-                                         CONFIG,
                                          $cordovaCapture,
                                          $cordovaToast,
                                          $sce,
                                          $state,
                                          $timeout,
-                                         $firebaseArray,
                                          $ionicLoading,
                                          $ionicPopup,
-                                         AuthUser) {
+                                         AuthUser,
+                                         $cordovaImagePicker) {
     $scope.$back = function () {
       window.history.back();
     };
     $scope.init = function () {
+      $ionicLoading.show({
+        template: '<ion-spinner></ion-spinner><br>',
+      })
       $scope.tempoExperience = {};
       AuthUser.user()
-        .then(function (result) {
-          console.log(result);
-          var profileRef = firebase.database().ref('profile/' + $rootScope.userId);
-          profileRef.once('value', function (snap) {
-            $timeout(function () {
+        .then(function (userInfo) {
+            console.log(userInfo);
+            if (!userInfo.phone) {
+              $scope.hasNoPhone = true
+            } else {
+              $scope.hasNoPhone = false;
+              console.log($scope.hasNoPhone)
+            }
+            if (!userInfo.email) {
+              $scope.hasNoEmail = true
+            } else {
+              $scope.hasNoEmail = false;
+              console.log($scope.hasNoEmail)
+            }
+            $scope.userInfo = userInfo;
+            var profileRef = firebase.database().ref('profile/' + $rootScope.userId);
+            profileRef.once('value', function (snap) {
               $rootScope.userData = snap.val();
-              console.log($rootScope.userData)
-
-              if ($rootScope.userData) {
-                console.log('có rồi')
+              $timeout(function () {
+                if (!$rootScope.userData) {
+                  $scope.firsttime = true
+                  $rootScope.userData = {
+                    userId: $rootScope.userId,
+                    name: userInfo.name,
+                    photo: []
+                  }
+                }
+                $rootScope.userData.email = userInfo.email;
+                $rootScope.userData.phone = userInfo.phone;
 
                 if ($rootScope.userData.experience) {
                   $scope.tempoExperience = $rootScope.userData.experience
@@ -41,29 +62,15 @@ app.controller("sprofileCtrl", function ($scope,
                   var newkey = experienceRef.push().key;
                   $scope.tempoExperience[newkey] = {id: newkey}
                 }
-
-              } else {
-                console.log('chưa có')
-                var userRef = firebase.database().ref('user/' + $rootScope.userId);
-                userRef.once('value', function (snap) {
-                  var userInfo = snap.val();
-                  console.log(userInfo)
-                  if (userInfo) {
-                    $rootScope.userData = {
-                      name: userInfo.name,
-                      email: userInfo.email,
-                      phone: userInfo.phone,
-                    };
-                    console.log($rootScope.userData);
-
-                  }
-                })
-              }
+                console.log('done Init', $rootScope.userData)
+                $ionicLoading.hide()
+              })
             })
-          })
-        })
+          }
+        )
 
-    };
+    }
+    ;
 
     $scope.selectJob = function (id) {
       $scope.newHospital.job = $rootScope.userData.experience[id].job;
@@ -94,7 +101,6 @@ app.controller("sprofileCtrl", function ($scope,
         }
       });
     };
-
     $scope.selectExpJob = function (id) {
       console.log($scope.tempoExperience);
       $scope.newHospital.job = $scope.tempoExperience[id].job;
@@ -127,23 +133,29 @@ app.controller("sprofileCtrl", function ($scope,
     $scope.deleteExp = function (id) {
       delete  $scope.tempoExperience[id]
     }
-    // Search Address
+// Search Address
     $scope.selectAddress = function () {
       $scope.newHospital = {};
 
       //find Address by Google
       $scope.autocompleteAddress = {text: ''};
+
+      var delay = false
       $scope.searchAddress = function () {
-
-        $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocompleteAddress.text + '&components=country:VN&sensor=true&key=' + CONFIG.APIKey;
-        $http({
-          method: 'GET',
-          url: $scope.URL
-        }).then(function successCallback(response) {
-
-          $scope.ketquasAddress = response.data.results;
-          console.log($scope.ketquasAddress);
-        })
+        $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocompleteAddress.text + '&components=country:VN&sensor=true&key=' + $rootScope.CONFIG.APIKey;
+        if (delay == false) {
+          delay = true
+          $http({
+            method: 'GET',
+            url: $scope.URL
+          }).then(function successCallback(response) {
+            $scope.ketquasAddress = response.data.results;
+            console.log($scope.ketquasAddress);
+          })
+          $timeout(function () {
+            delay = false
+          }, 1000)
+        }
       };
 
       $scope.setSelectedAddress = function (selected) {
@@ -171,7 +183,6 @@ app.controller("sprofileCtrl", function ($scope,
         }
       });
     };
-
     $scope.selectSchool = function () {
       $ionicPopup.confirm({
         title: 'Địa chỉ',
@@ -185,6 +196,9 @@ app.controller("sprofileCtrl", function ($scope,
       }).then(function (res) {
         if (res) {
           console.log('You are sure');
+          if(!$scope.school && $scope.autocompleteSchool){
+            $rootScope.userData.school = $scope.autocompleteSchool.text
+          }
         } else {
           console.log('You are not sure');
         }
@@ -200,7 +214,7 @@ app.controller("sprofileCtrl", function ($scope,
         }
         $http({
           method: 'GET',
-          url: CONFIG.APIURL + '/api/places',
+          url: $rootScope.CONFIG.APIURL + '/api/places',
           params: params
         }).then(function successCallback(response) {
           $scope.ketquasSchool = response.data.results
@@ -245,7 +259,6 @@ app.controller("sprofileCtrl", function ($scope,
         }
       })
     };
-
     $scope.collectTime = function () {
       $ionicPopup.confirm({
         title: 'Thời gian có thể đi làm',
@@ -273,7 +286,6 @@ app.controller("sprofileCtrl", function ($scope,
         }
       })
     };
-
     $scope.collectLanguages = function () {
       $scope.newHospital.languages = $rootScope.userData.languages
 
@@ -304,7 +316,6 @@ app.controller("sprofileCtrl", function ($scope,
         }
       })
     }
-
     $scope.collectIndustry = function () {
       $scope.newHospital.industry = $rootScope.userData.industry
 
@@ -334,8 +345,6 @@ app.controller("sprofileCtrl", function ($scope,
         }
       })
     }
-
-
     $scope.calculatemonth = function calculatemonth(birthday) { // birthday is a date
       var birthdate = new Date(birthday);
       var month = birthdate.getMonth() + 1;
@@ -367,14 +376,15 @@ app.controller("sprofileCtrl", function ($scope,
 
             case 0:
               var options = {
-                quality: 75,
+                quality: 100,
                 destinationType: Camera.DestinationType.FILE_URI,
                 encodingType: Camera.EncodingType.JPEG,
                 popoverOptions: CameraPopoverOptions,
-                targetWidth: 500,
-                targetHeight: 500,
+                targetWidth: 600,
+                targetHeight: 600,
                 saveToPhotoAlbum: false,
-                allowEdit: true
+                allowEdit: true,
+                cameraDirection: 1
 
               };
               $cordovaCamera.getPicture(options).then(function (imageData) {
@@ -421,8 +431,7 @@ app.controller("sprofileCtrl", function ($scope,
                     // [END onfailure]
                   }, function () {
                     console.log(uploadTask.snapshot.metadata);
-                    $scope.userData.avatar = uploadTask.snapshot.metadata.downloadURLs[0];
-
+                    $rootScope.userData.avatar = uploadTask.snapshot.metadata.downloadURLs[0];
                     $ionicLoading.hide()
 
                   });
@@ -432,7 +441,6 @@ app.controller("sprofileCtrl", function ($scope,
                 console.error(error);
                 alert(error);
               });
-
 
               break;
             case 1: // chọn pickercordova plugin add https://github.com/wymsee/cordova-imagePicker.git
@@ -491,14 +499,7 @@ app.controller("sprofileCtrl", function ($scope,
                     // [END onfailure]
                   }, function () {
                     console.log(uploadTask.snapshot.metadata);
-                    var url = uploadTask.snapshot.metadata.downloadURLs[0];
-                    var db = firebase.database();
-                    var ref = db.ref("user");
-                    var uid = firebase.auth().currentUser.uid;
-                    var usersRef = ref.child('jobber/' + uid);
-                    usersRef.update({
-                      photourl: url
-                    });
+                    $rootScope.userData.avatar = uploadTask.snapshot.metadata.downloadURLs[0];
                     $ionicLoading.hide()
                   });
 
@@ -563,18 +564,9 @@ app.controller("sprofileCtrl", function ($scope,
               // [END onfailure]
             }, function () {
               console.log(uploadTask.snapshot.metadata);
-              var url = uploadTask.snapshot.metadata.downloadURLs[0];
-              var user = firebase.auth().currentUser;
-              var db = firebase.database();
-              var ref = db.ref("user");
-              var uid = firebase.auth().currentUser.uid;
-              var usersRef = ref.child('jobber/' + uid);
-              usersRef.update({
-                videourl: url
-              });
-              $ionicLoading.hide();
+              $rootScope.userData.videourl = uploadTask.snapshot.metadata.downloadURLs[0];
+              $ionicLoading.hide()
               $cordovaToast.showShortTop('Đã cập nhật video')
-
             });
 
           });
@@ -588,12 +580,149 @@ app.controller("sprofileCtrl", function ($scope,
     $scope.trustSrc = function (src) {
       return $sce.trustAsResourceUrl(src);
     };
+    $scope.addPhoto = function () {
+      var options = {
+        maximumImagesCount: 20,
+        width: 800,
+        height: 800,
+        quality: 100
+      };
+
+      $cordovaImagePicker.getPictures(options)
+        .then(function (results) {
+          for (var i = 0; i < results.length; i++) {
+            console.log('Image URI: ' + results[i]);
+
+            var imageData = results[i]
+
+            var storageRef = firebase.storage().ref();
+
+            var getFileBlob = function (url, cb) {
+              var xhr = new XMLHttpRequest();
+              xhr.open("GET", url);
+              xhr.responseType = "blob";
+              xhr.addEventListener('load', function () {
+                cb(xhr.response);
+              });
+              xhr.send();
+            };
+
+            var blobToFile = function (blob, name) {
+              blob.lastModifiedDate = new Date();
+              blob.name = name;
+              return blob;
+            };
+
+            var getFileObject = function (filePathOrUrl, cb) {
+              getFileBlob(filePathOrUrl, function (blob) {
+                cb(blobToFile(blob, new Date().getTime()));
+              });
+            };
+
+            getFileObject(imageData, function (fileObject) {
+              var metadata = {
+                'contentType': fileObject.type
+              };
+              var anany = Math.round(100000000000000 * Math.random())
+
+              var uploadTask = storageRef.child('images/' + fileObject.name + anany).put(fileObject, metadata);
+
+              uploadTask.then(function (snapshot) {
+                var downloadPhoto = snapshot.downloadURL;
+                console.log(downloadPhoto);
+                if (!$rootScope.userData.photo) {
+                  $rootScope.userData.photo = []
+                }
+                $rootScope.userData.photo.push(downloadPhoto);
+                console.log('$rootScope.userData.photo', $rootScope.userData.photo)
+              });
+
+            });
+          }
+          $ionicLoading.hide()
+
+        }, function (error) {
+          // error getting photos
+        });
+    }
+    $scope.deleteImage = function (images) {
+      console.log('clicked', images)
+      $scope.userData.photo.splice(images, 1);
+    }
+
     $scope.submit = function () {
-      $rootScope.userData.userId = $rootScope.userId
-      console.log($rootScope.userData);
-      var profileRef = firebase.database().ref('profile/' + $rootScope.userId)
-      profileRef.update($rootScope.userData)
-      $state.go('jobseeker.dash')
+      console.log('$rootScope.userData', $rootScope.userData)
+      if ($rootScope.userData.email && $rootScope.userData.phone && $rootScope.userData.address && $rootScope.userData.name && $rootScope.userData.birth) {
+        console.log($rootScope.userData);
+        var userInfoUpdate = {
+          name: $rootScope.userData.name,
+          phone: $rootScope.userData.phone,
+          email: $rootScope.userData.email
+        }
+        var profileUpdate = $rootScope.userData
+
+
+        if ($scope.firsttime) {
+          $rootScope.userData.createdAt = new Date().getTime()
+          $rootScope.service.Ana('createProfile');
+        } else {
+          $rootScope.userData.updatedAt = new Date().getTime()
+          $rootScope.service.Ana('updateProfile');
+        }
+        $timeout(function () {
+          firebase.database().ref('user/'+ $rootScope.userId).update(userInfoUpdate).then(function () {
+            console.log('save sucess')
+          }, function () {
+            console.log('save error')
+          }, function () {
+            console.log('process')
+
+          });
+        })
+        $timeout(function () {
+          firebase.database().ref('profile/'+ $rootScope.userId).update(profileUpdate).then(function () {
+            console.log('save sucess')
+          }, function () {
+            console.log('save error')
+          }, function () {
+            console.log('process')
+
+          });
+        })
+
+        if ($scope.hasNoEmail) {
+          $rootScope.service.changeEmail($rootScope.userData.email)
+        }
+        //init profile
+        if ($scope.firsttime) {
+          $rootScope.service.Ana('createProfile');
+        } else {
+          $rootScope.service.Ana('updateProfile');
+        }
+
+        if ($rootScope.preApply) {
+          $rootScope.service.userLike($rootScope.preApply.card, 0, $rootScope.preApply.jobOffer)
+        }
+        $state.go('jobseeker.dash', {}, {reload: true})
+        $cordovaToast.showShortTop('Cập nhật hồ sơ thành công');
+
+      } else {
+        console.log($rootScope.userData);
+        $scope.error = {}
+        for (var i in $rootScope.userData) {
+          if ($rootScope.userData[i]) {
+
+          } else {
+            $scope.error[i] = true;
+
+            $timeout(function () {
+              console.log($scope.error)
+            })
+          }
+        }
+        $cordovaToast.showShortTop('Bạn chưa cập nhật đủ thông tin', 'Lỗi');
+      }
     }
   }
-);
+)
+;

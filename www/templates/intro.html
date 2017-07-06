@@ -1,9 +1,9 @@
-<ion-view view-title="Jobo" hide-nav-bar="true" ng-init="checkuser()">
+<ion-view view-title="Jobo" hide-nav-bar="true" ng-init="checkuser()" hide-back-button="true">
   <ion-content>
     <div style="padding-top: 20px">
       <div class="row responsive-md intro">
         <div class="col-25 respon-log">
-          <ion-slide-box show-pager="false" ng-init="lockSlide()">
+          <ion-slide-box show-pager="false" ng-init="lockSlide()" active-slide="slideIndex">
             <ion-slide style="padding: 5px">
               <div class="card">
                 <div class="bor-out">
@@ -25,7 +25,7 @@
 
                     </div>
                     <p><span>Hoặc</span></p>
-                    <button ng-click="facebookLogin()" id="login-button26"
+                    <button ng-click="service.facebookLogin()" id="login-button26"
                             class="jobo-button jobo-button-block btn-facebook">Đăng ký bằng Facebook
                     </button>
 
@@ -33,20 +33,20 @@
                 </div>
               </div>
 
-              <div class="card" style="">
+              <div class="card">
                 <div class="padding sign-up-link">
-                  <p class="asklogin">Bạn đã có tài khoản? <a href="" ng-click="Login()" title="">Đăng nhập</a></p>
+                  <p class="asklogin">Bạn đã có tài khoản? <a href="" ng-click="slideTo(1)" title="">Đăng nhập</a></p>
                 </div>
               </div>
-
             </ion-slide>
 
             <ion-slide>
-
+              <h1 class="title text-center" ng-click="slideTo(1)">
+                Đăng nhập
+              </h1>
               <form name="form_signup">
                 <div class="padding" style="margin: 20px 0">
                   <div class="bor-out list">
-
 
                     <label class="item item-input" style="margin: 10px">
                       <input type="email" ng-model="userSignup.username" id="cuser_name" placeholder="Email">
@@ -56,25 +56,29 @@
                     </label>
 
                   </div>
-                  <button ng-click="doLogin(userSignup)" class="jobo-button jobo-button-block jobo-button-calm"
-                          ng-disabled="!userSignup.username || userSignup.username === '' || !userSignup.password || userSignup.password === ''">
-                    Đăng nhập
-                  </button>
-
+                  <div style="margin: 10px">
+                    <button ng-click="doLogin(userSignup)" class="jobo-button jobo-button-block jobo-button-calm"
+                            ng-disabled="!userSignup.username || userSignup.username === '' || !userSignup.password || userSignup.password === ''">
+                      Đăng nhập
+                    </button>
+                    <div class="text-center">
+                      <p><span>Hoặc</span></p>
+                    </div>
+                    <button ng-click="service.facebookLogin(type)" id="login-button26"
+                            class="jobo-button jobo-button-block btn-facebook">Đăng nhập bằng Facebook
+                    </button>
+                  </div>
 
                 </div>
 
               </form>
-              <div class="text-center">
-                <p><span>Hoặc</span></p>
-              </div>
-              <button ng-click="facebookLogin(type)" id="login-button26"
-                      class="jobo-button jobo-button-block btn-facebook">Đăng nhập bằng Facebook
-              </button>
+
 
               <div class="card">
-                <div class="padding sign-up-link">
-                  <p class="asklogin">Chưa có tài khoản? <a href="" ng-click="slideTo(0)" title="">Đăng ký</a></p>
+                <div class="padding sign-up-link ">
+                  <p class="asklogin ">Chưa có tài khoản? <a href="" ng-click="slideTo(0)" title="">Đăng ký</a></p>
+                  <p class="color-gray "><a href="#/reset" title="">Quên mật khẩu</a></p>
+
                 </div>
               </div>
             </ion-slide>

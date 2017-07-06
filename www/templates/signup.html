@@ -1,60 +1,55 @@
-<ion-view title="Đăng ký" cache-view="false" nav-transition="none"
+<ion-view title="Đăng ký" cache-view="false" nav-transition="none" hide-back-button="true"
           id="page20">
   <ion-content scroll="true" class=" manual-remove-top-padding">
 
-    <ion-slide-box show-pager="false" on-slide-changed="slideChanged(index)">
+    <ion-slide-box show-pager="false" on-slide-changed="slideChanged(index)" ng-init="lockSlide()">
       <ion-slide>
-        <p class="text-center" style="margin-top: 10px" ng-if="type== 1">Đăng ký tài khoản nhà tuyển dụng</p>
-        <p class="text-center" style="margin-top: 10px" ng-if="type== 2">Đăng ký tài khoản người tìm việc</p>
+        <p class="text-center" style="margin-top: 10px" ng-if="type== 1">{{Lang.register_account_employer}}</p>
+        <p class="text-center" style="margin-top: 10px" ng-if="type== 2">{{Lang.register_account_jobseeker}}</p>
 
         <form name="form_signup">
           <div class="padding">
             <div class="bor-out list">
 
               <label class="item item-input" style="margin: 10px">
-                <input type="tel" ng-model="userSignup.phone" id="userSignup.phone" placeholder="Số điện thoại">
-              </label>
-              <label class="item item-input" style="margin: 10px">
-                <input type="email" ng-model="userSignup.username" id="cuser_name" placeholder="Email">
-              </label>
-              <label class="item item-input" style="margin: 10px">
-                <input type="password" ng-model="userSignup.password" id="cuser_pass" placeholder="Password">
+                <input type="email" ng-model="userSignup.username" id="cuser_name" placeholder="Đăng ký bằng Email">
               </label>
 
             </div>
-            <button ng-click="doSignup(userSignup)" class="jobo-button jobo-button-block jobo-button-calm"
-                    ng-disabled="!userSignup.username || userSignup.username === '' || !userSignup.password || userSignup.password === '' || !userSignup.phone || userSignup.phone === ''">
-              Đăng ký
-            </button>
 
-
+            <div class="text-center" style="margin: 10px">
+              <button ng-click="doSignup(userSignup)" class="jobo-button jobo-button-block jobo-button-calm"
+                      ng-disabled="!userSignup.username || userSignup.username === ''">
+                Đăng ký
+              </button>
+              <p><span>Hoặc</span></p>
+              <button ng-click="service.facebookLogin(type)" id="login-button26"
+                      class="jobo-button jobo-button-block btn-facebook">Đăng ký bằng Facebook
+              </button>
+              <div class="padding sign-up-link ">
+                <p class="asklogin ">Đã có tài khoản? <a href="#/intro?id=1">Đăng nhập</a></p>
+              </div>
+            </div>
           </div>
 
         </form>
-        <div class="padding text-center">
-          <p><span>Hoặc</span></p>
-          <button ng-click="facebookLogin(type)" id="login-button26"
-                  class="jobo-button jobo-button-block btn-facebook">Đăng ký bằng Facebook
-          </button>
-        </div>
-
 
 
       </ion-slide>
       <ion-slide>
         <div class="padding" style="text-align: center">
-          <h3>Bắt đầu lướt những công việc bạn thích</h3>
+          <h3>Bắt đầu tìm những ứng viên phù hợp</h3>
           <div style="margin: 30px">
-            <img src="http://joboapp.com/wp-content/uploads/2016/12/Intro.jpg" style="width: 250px">
+            <img src="img/intro-2.jpg" style="width: 250px">
           </div>
           <p>
-            Like công việc mà bạn thích.
+            Gửi lời mời phỏng vấn cho ứng viên phù hợp
           </p>
           <p>
-            Và chờ nhà tuyển dụng like bạn.
+            Và chọn ứng viên ứng tuyển vào vị trí của bạn
           </p>
           <p>
-            Vuốt sang phải để xem nhà tuyển dụng tiếp theo
+            Vuốt sang phải để xem ứng viên tiếp theo
           </p>
         </div>
         <button ui-sref="store" class="jobo-button jobo-button-block jobo-button-calm">Tạo cửa hàng!</button>
@@ -64,13 +59,13 @@
         <div class="padding" style="text-align: center">
           <h3>Bắt đầu lướt những công việc bạn thích</h3>
           <div style="margin: 30px">
-            <img src="http://joboapp.com/wp-content/uploads/2016/12/Intro.jpg" style="width: 250px">
+            <img src="img/Intro.jpg" style="width: 250px">
           </div>
           <p>
-            Like công việc mà bạn thích.
+            Ứng tuyển vào công việc mà bạn thích.
           </p>
           <p>
-            Và chờ nhà tuyển dụng like bạn.
+            Và chờ nhà tuyển dụng gửi lời mời cho bạn.
           </p>
           <p>
             Vuốt sang phải để xem nhà tuyển dụng tiếp theo
@@ -79,7 +74,6 @@
         <button ui-sref="profile" class="jobo-button jobo-button-block jobo-button-calm">Tạo hồ sơ!</button>
 
       </ion-slide>
-
 
     </ion-slide-box>
 

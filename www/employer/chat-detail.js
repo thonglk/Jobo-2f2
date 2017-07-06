@@ -1,5 +1,5 @@
 "use strict";
-app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "AuthUser", "$ionicActionSheet", "$timeout", "$ionicScrollDelegate", "$firebaseArray", "$ionicPopup", "$http", '$interval', '$ionicLoading', function ($scope, $rootScope, $stateParams, AuthUser, $ionicActionSheet, $timeout, $ionicScrollDelegate, $firebaseArray, $ionicPopup, $http, $interval, $ionicLoading) {
+app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "AuthUser", "$ionicActionSheet", "$timeout", "$ionicScrollDelegate", "$firebaseArray", "$ionicPopup", "$http", '$interval', '$ionicLoading', '$cordovaToast', function ($scope, $rootScope, $stateParams, AuthUser, $ionicActionSheet, $timeout, $ionicScrollDelegate, $firebaseArray, $ionicPopup, $http, $interval, $ionicLoading, $cordovaToast) {
   var likeAct;
 
   $scope.init = function () {
@@ -26,7 +26,7 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
       }, 0);
     })
 
-    var chatedRef = firebase.database().ref('profile/' + $scope.chatedId);
+    var chatedRef = firebase.database().ref('profile/' + chatedId);
     chatedRef.on('value', function (snap) {
       $timeout(function () {
           $rootScope.chatUser = snap.val()
@@ -97,6 +97,11 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
   });
 
   $scope.keepKeyboardOpen = function () {
+    console.log('keepKeyboardOpen');
+    txtInput.one('blur', function() {
+      console.log('textarea blur, focus back on it');
+      txtInput[0].focus();
+    });
   }
 
   $scope.sendMessage = function () {
@@ -110,17 +115,18 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
       sender: $rootScope.storeId,
       status: 0,
       type: 0
-
     };
 
-    // if you do a web service call this will be needed as well as before the viewScroll calls
-    // you can't see the effect of this in the browser it needs to be used on a real device
-    // for some reason the one time blur event is not firing in the browser but does on devices
 
-    //MockService.sendMessage(message).then(function(data) {
     $scope.input.message = '';
     if ($rootScope.chatUser.act && $rootScope.chatUser.act.showContact) {
       newPostRef.update(message);
+      $rootScope.service.Ana('sendMessage', {
+        type: 0,
+        sender: $rootScope.storeId,
+        to: $scope.chatedId,
+        text: message.text
+      })
 
     } else {
       $scope.showphone()
@@ -147,7 +153,7 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
   }
   // this prob seems weird here but I have reasons for this in my app, secret!
   $scope.viewProfile = function (msg) {
-    window.location.href = '#/viewprofile/' + msg
+    window.location.href = '#/view/profile/' + msg
   };
 
   // I emit this event from the monospaced.elastic directive, read line 480
@@ -168,22 +174,11 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
   });
 
   $scope.setInterview = function (timeInterview) {
-    console.log(timeInterview);
-    var timeInterviewRef = firebase.database().ref('activity/' + $rootScope.storeId + ":" + $scope.chatedId)
-    timeInterviewRef.update({interview: new Date().getTime()});
-    var newPostRef = firebase.database().ref().child('activity/interview/' + $rootScope.storeId + ":" + $scope.chatedId)
-
-    var message = {
-      createdAt: new Date().getTime(),
-      interview: timeInterview,
-      place: $rootScope.storeData.address,
-      userId: $scope.chatedId,
-      storeId: $rootScope.storeId,
-      status: 0,
-      type: 1
-    };
-    newPostRef.update(message);
-
+    console.log(timeInterview,     new Date(timeInterview).getTime()
+    );
+    var timeInterviewRef = firebase.database().ref('activity/like/' + $rootScope.storeId + ":" + $scope.chatedId)
+    timeInterviewRef.update({interview:     new Date(timeInterview).getTime()
+    });
   }
 
   $scope.onMessageHold = function (e, itemIndex, message) {
@@ -232,9 +227,8 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
   }
 
   $scope.showphone = function () {
-
+    $rootScope.service.Ana('showPhone', {chatedId: $scope.chatedId})
     $scope.confirmShow = function () {
-      $rootScope.service.Ana('confirmShowPhone', {chatedId: $scope.chatedId})
       if ($rootScope.userData.credit >= 30) {
         likeAct.update({
           showContact: new Date().getTime()
@@ -243,13 +237,14 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
         userRef.update({
           credit: $rootScope.userData.credit - 30
         })
-        $rootScope.phoneShow(chatedId)
+        $rootScope.phoneShow($scope.chatedId)
+        $rootScope.service.Ana('confirmShowPhone', {chatedId: $scope.chatedId})
       } else {
         $rootScope.service.Ana('confirmShowPhone', {
-          chatedId: $rootScope.chatUser.chatedId,
+          chatedId: $scope.chatedId,
           result: 'not enough'
         })
-        toastr.info('Bạn không đủ credit để mở khóa liên hệ ứng viên, hãy nạp thêm')
+        $cordovaToast.showShortTop('Bạn không đủ credit để mở khóa liên hệ ứng viên, hãy nạp thêm')
       }
     }
 

@@ -12,8 +12,7 @@ app.controller('eAccountCtrl', function (AuthUser, $timeout, $scope, $rootScope,
     var setCurrent = firebase.database().ref('user/' + $rootScope.userId)
     setCurrent.update({currentStore: storeId});
     console.log({currentStore: storeId});
-    $scope.loadCurrentStore(storeId)
-    $scope.closePopover();
+    window.location.reload()
   };
 
   $scope.loadCurrentStore = function (storeId) {

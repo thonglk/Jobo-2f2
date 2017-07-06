@@ -9,12 +9,11 @@
       <button class="button button-clear button-calm">Lọc</button>
     </div>
   </ion-header-bar>
-  </ion-header-bar>
   <ion-content>
     <div class="filterHeader" id="job-list-item-divider16"><h4>Vị trí bạn cần tuyển?</h4> </div>
     <ion-item class="item-icon-right" ng-click="showjob()">
       <span ng-hide="newfilter.job" class="gotham-book">Công việc</span>
-      <span class="gotham-book">{{dataJob[newfilter.job]}}</span>
+      <span class="gotham-book">{{Lang[newfilter.job]}}</span>
       <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
     </ion-item>
     <div class="filterHeader" id="job-list-item-divider16">
@@ -45,7 +44,7 @@
     <label class="item item-select" id="job-select6">
       <span class="input-label">Ngoại ngữ</span>
       <select ng-model="newfilter.languages">
-        <option ng-repeat="(key,value) in dataLanguages" value="{{key}}">{{dataLanguages[key]}}</option>
+        <option ng-repeat="(key,value) in CONFIG.data.languages" value="{{key}}">{{Lang[key]}}</option>
       </select>
     </label>
 
@@ -64,17 +63,9 @@
       </select>
     </label>
     <label class="item item-input" id="job-input9">
-      <span class="input-label">Lương (đơn vị: VND)</span>
+      <span class="input-label">Lương (đơn vị: triệu đồng)</span>
       <input ng-model="newfilter.salary" type="number" placeholder="">
     </label>
-    <label class="item item-select" id="job-select3">
-      <span class="input-label">Tính theo</span>
-      <select ng-model="newfilter.type">
-        <option value="hour">VND/giờ</option>
-        <option value="month">VND/tháng</option>
-      </select>
-    </label>
-
 
     <label class="item item-input" id="job-input15">
       <span class="input-label">Số lượng</span>

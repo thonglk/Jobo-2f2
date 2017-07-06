@@ -1,98 +1,98 @@
-<ion-view title="Jobo" id="page9" style="background-color:#FFFFFF;" hide-nav-bar="true" ng-init="init()">
+<ion-view title="Khám phá" id="page9" style="background-color:#FFFFFF;" hide-nav-bar="true" ng-init="init()">
   <ion-header-bar align-title="left" class="bar-light">
 
-    <h1 class="title" ng-click="editjob()">{{CONFIG.data.job[newfilter.job] || 'Khám phá'}}
+    <h1 class="title" ng-click="editjob()">{{Lang[newfilter.job] || 'Khám phá'}}
     </h1>
-    <button class="button button-outline button-small" ng-if="newfilter.working_type== 'seasonal'" ng-click="editjob()">
-      #JoboTemp
+    <button class="button button-outline button-small" ui-sref="jobseeker.job">
+      Thương hiệu
     </button>
-    <button class="button button-outline button-small" ng-if="newfilter.working_type== 'fulltime'" ng-click="editjob()">
-      #JoboFull
-    </button>
-    <button class="button button-outline button-small" ng-if="newfilter.working_type== 'parttime'" ng-click="editjob()">
-      #JoboPart
-    </button>
+
 
   </ion-header-bar>
 
   <ion-content padding="false" class="has-header">
     <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)"
+                         ng-show="swiper"
                          on-release="onRelease(swiper)">
       <ks-swiper-slide class="swiper-slide" ng-repeat="card in jobCard">
-        <div class="card content content-main js-job-container">
-          <a class="item item-thumbnail-left" href="#/view/store/{{card.storeId}}">
-            <img src="{{card.avatar || '/img/ava-background/ava_'+ card.industry +'.png'}}">
-            <h2>{{CONFIG.data.job[card.job]}}</h2>
-            <p ng-if="card.working_type"><i class="ion-clock"></i> {{CONFIG.data.working_type[card.working_type]}}</p>
-            <p>{{card.storeName || 'Your Store Name'}} - {{card.distance}} km</p>
+
+        <div class="card" style="height: {{deviceHeight - 220}}px">
+          <a href="#/view/store/{{card.storeId}}">
+            <img ng-src="{{card.avatar || 'img/store.png'}}"
+                 stle="width: 100%; height: 35%">
           </a>
 
-          <div class="content-section job-description-container">
-            <div class="js-job-description">
-              <div class="job-description">
-                <div style="max-height: 200px">
-                  <p><em>Mô tả</em></p>
-                  <p ng-if="card.description"
-                     ng-repeat="text in service.nextLine(card.description)">{{text}}</p>
-                  <p>• Mức lương: {{card.salary ? card.salary + ' triệu đồng' : ' thỏa thuận'}}</p>
-                  <p ng-if="card.createdAt">• Ngày đăng: {{card.createdAt | date}}</p>
-                  <p ng-if="card.unit">• Số lượng: {{card.unit}}</p>
-                  <p ng-if="card.apply">• Đã ứng tuyển: {{card.apply}}</p>
-                  <p>• Lượt xem: {{card.viewed ? card.viewed : "0"}}</p>
+          <div class="item job-card">
 
-                  <p ng-if="card.deadline">• Hạn chót: {{card.deadline |
-                    date}} ({{service.timeAgo(card.deadline)}}) </p>
-                  <p ng-if="card.figure || card.experience || card.languages"><em>Yêu cầu khác:</em></p>
-                  <p ng-if="card.figure">• {{card.figure ? 'Yêu cầu ngoại hình khá':'Không yêu cầu ngoại hình'}}</p>
-                  <p ng-if="card.experience">• {{card.experience ? 'Đã có kinh nghiệm':'Không yêu cầu kinh nghiệm'}}</p>
-                  <p ng-if="card.languages">• Ngoại ngữ:
-                  <div ng-repeat="(key,value) in card.languages">
-                    {{CONFIG.data.languages[key]}}
-                  </div>
-                  </p>
-                </div>
-              </div>
+            <p ng-if="card.working_type" class="pull-right"><i class="ion-clock"></i>
+              {{Lang[card.working_type]}}</p>
+            <h3 class="title"><i class="ion-flash color-coral" ng-if="card.act.status == 0 && card.act.type == 2"></i>
+              {{Lang[card.job]}}
+            </h3>
+            <h4>{{card.storeName || 'Your Store Name'}} <span class="ion-record color-green"
+                                                              style="font-size: xx-small"
+                                                              ng-if="card.presence.status == 'online'"></span> -
+              {{card.distance}} km</h4>
 
-            </div> <!-- .content-section -->
-          </div> <!-- .content-main -->
+            <p ng-if="card.description"
+               ng-repeat="text in service.nextLine(card.description) track by $index">{{text}}</p>
+            <p ng-if="card.salary">• Mức lương: {{card.salary ? card.salary + ' triệu đồng' : ' thỏa thuận'}}</p>
+            <p ng-if="card.createdAt">• Ngày đăng: {{card.createdAt | date}}</p>
+            <p ng-if="card.unit">• Số lượng: {{card.unit}}</p>
+            <p ng-if="card.apply">• Đã ứng tuyển: {{card.apply}}</p>
+            <p ng-if="card.viewed">• Lượt xem: {{card.viewed}}</p>
+            <p ng-if="card.deadline">• Hạn chót: {{card.deadline |
+              date}} ({{service.timeAgo(card.deadline)}}) </p>
+            <p ng-if="card.figure || card.experience || card.languages"><em>Yêu cầu khác:</em></p>
+            <p ng-if="card.figure">• {{card.figure ? 'Yêu cầu ngoại hình khá':'Không yêu cầu ngoại hình'}}</p>
+            <p ng-if="card.experience">• {{card.experience ? 'Đã có kinh nghiệm':'Không yêu cầu kinh nghiệm'}}</p>
+            <p ng-if="card.languages">• Ngoại ngữ:
+            <div ng-repeat="(key,value) in card.languages">
+              {{Lang[key]}}
+            </div>
+            </p>
+
+
+          </div>
         </div>
-
 
       </ks-swiper-slide>
     </ks-swiper-container>
-    <div class="tinder-buttons2"
+    <div ng-hide="swiper" style="align-content: center">
+      <p style="    margin: 20px;
+    text-align: center;
+    padding-top: 50px;
+" class="ng-binding">Hãy tìm và ứng tuyển vào công việc bạn muốn</p>
+
+      <div class="padding">
+        <button ng-click="editjob()" class="button button-outline button-calm button-block">
+          Lọc công việc
+        </button>
+      </div>
+    </div>
+
+    <div class="tinder-buttons2" ng-show="swiper"
          ng-show="jobCard[swiper.activeIndex].act.jobUser[jobCard[swiper.activeIndex].job] || jobCard[swiper.activeIndex].act.jobStore[jobCard[swiper.activeIndex].job]">
-      <button ng-click="service.chatToStore[jobCard[swiper.activeIndex].storeId]"
+      <button ng-click="service.chatToStore(jobCard[swiper.activeIndex].storeId)"
               type="button" ng-if="jobCard[swiper.activeIndex].act.status == 1"
               class="jobo-button jobo-button-block button-vip">Liên hệ
       </button>
       <button ng-disabled="!jobCard[swiper.activeIndex]"
               ng-click="like(jobCard[swiper.activeIndex],0,jobCard[swiper.activeIndex].job)"
               type="button"
-              ng-if="jobCard[swiper.activeIndex].act.status == 0 && jobCard[swiper.activeIndex].act.jobStore[jobCard[swiper.activeIndex].job]"
-              class="jobo-button jobo-button-block button-positive">Chấp nhận công việc
+              ng-if="jobCard[swiper.activeIndex].act.status == 0 && jobCard[swiper.activeIndex].act.type == 1 && jobCard[swiper.activeIndex].act.jobStore[jobCard[swiper.activeIndex].job]"
+              class="button button-full button-positive">Chấp nhận công việc
       </button>
       <button type="button"
               ng-if="jobCard[swiper.activeIndex].act.status == 0 && jobCard[swiper.activeIndex].act.jobUser[jobCard[swiper.activeIndex].job]"
               class="jobo-button jobo-button-block button-energized">Đang chờ phản hồi...
       </button>
-    </div>
-    <div class="tinder-buttons2" style="display:inline-flex;"
-         ng-hide="jobCard[swiper.activeIndex].act.jobUser[jobCard[swiper.activeIndex].job] || jobCard[swiper.activeIndex].act.jobStore[jobCard[swiper.activeIndex].job]">
       <button
-        ng-click="service.userLike(jobCard[swiper.activeIndex],0,jobCard[swiper.activeIndex].job)"
+        ng-click="like(jobCard[swiper.activeIndex],0,jobCard[swiper.activeIndex].job)"
+        ng-hide="jobCard[swiper.activeIndex].act.jobUser[jobCard[swiper.activeIndex].job] || jobCard[swiper.activeIndex].act.jobStore[jobCard[swiper.activeIndex].job]"
         type="button"
         class="jobo-button jobo-button-block jobo-button-calm"
-        style="width: 50%; margin: 0"
       >Ứng tuyển
-      </button>
-
-      <button
-        ng-click="service.shareJob('',jobCard[swiper.activeIndex].avatar,CONFIG.WEBURL +'/view/store/'+ jobCard[swiper.activeIndex].storeId)"
-
-        class="jobo-button jobo-button-block button-primary"
-        style="width: 50%; margin: 0">
-        Chia sẻ
       </button>
     </div>
   </ion-content>

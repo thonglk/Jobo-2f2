@@ -48,13 +48,11 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
       $rootScope.newfilter = {
         job: $rootScope.service.getfirst($rootScope.storeData.job),
         userId: $rootScope.storeId,
-        sort: 'match',
         p: 1
       }
       $scope.getUserFiltered($rootScope.newfilter)
     }
   }
-
 
 
   $rootScope.newfilterFilter = function (type, key) {
@@ -121,9 +119,10 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
               $scope.response.data[i].act = snap.val()
             })
           }
-          firebase.database().ref('profile/' + profileData.userId + '/presence').on('value', function (snap) {
-            console.log(snap.val())
-            $scope.response.data[i].presence = snap.val()
+          firebase.database().ref('presence/profile/' + profileData.userId + 'status').on('value', function (snap) {
+            if(snap.val()){
+              $scope.response.data[i].presence = snap.val()
+            }
           })
 
         }
@@ -162,6 +161,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
 
   $scope.onTouch = function (swiper) {
     $scope.swiper = swiper;
+    $scope.swiper.update();
     console.log('touched', $scope.swiper.activeIndex);
     if ($scope.swiper.activeIndex == $rootScope.usercard.length - 5) {
       console.log('load more')
@@ -286,16 +286,6 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
 
   $scope.slideIndex = 1;
 // to logout
-
-  $scope.share = function () {
-    $cordovaSocialSharing
-      .shareViaFacebook("Tuyển nhân viên nhanh chóng và hiệu quả!", "", 'https://www.facebook.com/jobovietnam')
-      .then(function (result) {
-        // Success!
-      }, function (err) {
-        // An error occurred. Show a message to the user
-      });
-  };
 
   $scope.matchlike = "";
 

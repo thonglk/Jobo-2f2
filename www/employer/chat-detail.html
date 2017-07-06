@@ -4,8 +4,7 @@
   The FriendsCtrl pulls data from the Friends service (service.js)
   The Friends service returns an array of friend data
 -->
-<ion-view hide-nav-bar="true" ng-init="init()">
-  <ion-content>
+<ion-modal-view hide-nav-bar="true" ng-init="init()">
     <ion-header-bar class="bar-light">
       <i class="button icon-left ion-chevron-left button-clear" ui-sref="employer.chats"></i>
 
@@ -15,11 +14,31 @@
          ng-change="setInterview(timeInterview)"></i>
       <i class="button icon-right ion-android-call button-clear animated shake" ng-click="showphone()"></i>
     </ion-header-bar>
-    <ion-item class="item item-body" id="activity-list-item54" ng-if="messages.interview" style="margin-top: 44px">
+  <div style="margin-top: 44px">
+    <ion-item class="item item-body" id="activity-list-item54" ng-if="chatUser.act.interview" style="margin-top: 44px">
       <p style="margin-top:0px;color:#000000;">Bạn và {{chatUser.name}} sẽ có buổi phỏng vấn lúc
-        <strong>{{messages.interview.interview | date: "H:mm dd-MM-yyyy"}}</strong> tại
-        <strong>{{messages.interview.place}}</strong>
+        <strong>{{chatUser.act.interview | date: "H:mm dd-MM-yyyy"}}</strong>
       </p></ion-item>
+    <div ng-if="chatUser.contact">
+      <ion-item class="item-avatar item-icon-right light" style=" background: -webkit-linear-gradient(to left, #1FBDF1 , #39DFA5); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #1FBDF1 , #39DFA5);" ng-if="chatUser.name"
+                id="jobo-list-item10">
+        <h2light>{{chatUser.name}}
+        </h2light>
+      </ion-item>
+      <ion-item class="item-icon-left" id="contact-list-item48" href="tel:{{chatUser.contact.phone}}">
+        <i class="icon ion-ios-telephone"></i>{{chatUser.contact.phone}}
+      </ion-item>
+      <ion-item class="item-icon-left" id="contact-list-item49" href="mailto:{{chatUser.contact.email}}">
+        <i class="icon ion-android-mail"></i>{{chatUser.contact.email}}
+      </ion-item>
+    </div>
+    <div ng-hide="chatUser.contact">
+      <ion-item class="item-icon-left" id="contact-list-item48" ng-click="viewProfile(chatUser.userId)">
+        <i class="icon ion-information-circled"></i>Xem hồ sơ
+      </ion-item>
+    </div>
+    </div>
 
     <ion-content has-bouncing="true" class="has-footer"
                  delegate-handle="userMessageScroll">
@@ -40,11 +59,11 @@
         <div ng-if="chatUser.userId === message.sender">
           <div ng-if="Status[message.key]" style="color: darkgrey;
     font-size: xx-small;
-text-align: center;">{{timeConverter(message.createdAt)}}
+text-align: center;">{{service.timeAgo(message.createdAt)}}
           </div>
           <div>
             <img ng-click="viewProfile(chatUser.userId)" class="profile-pic left"
-                 ng-src="{{chatUser.avatar || '/img/macding.jpg'}}" onerror="onProfilePicError(this)"/>
+                 ng-src="{{chatUser.avatar || 'img/macdinh.jpg'}}" onerror="onProfilePicError(this)"/>
           </div>
 
           <div class="chat-bubble left" ng-click="showStatus(message.key)">
@@ -65,12 +84,12 @@ text-align: center;">{{timeConverter(message.createdAt)}}
         <div ng-if="storeId === message.sender && message.type == 0">
           <div ng-if="Status[message.key]" style="color: darkgrey;
     font-size: xx-small;
-text-align: center;">{{timeConverter(message.createdAt)}}
+text-align: center;">{{service.timeAgo(message.createdAt)}}
           </div>
 
           <div>
             <img ng-click="showProfile()" class="profile-pic right"
-                 ng-src="{{storeData.avatar || '/img/store.png'}}" onerror="onProfilePicError(this)"/>
+                 ng-src="{{storeData.avatar || 'img/store.png'}}" onerror="onProfilePicError(this)"/>
           </div>
 
           <div class="chat-bubble right" ng-click="showStatus(message.key)">
@@ -95,7 +114,7 @@ text-align: center;">{{timeConverter(message.createdAt)}}
     </ion-content>
 
     <form name="sendMessageForm" ng-submit="sendMessage(sendMessageForm)" novalidate>
-      <ion-footer-bar class="item-input-inset message-footer">
+      <ion-footer-bar class="item-input-inset message-footer" keyboard-attach>
         <label class="item-input-wrapper message-box">
             <textarea ng-model="input.message" class="message-box" value=""
                       placeholder="Gửi tin nhắn..." required minlength="1" maxlength="1500"
@@ -108,7 +127,4 @@ text-align: center;">{{timeConverter(message.createdAt)}}
         </div>
       </ion-footer-bar>
     </form>
-
-
-  </ion-content>
-</ion-view>
+</ion-modal-view>

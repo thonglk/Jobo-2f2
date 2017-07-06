@@ -115,10 +115,11 @@ app.controller('sJobCtrl', function ($scope, $state, $firebaseArray, $http
           }
 
           firebase.database().ref('profile/' + profileData.userId + '/presence').on('value', function (snap) {
-            console.log(snap.val())
-            $scope.response.data[i].presence = snap.val()
+            if(snap.val()){
+              console.log(snap.val())
+              $scope.response.data[i].presence = snap.val()
+            }
           })
-
         }
 
         $rootScope.storeCard = $rootScope.storeCard.concat($scope.response.data);
@@ -129,7 +130,7 @@ app.controller('sJobCtrl', function ($scope, $state, $firebaseArray, $http
           $ionicLoading.hide();
           $scope.loading = false
           if ($rootScope.newfilter.p == 1) {
-            $cordovaToast.showShortTop('Chúng tôi đã tìm thấy ' + $scope.response.total + ' ứng viên phù hợp với vị trí của bạn')
+            $cordovaToast.showShortTop('Chúng tôi đã tìm thấy ' + $scope.response.total + ' nhà tuyển dụng phù hợp với bạn')
           }
         })
       })

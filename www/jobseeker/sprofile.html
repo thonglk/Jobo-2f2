@@ -6,10 +6,19 @@
 
     <div class="card">
       <div class="item item-divider">
-        Thông tin liên hệ
+        Thông tin liên hệ *
       </div>
 
       <div class="list form-modify">
+        <div class="profile-container">
+          <img ng-click="updateavatar()" ng-src="{{userData.avatar || 'img/macdinh.jpg'}}" class="profile-image"
+               width="100">
+          <img
+            ng-click="updateavatar()"
+            ng-src="img/edit.png"
+            class="profile-edit2"
+            width="30">
+        </div>
         <label class="item item-input item-stacked-label">
           <span class="input-label">Họ và tên</span>
           <input ng-model="userData.name" type="text" placeholder="">
@@ -26,204 +35,238 @@
         </ion-item>
         <label class="item item-input item-stacked-label">
           <span class="input-label">Email</span>
-          <input ng-disabled="userData.email" ng-model="userData.email" type="email" placeholder="">
+          <input ng-disabled="hasNoEmail == false" ng-model="userData.email" type="email">
         </label>
 
         <label class="item item-input item-stacked-label">
           <span class="input-label">Số điện thoại</span>
-          <input ng-disabled="userData.phone" ng-model="userData.phone" type="number" placeholder="{{userData.phone}}">
+          <input ng-disabled="hasNoPhone == false" ng-model="userData.phone" type="number">
         </label>
       </div>
     </div>
-
-    <div class="card">
-      <div class="item item-divider">
-        Thông tin cá nhân
-      </div>
-      <div class="profile-container" style="margin-bottom: 30px">
-        <img ng-click="updateavatar()" ng-src="{{userData.avatar || 'img/macdinh.jpg'}}" class="profile-image"
-             width="100">
-
-      </div>
-
-      <div class="list form-modify">
-        <label class="item item-select" id="job-select6">
-          <span class="input-label">Giới tính</span>
-          <select ng-model="newfilter.sex">
-            <option ng-repeat="(key,value) in CONFIG.data.sex" value="{{key}}">
-              {{value}}
-            </option>
-          </select>
-        </label>
-
-        <span class="input-label">Chiều cao</span>
-        <div class="input-group">
-          <input ng-model="userData.height" class="form-control input-number" type="text">
-          <span class="input-group-addon span-number">cm</span>
+    <div ng-if="userData.location">
+      <div class="card">
+        <div class="item item-divider">
+          Thông tin cá nhân
         </div>
-        <span class="input-label">Cân nặng</span>
-        <div class="input-group">
-          <input ng-model="userData.weight" class="form-control input-number" type="text">
-          <span class="input-group-addon span-number">kg</span>
-        </div>
-      </div>
-      <ul class="list">
-        <li class="item item-toggle">
-          Ngoại hình ưa nhìn
-          <label class="toggle toggle-assertive">
-            <input ng-model="userData.figure" type="checkbox">
-            <div class="track">
-              <div class="handle"></div>
-            </div>
-          </label>
-        </li>
-      </ul>
-    </div>
-    <div class="card">
-      <div class="item item-divider">
-        Trình độ học vấn
-      </div>
-      <div class="list form-modify list-inset">
-        <span class="item-label">Trường</span>
-        <ion-item class="input-item item-icon-right" ng-click="selectSchool()">
-          <span class="gotham-book" ng-if="!userData.school">Nhấn để thêm</span>
-          <span class="gotham-book" ng-if="userData.school">{{userData.school}}</span>
-          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-        </ion-item>
-
-        <span class="item-label">Ngoại ngữ</span>
-        <ion-item class="input-item item-icon-right " ng-click="collectLanguages()">
-          <span class="gotham-book" ng-if="!userData.languages">Nhấn để thêm ngoại ngữ</span>
-          <span class="gotham-book" ng-repeat="(key,value) in userData.languages">{{dataLanguages[key]}},</span>
-          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-        </ion-item>
-
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="item item-divider">
-        Mong muốn tìm việc
-      </div>
-
-      <div class="list form-modify">
-        <span class="item-label">Thu nhập mong muốn</span>
-        <div class="input-group">
-          <input ng-model="userData.expect_salary" class="form-control input-number" type="text">
-          <span class="input-group-addon span-number">VNĐ/tháng</span>
-        </div>
-
-        <span class="item-label">Nơi làm việc mong muốn</span>
-        <ion-item class="input-item item-icon-right" ng-click="collectIndustry()">
-          <span class="gotham-book" ng-if="!userData.industry">Nhấn để thêm</span>
-          <span class="gotham-book" ng-repeat="(key,value) in userData.industry">{{dataIndustry[key]}},</span>
-          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-        </ion-item>
-        <span class="item-label">Công việc mong muốn</span>
-        <ion-item class="input-item item-icon-right" ng-click="collectJob()">
-          <span class="gotham-book" ng-if="!userData.job">Nhấn để thêm</span>
-          <button class="gotham-book" ng-repeat="(key,value) in userData.job">{{dataJob[key]}},</button>
-          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-        </ion-item>
-        <span class="item-label">Thời gian đi làm</span>
-        <ion-item class="input-item item-icon-right" ng-click="collectTime()">
-          <span class="gotham-book" ng-if="!userData.time">Nhấn để thêm thời gian</span>
-          <span class="gotham-book" ng-repeat="(key,value) in userData.time">{{dataTime[key]}},</span>
-          <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-        </ion-item>
-
-        <div class="list">
-          <span class="item-label">Khoảng cách di chuyển: {{userData.distance}} km</span>
-
-          <div class="item input-item range range-positive">
-            <i class="icon ion-ios-sunny-outline"></i>
-            <input ng-model="userData.distance" type="range" name="volume" min="0" max="50" value="33">
-            <i class="icon ion-ios-sunny"></i>
-          </div>
-        </div>
-
-        <label class="item item-input item-select">
-          <span class="input-label">Trạng thái tìm việc</span>
-
-          <select ng-model="userData.status">
-            <option value="1">Tìm gấp</option>
-            <option value="0" selected>Bình thường</option>
-            <option value="-1">Chưa có nhu cầu</option>
-          </select>
-        </label>
-        <p>Hồ sơ sẽ được ưu tiên hiển thị cho bạn tìm việc gấp</p>
-
-      </div>
-    </div>
-
-
-    <div class="card">
-      <div class="item item-divider">
-        Kinh nghiệm làm việc
-      </div>
-      <div ng-repeat="card in tempoExperience">
         <div class="list form-modify">
-          <label class="item item-input item-stacked-label">
-            <span class="input-label">Nơi làm việc</span>
-            <input ng-model="card.company" type="text" placeholder="">
+          <label class="item item-select" id="job-select6">
+            <span class="input-label">Giới tính</span>
+            <select ng-model="userData.sex">
+              <option ng-repeat="(key,value) in CONFIG.data.sex" value="{{key}}">
+                {{value}}
+              </option>
+            </select>
           </label>
-          <label class="item item-input item-stacked-label" ng-click="selectExpJob(card.id)">
-            <span class="item-label">Công việc</span>
-            <ion-item class="input-item item-icon-right">
-              <span class="gotham-book" ng-if="!card.job">Nhấn để thêm công việc</span>
-              <span class="gotham-book" ng-if="card.job">{{dataJob[card.job]}}</span>
 
-              <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
-            </ion-item>
-          </label>
-          <label class="item item-input item-stacked-label">
-            <span class="input-label">Bắt đầu</span>
-            <input ng-model="card.start" type="month" placeholder="">
-          </label>
-          <label class="item item-input item-stacked-label">
-            <span class="input-label">Kết thúc</span>
-            <input ng-if="card.end != true" ng-model="card.end" type="month" placeholder="">
-          </label>
+          <span class="input-label">Chiều cao</span>
+          <div class="input-group">
+            <input ng-model="userData.height" class="form-control input-number" type="number">
+            <span class="input-group-addon span-number">cm</span>
+          </div>
+          <span class="input-label">Cân nặng</span>
+          <div class="input-group">
+            <input ng-model="userData.weight" class="form-control input-number" type="number">
+            <span class="input-group-addon span-number">kg</span>
+          </div>
         </div>
         <ul class="list">
           <li class="item item-toggle">
-            Đến nay
+            Ngoại hình ưa nhìn
             <label class="toggle toggle-assertive">
-              <input ng-model="card.end" type="checkbox">
+              <input ng-model="userData.figure" type="checkbox">
               <div class="track">
                 <div class="handle"></div>
               </div>
             </label>
           </li>
         </ul>
-        <button ng-click="deleteExp(card.id)" class="button button-small button-outline button-assertive pull-right">
-          Xóa
-        </button>
-        <hr style="margin-top: 50px">
       </div>
-      <div class="item item-divider">
-        <button ng-click="addMoreExp()" class="button button-small button-outline button-positive">
-          Thêm
-        </button>
+      <div class="card">
+        <div class="item item-divider">
+          Trình độ học vấn
+        </div>
+        <div class="list form-modify list-inset">
+          <label class="item item-input item-stacked-label">
+            <span class="input-label">Trường</span>
+            <input ng-model="userData.school" type="text" placeholder="">
+          </label>
+
+          <span class="item-label">Ngoại ngữ</span>
+          <ion-item class="input-item item-icon-right " ng-click="collectLanguages()">
+            <span class="gotham-book" ng-if="!userData.languages">Nhấn để thêm ngoại ngữ</span>
+            <span class="gotham-book" ng-repeat="(key,value) in userData.languages">{{Lang[key]}},</span>
+            <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+          </ion-item>
+
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="item item-divider">
+          Mong muốn tìm việc
+        </div>
+
+        <div class="list form-modify">
+          <span class="item-label">Thu nhập mong muốn</span>
+          <div class="input-group">
+            <input ng-model="userData.expect_salary" class="form-control input-number" type="text">
+            <span class="input-group-addon span-number">triệu đồng/tháng</span>
+          </div>
+
+          <span class="item-label">Nơi làm việc mong muốn</span>
+          <ion-item class="input-item item-icon-right" ng-click="collectIndustry()">
+            <span class="gotham-book" ng-if="!userData.industry">Nhấn để thêm</span>
+            <span class="gotham-book" ng-repeat="(key,value) in userData.industry">{{Lang[key]}},</span>
+            <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+          </ion-item>
+          <span class="item-label">Công việc mong muốn</span>
+          <ion-item class="input-item item-icon-right" ng-click="collectJob()">
+            <span class="gotham-book" ng-if="!userData.job">Nhấn để thêm</span>
+            <button class="gotham-book" ng-repeat="(key,value) in userData.job">{{Lang[key]}},</button>
+            <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+          </ion-item>
+          <span class="item-label">Thời gian đi làm</span>
+          <ion-item class="input-item item-icon-right" ng-click="collectTime()">
+            <span class="gotham-book" ng-if="!userData.time">Nhấn để thêm thời gian</span>
+            <span class="gotham-book" ng-repeat="(key,value) in userData.time">{{Lang[key]}},</span>
+            <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+          </ion-item>
+
+          <div class="list">
+            <span class="item-label">Khoảng cách di chuyển: {{userData.distance}} km</span>
+
+            <div class="item input-item range range-positive">
+              <i class="icon ion-ios-sunny-outline"></i>
+              <input ng-model="userData.distance" type="range" name="volume" min="0" max="50" value="33">
+              <i class="icon ion-ios-sunny"></i>
+            </div>
+          </div>
+
+          <label class="item item-input item-select">
+            <span class="input-label">Trạng thái tìm việc</span>
+
+            <select ng-model="userData.status">
+              <option value="1">Tìm gấp</option>
+              <option value="0" selected>Bình thường</option>
+              <option value="-1">Chưa có nhu cầu</option>
+            </select>
+          </label>
+          <p>Hồ sơ sẽ được ưu tiên hiển thị cho bạn tìm việc gấp</p>
+
+        </div>
+      </div>
+
+
+      <div class="card">
+        <div class="item item-divider">
+          Kinh nghiệm làm việc
+        </div>
+        <div ng-repeat="card in tempoExperience">
+          <div class="list form-modify">
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Nơi làm việc</span>
+              <input ng-model="card.company" type="text" placeholder="">
+            </label>
+            <label class="item item-input item-stacked-label" ng-click="selectExpJob(card.id)">
+              <span class="item-label">Công việc</span>
+              <ion-item class="input-item item-icon-right">
+                <span class="gotham-book" ng-if="!card.job">Nhấn để thêm công việc</span>
+                <span class="gotham-book" ng-if="card.job">{{Lang[card.job]}}</span>
+
+                <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
+              </ion-item>
+            </label>
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Bắt đầu</span>
+              <input ng-model="card.start" type="month" placeholder="">
+            </label>
+            <label class="item item-input item-stacked-label">
+              <span class="input-label">Kết thúc</span>
+              <input ng-if="card.end != true" ng-model="card.end" type="month" placeholder="">
+            </label>
+          </div>
+          <ul class="list">
+            <li class="item item-toggle">
+              Đến nay
+              <label class="toggle toggle-assertive">
+                <input ng-model="card.end" type="checkbox">
+                <div class="track">
+                  <div class="handle"></div>
+                </div>
+              </label>
+            </li>
+          </ul>
+          <button ng-click="deleteExp(card.id)" class="button button-small button-clear button-assertive pull-right">
+            Xóa
+          </button>
+          <hr style="margin-top: 50px">
+        </div>
+        <div class="item item-divider">
+          <button ng-click="addMoreExp()" class="button button-small button-outline button-positive">
+            Thêm
+          </button>
+
+        </div>
 
       </div>
 
-    </div>
+      <div class="card">
+        <div class="item item-divider">
+          Giới thiệu bản thân
+        </div>
+        <div class="list form-modify">
+          <label class="item item-input item-stacked-label">
+            <textarea ng-model="userData.description"
+                      placeholder="Chia sẻ thêm về mong muốn tìm việc của bạn"></textarea>
+          </label>
 
-    <div class="card">
-      <div class="item item-divider">
-        Khác
+        </div>
       </div>
-      <div class="list form-modify">
+      <div class="card">
         <label class="item item-input item-stacked-label">
-          <span class="input-label">Giới thiệu bản thân</span>
-          <input ng-model="userData.description" type="text" placeholder="">
+          <span class="input-label">Hình ảnh của bạn</span>
+          <div class="padding">
+            <button ng-click="addPhoto()" class="button button-outline button-calm button-block">
+              Thêm hình ảnh
+            </button>
+          </div>
         </label>
+        <div class="padding" ng-if="userData.photo">
+          <div class="row">
+            <div class="col col-33" style="padding: 5px"
+                 ng-repeat="(key,value) in userData.photo">
+              <img src="{{value}}" style="width:100%;"/>
+              <img ng-click="deleteImage(key)"
+                   ng-src="img/delete.png"
+                   class="profile-edit"
+                   width="30">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
         <label class="item item-input item-stacked-label">
           <span class="input-label">Video giới thiệu</span>
-          <input ng-model="userData.videourl" type="url" placeholder="Http://youtube.com/">
-          <p>Video giới thiệu về bản thân, tại sao nhà tuyển dụng nên chọn bạn,...</p>
+          <div class="padding">
+            <button ng-click="captureVideo()" class="button button-outline button-calm button-block">
+              {{userData.videourl?'Thay đổi video':'Bắt đầu quay video'}}
+            </button>
+          </div>
         </label>
+        <div class="padding">
+          <small class="text-muted" ng-hide="userData.videourl">
+            - Nếu có video thì profile của bạn sẽ được tăng mức hiển thị trước nhà tuyển dụng gấp 2 lần<br>
+            - Hãy giới thiệu bản thân để gây ấn tượng với các nhà tuyển dụng<br>
+            - Nội dung video nên bao gồm các câu trả lời của câu hỏi sau:<br>
+            + Giới thiệu về bạn<br>
+            + Tại sao nhà tuyển dụng nên chọn bạn?<br>
+            + Định hướng/mong muốn công việc của bạn trong thời gian tới?<br>
+          </small>
+        </div>
+
+
       </div>
     </div>
   </ion-content>

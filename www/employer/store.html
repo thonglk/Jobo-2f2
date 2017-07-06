@@ -59,7 +59,7 @@
           <span class="input-label">Lĩnh vực</span>
           <ion-item class="input-item item-icon-right" ng-click="selectIndustry()">
             <span class="gotham-book" ng-if="!storeData.industry">Nhấn để thêm</span>
-            <span class="gotham-book">{{dataIndustry[storeData.industry]}},</span>
+            <span class="gotham-book">{{Lang[storeData.industry]}},</span>
             <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
           </ion-item>
           <div class="list list-inset">
@@ -109,7 +109,7 @@
 
       <div class="list card" id="profile-card215" ng-repeat="card in jobData">
         <ion-item class="item-icon-left" id="profile-list-item34">
-          <i class="icon ion-compose"></i> Vị trí: {{dataJob[card.job]}}
+          <i class="icon ion-compose"></i> Vị trí: {{Lang[card.job]}}
         </ion-item>
 
         <form id="job-form14" class="list">
@@ -117,7 +117,7 @@
           <a class="item item-icon-left" style="padding-left: 18px" ng-click="showShift(key)">
             <span>Hình thức</span>
             <span class="item-note" ng-if="!card.working_type">Nhấn để thêm</span>
-            <span class="item-note" ng-if="card.working_type">{{CONFIG.data.working_type[card.working_type]}}</span>
+            <span class="item-note" ng-if="card.working_type">{{Lang[card.working_type]}}</span>
           </a>
           <label class="item item-input" id="job-input9">
             <span class="input-label">Lương (đơn vị: {{card.working_type == 'seasonal' ? 'triệu VNĐ':'triệu VND/tháng'}})</span>
@@ -158,7 +158,7 @@
           <label class="item item-select" id="job-select6">
             <span class="input-label">Ngoại ngữ</span>
             <select ng-model="newfilter.languages">
-              <option ng-repeat="(key,value) in dataLanguages" value="{{key}}">{{dataLanguages[key]}}</option>
+              <option ng-repeat="(key,value) in CONFIG.data.languages" value="{{key}}">{{Lang[key]}}</option>
             </select>
           </label>
         </form>

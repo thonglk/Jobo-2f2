@@ -3,7 +3,7 @@ angular.module('starter.configs', [])
   .constant("CONFIG", {
     'UpdateAt': "2017-04-10T04:44:21.253Z",
     'Location': false,
-    'WEBURL': 'https://web.joboapp.com',
+    'WEBURL': 'https://joboapp.com',
     "APIURL": 'https://jobohihi.herokuapp.com',
     'FCM_KEY': "AAAArk3qIB4:APA91bEWFyuKiFqLt4UIrjUxLbduQCWJB4ACptTtgAovz4CKrMdonsS3jt06cfD9gGOQr3qtymBmKrsHSzGhqyJ_UWrrEbA4YheznlqYjsCBp_12bNPFSBepqg_qrxwdYxX_IcT9ne5z6s02I2mu2boy3VTN3lGPYg",
     "APIKey": 'AIzaSyATOX9rL_ULV-Q_e2kImu9wYgK2AToOteQ',
@@ -54,7 +54,7 @@ angular.module('starter.configs', [])
         "supermarket_cinema": "Siêu thị/ Rạp phim",
         "travel_agency": "Công ty Du lịch/phòng vé",
         "store": "Cửa hàng/Bán lẻ",
-        "other": "Khác",
+        "other": "Khác"
 
       },
       "job": {
@@ -99,11 +99,9 @@ angular.module('starter.configs', [])
         "parttime": "Bán thời gian",
         "seasonal": "Thời vụ"
       },
-
       "sex": {
         "male": "Nam",
-        "female": "Nữ",
-        "": "Không yêu cầu"
+        "female": "Nữ"
       },
       "sort": {
         "match": "Phù hợp nhất",
@@ -112,7 +110,6 @@ angular.module('starter.configs', [])
         "viewed": "Lượt xem",
         "rate": "Đánh giá",
         "feature": "Nổi bật"
-
 
       },
       "dataContentType": {
@@ -190,18 +187,7 @@ angular.module('starter.configs', [])
         }
       }
     },
-    "chatlist": {
-      0: "Tất cả ứng viên",
-      1: "Đã gửi lời mời",
-      2: "Đã ứng tuyển",
-      3: "Đã tương hợp"
-    },
-    "chatlistUser": {
-      0: "Tất cả công việc",
-      1: "Đã ứng tuyển",
-      2: "Đã tuyển bạn",
-      3: "Đã tương hợp"
-    },
+
     "review": {
       1: 'Rất tệ',
       2: 'Tệ',
@@ -223,4 +209,66 @@ angular.module('starter.configs', [])
         "price": "1.000.000 đ/tháng"
       }
     }
-  });
+  })
+.constant("TRAN", {
+  "vi":{
+    "Chuyenvientuyendung":"Chuyên viên tuyển dụng",
+    "airlines": "Hàng không/ Sân bay",
+    "beauty_salon": "Thẩm mỹ viện",
+    "education_centre": "Trung tâm đào tạo",
+    "golf_course": "Sân Golf",
+    "gym": "Thể hình/ phòng tập",
+    "karaoke": "Karaoke",
+    "lodging": "Khách sạn/ Khu căn hộ",
+    "real_estate": "Dự án BĐS/ Quản lý tòa nhà",
+    "resort": "Resort/ Khu Du lịch",
+    "restaurant_bar": "Nhà hàng/ Bar/ Pub",
+    "supermarket_cinema": "Siêu thị/ Rạp phim",
+    "travel_agency": "Công ty Du lịch/phòng vé",
+    "store": "Cửa hàng/Bán lẻ",
+    "other": "Khác",
+    "pg": "PG/Sự kiện",
+    "actor": "Diễn viên/Casting",
+    "administration": "Hành chính/ Nhân sự",
+    "cabin_crew": "Tiếp viên hàng không",
+    "cook": "Đầu bếp",
+    "fashion": "Người mẫu/Thời trang",
+    "financing_accounting": "Tài chính / Kế toán",
+    "manager": "Quản lý điều hành",
+    "marketing_pr": "Marketing/ PR",
+    "mc_event": "MC/Sân khấu",
+    "receptionist_cashier": "Lễ tân/ Thu ngân",
+    "sale": "Bán hàng/sale",
+    "secretary": "Trợ lý/Thư ký",
+    "server": "Phục vụ",
+    "designer": "Designer",
+    "english": "Tiếng Anh",
+    "chinese": "Tiếng Trung",
+    "french": "Tiếng Pháp",
+    "germain": "Đức ",
+    "italian": "Ý",
+    "japanese": "Tiếng Nhật",
+    "korean": "Tiếng Hàn",
+    "others ": "Khác",
+    "portuguese ": "Bồ Đào Nha",
+    "spanish": "Tây Ban Nha",
+    "thai": "Thái Lan",
+    "morning": "Sáng",
+    "noon": "Trưa",
+    "afternoon": "Chiều",
+    "evening": "Tối",
+    "fulltime": "Toàn thời gian",
+    "parttime": "Bán thời gian",
+    "seasonal": "Thời vụ",
+    "match": "Phù hợp nhất",
+    "createdAt": "Thời gian",
+    "distance": "Khoảng cách",
+    "viewed": "Lượt xem",
+    "rate": "Đánh giá",
+    "feature": "Nổi bật",
+    "job": "Công việc",
+    "company": "Thương hiệu",
+    "register_account_employer":"Đăng ký tài khoản nhà tuyển dụng",
+    "register_account_jobseeker":"Đăng ký tài khoản ứng viên",
+  }
+});

@@ -1,32 +1,32 @@
 "use strict";
-app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $stateParams, $ionicActionSheet, $timeout, $ionicScrollDelegate, $ionicSlideBoxDelegate, $firebaseArray, $ionicPopup, $http, $ionicLoading, $ionicModal) {
+app.controller('sDashCtrl', function ($q, $scope, $rootScope, $state, CONFIG, $stateParams, $ionicActionSheet, $timeout, $ionicScrollDelegate, $ionicSlideBoxDelegate, $firebaseArray, $ionicPopup, $http, $ionicLoading, $ionicModal, $cordovaToast) {
   $scope.init = function () {
-    $ionicLoading.show({
-      template: '<ion-spinner></ion-spinner><br>' + ' Đang tải công việc...',
-    })
-    if ($rootScope.userData) {
-      $scope.initData($rootScope.userData)
 
+    if ($rootScope.userData && $rootScope.userData.location) {
+      $scope.initData($rootScope.userData)
     } else {
       $scope.$on('handleBroadcast', function (event, userData) {
         console.log('Init data', userData);
         $scope.initData(userData)
-      });
+      })
     }
-
   };
 
   $scope.initData = function (userData) {
     if (!userData) {
-      $state.go('profile', {id: null})
-      $cordovaToast.showShortTop('Nhà tuyển dụng muốn xem hồ sơ của bạn')
+      $state.go('profile')
+      $cordovaToast.showShortTop('Hãy cập nhật thông tin hồ sơ của bạn trước')
+    } else if (!userData.location) {
+      $state.go('profile')
+      $cordovaToast.showShortTop('Hãy cập nhật địa chỉ đề tìm việc xung quanh')
     } else {
-      $rootScope.jobCard = []
+      $ionicLoading.show({
+        template: '<ion-spinner></ion-spinner><br>' + ' Đang tải công việc...',
+      })
 
       $rootScope.newfilter = {
         job: $rootScope.service.getfirst($rootScope.userData.job),
         userId: $rootScope.userId,
-        sort: 'match',
         p: 1
       }
       $scope.getJobFiltered($rootScope.newfilter)
@@ -41,7 +41,6 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
       url: CONFIG.APIURL + '/api/job',
       params: newfilter
     }).then(function successCallback(response) {
-      console.log("respond", response);
       $scope.response = response.data;
       if ($rootScope.maxMatchJob == 0) {
         $rootScope.maxMatchJob = $scope.response.data[0].match
@@ -53,7 +52,6 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
         }
         for (var i in $scope.response.data) {
 
-
           var jobData = $scope.response.data[i]
           $scope.response.data[i].matchPer = Math.round($scope.response.data[i].match * 100 / $rootScope.maxMatchJob)
 
@@ -64,27 +62,39 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
             })
           }
           firebase.database().ref('presence/store/' + jobData.storeId + '/status').on('value', function (snap) {
-            console.log(snap.val())
+            if (snap.val()) {
+              $scope.response.data[i].presence = snap.val()
+              console.log(snap.val())
+            }
           })
-
-
         }
         $rootScope.jobCard = $rootScope.jobCard.concat($scope.response.data);
-        $timeout(function () {
-          console.log('jobCard', $rootScope.jobCard)
-          $scope.swiper.update();
+
+
+        if ($rootScope.jobCard.length == 0) {
+
           $ionicLoading.hide();
-          $scope.loading = false
-          if ($rootScope.newfilter.p == 1) {
-            $cordovaToast.showShortTop('Chúng tôi đã tìm thấy ' + $scope.response.total + ' công việc phù hợp với bạn')
-          }
-        })
-        $scope.loading = false
+          $cordovaToast.showShortTop('Chúng tôi đã gửi thông báo tìm ứng viên cho bạn, hãy thử tìm vị trí khác!')
+
+        } else {
+
+          $timeout(function () {
+            $scope.swiper.update();
+            $ionicLoading.hide();
+            $scope.loading = false
+            if ($rootScope.newfilter.p == 1) {
+              $cordovaToast.showShortTop('Chúng tôi đã tìm thấy ' + $scope.response.total + ' công việc phù hợp với bạn')
+            }
+          })
+
+        }
+
 
       })
     }, function (error) {
       console.log(error)
-
+      $ionicLoading.hide();
+      $cordovaToast.showShortTop('Chúng tôi đang nâng cấp dữ liệu, bạn hãy thử lại 1 lúc sau nhé!')
       $scope.loading = false
 
     })
@@ -97,8 +107,9 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
 
   $scope.onTouch = function (swiper) {
     $scope.swiper = swiper;
+    $scope.swiper.update();
     console.log('touched', $scope.swiper.activeIndex);
-    if ($scope.swiper.activeIndex == $rootScope.jobCard.length - 5) {
+    if ($scope.swiper.activeIndex == $rootScope.jobCard.length - 5 || !$rootScope.jobCard) {
       console.log('load more')
       $scope.loadMore()
     }
@@ -143,9 +154,6 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
         }
       }
 
-
-
-
       $scope.showjob = function () {
         if (!$scope.newHospital) {
           $scope.newHospital = {}
@@ -165,7 +173,6 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
           cancelType: 'button-small'
         }).then(function (res) {
           if (res) {
-            console.log('You are sure');
             $rootScope.newfilter.job = $scope.newHospital.job;
             console.log('select', $rootScope.newfilter);
 
@@ -190,7 +197,6 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
           cancelType: 'button-small'
         }).then(function (res) {
           if (res) {
-            console.log('You are sure');
             $rootScope.newfilter.working_type = $scope.newHospital.working_type;
             console.log('select', $rootScope.newfilter);
 
@@ -215,7 +221,6 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
           cancelType: 'button-small'
         }).then(function (res) {
           if (res) {
-            console.log('You are sure');
             $rootScope.newfilter.industry = $scope.newHospital.industry;
             console.log('select', $rootScope.newfilter);
 
@@ -226,10 +231,8 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
       };
       $scope.createHospital = function () {
         $ionicLoading.show({
-          template: '<ion-spinner></ion-spinner><br>' + ' Đang lọc ứng viên...',
+          template: '<ion-spinner></ion-spinner><br>' + ' Đang lọc công việc...',
         })
-        console.log('newfilter', $rootScope.newfilter)
-
         $scope.modalProfile.hide();
         $rootScope.jobCard = []
         $scope.getJobFiltered($rootScope.newfilter);
@@ -237,6 +240,12 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, CONFIG, $statePara
       };
     });
   };
+
+  $scope.like = function (a, b, c) {
+    $rootScope.service.userLike(a, b, c).then(function () {
+      $scope.swiper.slideNext()
+    })
+  }
 
 
 });

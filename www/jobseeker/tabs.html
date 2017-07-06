@@ -10,13 +10,11 @@ navigation history that also transitions its views in and out.
     <ion-nav-view name="tab-dash"></ion-nav-view>
   </ion-tab>
 
-  <ion-tab icon-off="ion-ios-navigate-outline" icon-on="ion-ios-navigate"href="#/jobseeker/job">
-    <ion-nav-view name="tab-job"></ion-nav-view>
-  </ion-tab>
 
 
   <ion-tab icon-off="ion-ios-bell-outline" icon-on="ion-ios-bell" href="#/jobseeker/notification">
     <ion-nav-view name="tab-notification"></ion-nav-view>
+    <span class="badge badge-pill badge-danger" ng-if="newNoti != 0">{{newNoti}}</span>
   </ion-tab>
 
   <!-- Chats Tab -->

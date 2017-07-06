@@ -1,6 +1,6 @@
 <ion-modal-view ng-init="init()">
   <ion-content>
-    <i class="back-button ion-ios-close" ng-click="$back()"></i>
+    <i class="back-buttonk ion-ios-close" ng-click="$back()"></i>
     <div class="list">
       <div class="item item-image">
         <img ng-src="{{profileData.avatar || '/img/ava-background/ava_'+ card.industry +'.png'}}">
@@ -8,13 +8,18 @@
       <ion-list class="list-borderless">
         <ion-item class="item-icon-right">
           <h2 class="font-130">{{profileData.storeName}}</h2>
-          <p>{{CONFIG.data.industry[profileData.industry]}}</p>
+          <div class="aggregate-rating" ng-if="reviewData">
+            <span>{{ratingModel.average}}</span>/5
+            (<span>{{ratingModel.total}}</span> Reviews)
+          </div>
+          <p>{{Lang[profileData.industry]}}</p>
           <h6 class="tagline">{{service.shortAddress(profileData.address)}}</h6>
         </ion-item>
       </ion-list>
       <div class="padding animated bounceInUp">
         <div ng-if="profileData.description">
-          <span>{{profileData.description}}</span>
+          <span ng-if="profileData.description"
+             ng-repeat="text in service.nextLine(profileData.description) track by $index ">{{text}}<br></span>
         </div>
         <hr>
 
@@ -26,35 +31,34 @@
             <div class="card content content-main js-job-container">
               <div class="content-section job-header">
                 <div class="job-header-details job-header-truncate"><h3
-                  class="job-title ng-binding">{{CONFIG.data.job[card.job]}}</h3>
+                  class="job-title ng-binding">{{Lang[card.job]}}</h3>
                   <p class="beicons-pre beicons-pre-location job-location ng-binding">
-                    {{CONFIG.data.working_type[card.working_type]}}
+                    {{Lang[card.working_type]}}
                   </p>
                 </div>
               </div>
-              <!-- .content-section -->
 
               <div class="content-section job-description-container">
                 <div class="js-job-description">
                   <div class="job-description">
-                    <div><!-- ngRepeat: text in service.nextLine(card.description) -->
-                      <p><em>Mô tả</em></p>
-                      <p class="ng-binding">• Mức lương: thỏa thuận</p>
-                      <!-- ngIf: card.working_type -->
-                      <p class="ng-binding">• Ngày đăng: Apr 17, 2017</p>
-                      <!-- ngIf: card.unit -->
-                      <!-- ngIf: card.apply -->
-                      <p class="ng-binding">• Lượt xem: 0</p>
-
-                      <!-- ngIf: card.deadline -->
-                      <p><em>Yêu cầu khác:</em></p>
-                      <p class="ng-binding">• Không yêu cầu ngoại
-                        hình</p>
-                      <p class="ng-binding">• Không yêu cầu kinh
-                        nghiệm</p>
-                      <!-- ngIf: card.languages --><!-- ngRepeat: (key,value) in card.languages -->
-                      <p></p>
+                    <p ng-if="card.description"
+                       ng-repeat="text in service.nextLine(card.description) track by $index">{{text}}</p>
+                    <p ng-if="card.salary">• Mức lương: {{card.salary ? card.salary + ' triệu đồng' : ' thỏa thuận'}}</p>
+                    <p ng-if="card.createdAt">• Ngày đăng: {{card.createdAt | date}}</p>
+                    <p ng-if="card.unit">• Số lượng: {{card.unit}}</p>
+                    <p ng-if="card.apply">• Đã ứng tuyển: {{card.apply}}</p>
+                    <p ng-if="card.viewed">• Lượt xem: {{card.viewed}}</p>
+                    <p ng-if="card.deadline">• Hạn chót: {{card.deadline |
+                      date}} ({{service.timeAgo(card.deadline)}}) </p>
+                    <p ng-if="card.figure || card.experience || card.languages"><em>Yêu cầu khác:</em></p>
+                    <p ng-if="card.figure">• {{card.figure ? 'Yêu cầu ngoại hình khá':'Không yêu cầu ngoại hình'}}</p>
+                    <p ng-if="card.experience">• {{card.experience ? 'Đã có kinh nghiệm':'Không yêu cầu kinh nghiệm'}}</p>
+                    <p ng-if="card.languages">• Ngoại ngữ:
+                    <div ng-repeat="(key,value) in card.languages">
+                      {{Lang[key]}}
                     </div>
+                    </p>
+
                   </div>
 
                 </div> <!-- .content-section -->

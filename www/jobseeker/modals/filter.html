@@ -11,22 +11,22 @@
     </div>
   </ion-header-bar>
   <ion-content>
-    <div class="list" ng-hide="newfilter.onlydistance">
+    <div class="list">
       <p style="margin-top: 8px;">&nbsp;</p>
       <div class="padding color-gray"></div>
       <ion-item class="item-icon-right" ng-click="showjob()">
         <span class="gotham-book" ng-if="!newfilter.job">Vị trí </span>
-        <span class="gotham-book">{{dataJob[newfilter.job]}}</span>
+        <span class="gotham-book">{{Lang[newfilter.job]}}</span>
         <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
       </ion-item>
       <ion-item class="item-icon-right" ng-click="showtime()">
         <span class="gotham-book" ng-if="!newfilter.working_type">Thời gian làm việc</span>
-        <span class="gotham-book">{{CONFIG.data.working_type[newfilter.working_type]}}</span>
+        <span class="gotham-book">{{Lang[newfilter.working_type]}}</span>
         <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
       </ion-item>
       <ion-item class="item-icon-right" ng-click="showindustry()">
         <span class="gotham-book" ng-if="!newfilter.industry">Nơi làm việc mong muốn</span>
-        <span class="gotham-book">{{dataIndustry[newfilter.industry]}}</span>
+        <span class="gotham-book">{{Lang[newfilter.industry]}}</span>
         <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
       </ion-item>
 

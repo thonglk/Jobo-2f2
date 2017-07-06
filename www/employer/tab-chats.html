@@ -1,4 +1,9 @@
-<ion-view title="Danh sách tương tác" id="page20" hide-back-button="true">
+  <ion-view title="Danh sách tương tác" id="page9" style="background-color:#FFFFFF;" hide-nav-bar="true" ng-init="init()">
+    <ion-header-bar align-title="center" class="bar-light">
+
+      <h1 class="title">Danh sách tương tác
+      </h1>
+    </ion-header-bar>
   <ion-content class="has-header" scroll="true">
     <div>
       <div class="item item-divider">
@@ -10,12 +15,12 @@
       </div>
       <ion-list id="match-list32" ng-repeat="card in reactList.match">
         <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
-          <img src="{{card.userAvatar || '/img/macdinh.jpg'}}">
+          <img src="{{card.userAvatar || 'img/macdinh.jpg'}}">
           <h2>{{card.userName}} <span class="ion-record color-green" style="font-size: xx-small" ng-if="card.presence == 'online'"></span>
           </h2>
           <small ng-hide="card.jobUser" class="text-muted">Đang tìm công việc bất kỳ</small>
           <small class="text-muted" ng-repeat="(key,value) in card.jobUser" ng-show="card.jobUser">
-            {{dataJob[key]}}
+            {{Lang[key]}}
           </small>
           <br>
 
@@ -32,14 +37,14 @@
         </small>
       </div>
       <ion-list id="match-list32" ng-repeat="card in reactList.liked">
-        <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
-          <img src="{{card.userAvatar || '/img/macdinh.jpg'}}">
+        <ion-item class="item-thumbnail-left item-icon-right" href="#/view/profile/{{card.userId}}">
+          <img src="{{card.userAvatar || 'img/macdinh.jpg'}}">
           <h2>{{card.userName}} <span class="ion-record color-green" style="font-size: xx-small"
                                       ng-if="card.presence == 'online'"></span>
           </h2>
           <small ng-hide="card.jobUser" class="text-muted">Đang tìm công việc bất kỳ</small>
           <small class="text-muted" ng-repeat="(key,value) in card.jobUser" ng-show="card.jobUser">
-            {{dataJob[key]}}
+            {{Lang[key]}}
           </small>
           <br>
 
@@ -57,13 +62,13 @@
       </div>
       <ion-list id="match-list32" ng-repeat="card in reactList.like">
         <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
-          <img src="{{card.userAvatar || '/img/macdinh.jpg'}}">
+          <img src="{{card.userAvatar || 'img/macdinh.jpg'}}">
           <h2>{{card.userName}} <span class="ion-record color-green" style="font-size: xx-small"
                                       ng-if="card.presence == 'online'"></span>
           </h2>
           <small ng-hide="card.jobStore" class="text-muted">Đang tìm công việc bất kỳ</small>
           <small class="text-muted" ng-repeat="(key,value) in card.jobStore" ng-show="card.jobStore">
-            {{dataJob[key]}}
+            {{Lang[key]}}
           </small>
           <br>
           <small><b>{{service.timeAgo(card.likeAt || card.createdAt)}}</b></small>
@@ -79,17 +84,31 @@
         </small>
       </div>
       <ion-list id="match-list32" ng-repeat="card in onlineList">
-        <ion-item class="item-thumbnail-left item-icon-right" ng-click="service.chatToUser(card.userId)">
+        <ion-item class="item-thumbnail-left item-icon-right" href="#/view/profile/{{card.userId}}">
           <img src="{{card.avatar || '/img/macdinh.jpg'}}">
           <h2>{{card.name || 'Your Name Here'}} <span class="ion-record color-green" style="font-size: xx-small"
                                                       ng-if="card.presence.status == 'online'"></span>
           </h2>
           <small ng-hide="card.job" class="text-muted">Đang tìm công việc bất kỳ</small>
           <small class="text-muted" ng-repeat="(key,value) in card.job" ng-show="card.job">
-            {{dataJob[key]}}
+            {{Lang[key]}}
           </small>
           <br>
           <small><b>{{service.timeAgo(card.presence.at)}}</b></small>
+        </ion-item>
+      </ion-list>
+    </div>
+    <div>
+      <div class="item item-divider">
+        Nhân viên hỗ trợ
+      </div>
+      <ion-list id="match-list32">
+        <ion-item class="item-avatar item-icon-right dark" id="activity-list-item9" ng-click="service.openSupportPopover($event)">
+          <img src="{{support.avatar || 'img/macdinh.jpg'}}">
+
+
+          <h2dark>Thùy Thùy - Nhân viên hỗ trợ <span class="ion-record color-green" style="font-size: xx-small"></span>
+          </h2dark>
         </ion-item>
       </ion-list>
     </div>

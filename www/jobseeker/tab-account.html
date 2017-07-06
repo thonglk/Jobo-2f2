@@ -16,8 +16,8 @@
     </div>
 
     <div class="text-center padding" style="margin-top:22px;">
-      <!--<h3>{{userData.name}}</h3>-->
-      <p class="color-gray">{{staticData.likedCount}} , {{staticData.MatchedCount}}, {{staticData.MatchCount}}
+      <p class="color-gray" ng-if="userData.avatar && !userData.video">Tips: Hồ sơ được cập nhật đầy đủ thông tin sẽ được ưu tiên hiển thị hơn</p>
+      <p class="color-coral" ng-if="!userData.avatar">Hồ sơ của bạn không được hiển thị vì không có ảnh đại diện, hãy cập nhật ngay!</p>
     </div>
 
     <ion-list class="text-center uppercase">

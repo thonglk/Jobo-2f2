@@ -7,7 +7,7 @@ app.controller("storeCtrl", function ($scope,
                                       $cordovaCamera,
                                       $ionicModal,
                                       $http,
-                                      CONFIG,
+
                                       $cordovaCapture,
                                       $cordovaToast,
                                       $sce,
@@ -18,27 +18,9 @@ app.controller("storeCtrl", function ($scope,
                                       $ionicLoading,
                                       $ionicPopup,
                                       $stateParams) {
-  var staticData = {
-    viewed: 0,
-    liked: 0,
-    shared: 0,
-    rated: 0,
-    rateAverage: 0,
-    matched: 0,
-    chated: 0,
-    like: 0,
-    share: 0,
-    rate: 0,
-    match: 0,
-    chat: 0,
-    timeOnline: 0,
-    login: 1,
-    profile: 0
-  }
-
 
   $scope.convertIns = function (job) {
-    var card = CONFIG.data.convertIns
+    var card = $rootScope.CONFIG.data.convertIns
 
     var converted;
     if
@@ -166,7 +148,6 @@ app.controller("storeCtrl", function ($scope,
             storeId: newstoreKey,
             createdAt: new Date().getTime(),
             job: {},
-            static: staticData
           };
           $scope.jobData = []
         }
@@ -191,7 +172,7 @@ app.controller("storeCtrl", function ($scope,
     }
     $http({
       method: 'GET',
-      url: CONFIG.APIURL + '/api/places',
+      url: $rootScope.CONFIG.APIURL + '/api/places',
       params: params
     }).then(function successCallback(response) {
       $scope.ketquasLocation = response.data.results;
@@ -249,17 +230,22 @@ app.controller("storeCtrl", function ($scope,
 
     //find Address by Google
     $scope.autocompleteAddress = {text: ''};
+    var delay = false
     $scope.searchAddress = function () {
-
-      $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocompleteAddress.text + '&components=country:VN&sensor=true&key=' + CONFIG.APIKey;
-      $http({
-        method: 'GET',
-        url: $scope.URL
-      }).then(function successCallback(response) {
-
-        $scope.ketquasAddress = response.data.results;
-        console.log($scope.ketquasAddress);
-      })
+      $scope.URL = 'https://maps.google.com/maps/api/geocode/json?address=' + $scope.autocompleteAddress.text + '&components=country:VN&sensor=true&key=' + $rootScope.CONFIG.APIKey;
+      if (delay == false) {
+        delay = true
+        $http({
+          method: 'GET',
+          url: $scope.URL
+        }).then(function successCallback(response) {
+          $scope.ketquasAddress = response.data.results;
+          console.log($scope.ketquasAddress);
+        })
+        $timeout(function () {
+          delay = false
+        }, 1000)
+      }
     };
 
 
@@ -668,6 +654,9 @@ app.controller("storeCtrl", function ($scope,
         if (job.deadline) {
           job.deadline = new Date(job.deadline).getTime()
           console.log(job.deadline)
+        }
+        if(!job.createdAt){
+          job.createdAt = new Date().getTime()
         }
         delete job.$$hashKey
         firebase.database().ref('job/' + $rootScope.storeId + ":" + job.job).update(job)

@@ -1,12 +1,12 @@
-<ion-view title="Khám phá" ng-init="checkuser()">
-  <ion-nav-buttons side="left" scroll="false" class="has-header">
-    <button class="button button-icon icon ion-android-search" ng-click="shortFilter()"></button>
-  </ion-nav-buttons>
-  <ion-nav-buttons side="right" scroll="false" class="has-header">
-    <button class="button button-icon icon ion-gear-a" ng-click="shortFilter()"></button>
-  </ion-nav-buttons>
+<ion-view title="Khám phá" id="page9" style="background-color:#FFFFFF;" hide-nav-bar="true" ng-init="checkuser()">
+  <ion-header-bar align-title="center" class="bar-light">
 
-    <div ng-if="UserCard.length == 0" style="align-content: center">
+    <h1 class="title">Khám phá
+    </h1>
+
+  </ion-header-bar>
+  <ion-content>
+    <div ng-if="!UserCard" style="align-content: center">
       <p style="    margin: 20px;
     text-align: center;
     padding-top: 50px;
@@ -14,32 +14,16 @@
 
       </p>
       <div class="padding">
-        <button ui-sref="intro" class="button button-outline button-calm button-block">
+        <button ng-click="shortFilter()" class="button button-outline button-calm button-block">
           Tạo hồ sơ của bạn
         </button>
       </div>
     </div>
 
-    <!-- *************************
-          TD Cards
-          - We start off with an ng-if so that the cards are not generated
-            unless $scope.cards is not 'null'
-        ************************* -->
-    <div ng-if="UserCard" style="margin-top: -20px">
-      <td-cards on-touch="onTouch()" on-release="onRelease()">
-        <td-card ng-style="$index > 3 &&  {'display':'none'}" ng-repeat="card in UserCard"
-                 on-destroy="cardDestroyed($index)" on-swipe-left="cardSwipedLeft($index)"
-                 on-swipe-right="cardSwipedRight($index)">
+    <ks-swiper-container ng-if="UserCard" swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)">
+      <ks-swiper-slide class="swiper-slide" ng-repeat="card in UserCard">
+        <div class="card">
           <div class="image">
-            <div class="no-text">XÓA</div>
-            <div class="yes-text">TUYỂN</div>
-            <!-- *************************
-              Discard
-              - The card is removed from the deck and a fly away animation is triggered.
-              - onClickTransitionOut is found in ionic.tdcards.js
-              - Animation can be customized by changing defaults
-            ************************* -->
-            <!-- <div class="discard" ng-click="onClickTransitionOut(card)">DISCARD</div> -->
             <img ng-src="{{ card.avatar || 'img/macdinh.jpg'}}"
                  ui-sref="viewprofile ({id:card.userId})">
             <div class="item">
@@ -48,38 +32,24 @@
                 {{card.height ? card.height + " cm - "+ card.weight + ' kg': '' }}
                 <!-- <i class="ion-ios-book color-coral font-150 pull-right"></i> -->
               </p>
-              <div class="padding" ng-if="card.job">
-                <label ng-repeat="(key,value) in card.job">
-                  <button ng-click="applyThis(card.storeId,key)"
-                          class="button margin-top-5 button-outline button-small {{selectedJob[card.storeId][key] ? 'button-positive' : 'button-outline' }}">
-                    {{dataJob[key]}}
-                  </button>
-                </label>
-              </div>
+              <p>
+                <span ng-repeat="(key,value) in card.job">{{Lang[key]}}, </span>
+              </p>
             </div>
           </div>
-        </td-card>
-        <!-- *************************
-          End Card
-          - 'drag' is set to false. The user cannot drag it.
-          - 'refreshCards()' reloads all cards that have NOT been discarded.
-        ************************* -->
-        <td-card id="end-card" drag="false">
-          <!--<div class="tinder-refresh-button" ng-click="refreshCards()"></div>-->
-          <div class="disable-user-behavior">
-            <!--<div class="tinder-refresh-button" ng-click="refreshCards()"></div>-->
-          </div>
-          <!--<i class="icon ion-ios-refresh disable-user-behavior" ng-click="refreshCards()"></i>-->
-        </td-card>
-      </td-cards>
-    </div>
+        </div>
+      </ks-swiper-slide>
+    </ks-swiper-container>
 
   </ion-content>
+
   <ion-footer-bar align-title="center" class="bar-light" style="padding: 0">
-    <button ui-sref="signup ({id:2})" class="jobo-button jobo-button-block jobo-button-calm" style="width: 50%; margin: 0">
+    <button ui-sref="signup ({id:2})" class="jobo-button jobo-button-block jobo-button-calm"
+            style="width: 50%; margin: 0">
       Tìm việc
     </button>
-    <button ui-sref="signup ({id:1})" class="jobo-button jobo-button-block button-primary" style="width: 50%; margin: 0">
+    <button ui-sref="signup ({id:1})" class="jobo-button jobo-button-block button-primary"
+            style="width: 50%; margin: 0">
       Tuyển dụng
     </button>
   </ion-footer-bar>

@@ -1,46 +1,42 @@
 <ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()">
   <ion-header-bar align-title="center" class="bar-light">
 
-    <h1 class="title" ng-click="editjob()">{{CONFIG.data.job[newfilter.job] || 'Khám phá'}}
+    <h1 class="title" ng-click="editjob()">{{Lang[newfilter.job] || 'Khám phá'}}
     </h1>
 
   </ion-header-bar>
   <ion-content scroll="false">
 
 
-    <div ng-hide="usercard.length > 0" style="align-content: center">
+    <div ng-hide="usercard.length !== 0" style="align-content: center">
       <p style="    margin: 20px;
     text-align: center;
     padding-top: 50px;
 " class="ng-binding">Hãy bắt đầu lọc hồ sơ các ứng viên và tìm ra người phù hợp cho yêu cầu của bạn</p>
       <div class="padding">
-        <button ui-sref="employer.dash" class="jobo-button jobo-button-block jobo-button-calm">
+        <button ng-click="editjob()" class="jobo-button jobo-button-block jobo-button-calm">
           Bạn cần tuyển vị trí gì?
         </button>
       </div>
     </div>
 
 
-    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)">
-      <!-- <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard | limitTo:limit" end-repeat> -->
+    <ks-swiper-container swiper="swiper" on-ready="onReadySwiper(swiper)" on-touch="onTouch(swiper)" ng-show="usercard.length !== 0">
       <ks-swiper-slide class="swiper-slide" ng-repeat="card in usercard">
         <div class="card">
           <a href="#/view/profile/{{card.userId}}">
             <img ng-src="{{card.avatar || '/img/macdinh.jpg'}}">
-
           </a>
-
           <div class="item jobseeker-card">
             <i class="ion-flash color-coral font-150 pull-right" ng-if="card.act.status == 0 && card.act.type == 2"></i>
             <h3 class="title">{{card.name || 'Your Name Here'}} <span class="ion-record color-green" style="font-size: xx-small" ng-if="card.presence.status == 'online'"></span></h3>
             <p>
-              <span ng-repeat="(key,value) in card.job">{{dataJob[key]}}, </span>
+              <span ng-repeat="(key,value) in card.job">{{Lang[key]}}, </span>
             </p>
             <p>
               {{card.distance}} km</p>
           </div>
         </div>
-
       </ks-swiper-slide>
     </ks-swiper-container>
 

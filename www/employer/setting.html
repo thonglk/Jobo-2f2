@@ -92,28 +92,18 @@
       </ul>
     </div>
 
-
     <p style="margin-top: 4px;">&nbsp;</p>
     <div class="padding color-gray">CONTACT US</div>
-    <ion-item class="text-center" href="mailto:contact@joboapp.com">Help & Support</ion-item>
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <ion-item class="text-center" href="mailto:contact@joboapp.com">Give Us Feedback</ion-item>
-
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <ion-item class="text-center" ng-click="share()">Share Jobo</ion-item>
-
-    <p style="margin-top: 4px;">&nbsp;</p>
-    <div class="padding color-gray">Legal</div>
-    <ion-item class="item-icon-right">
-      Privacy Policy
+    <ion-item class="item-icon-right" ng-click="service.openSupportPopover()">
+      Hỗ trợ 24/7
       <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
     </ion-item>
-    <ion-item class="item-icon-right">
-      Terms of Service
+    <ion-item class="item-icon-right" href="mailto:contact@joboapp.com">
+      Give Us Feedback
       <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
     </ion-item>
-    <ion-item class="item-icon-right ">
-      Licenses
+    <ion-item class="item-icon-right" ng-click="service.shareJob('','',CONFIG.WEBURL)">
+      Chia sẻ
       <i class="icon ion-ios-arrow-forward color-gray font-130 bold"></i>
     </ion-item>
     <p style="margin-top: 4px;">&nbsp;</p>

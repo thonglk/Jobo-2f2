@@ -1,6 +1,6 @@
 
 
-<ion-list ng-repeat="(key, value) in dataJob">
+<ion-list ng-repeat="(key, value) in CONFIG.data.job">
 
   <ion-checkbox style="border: hidden" id="{{ key }}" value="{{ key }}" ng-model="newHospital.job[key]">{{ value }}
   </ion-checkbox>

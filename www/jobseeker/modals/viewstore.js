@@ -50,11 +50,10 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
             description: 'Xem thông tin ứng viên ' + $scope.profileData.name + " cho vị trí " + profileJob,
             image: $scope.profileData.avatar
           }
-
         })
       })
 
-      $rootScope.service.Ana('viewProfile', {userId: $scope.profileId})
+      $rootScope.service.Ana('viewStore', {userId: $scope.profileId})
 
     }
     if ($rootScope.userId) {

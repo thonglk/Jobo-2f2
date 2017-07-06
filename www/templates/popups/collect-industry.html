@@ -1,7 +1,7 @@
 <div class="item-input-inset">
 </div>
 
-<ion-list ng-repeat="(key, value) in dataIndustry">
+<ion-list ng-repeat="(key, value) in CONFIG.data.industry">
 
   <ion-checkbox style="border: hidden" id="{{ key }}" value="{{ key }}" ng-model="newHospital.industry[key]">{{ value }}
   </ion-checkbox>
