@@ -20,9 +20,6 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, $state, CONFIG, $s
       $state.go('profile')
       $cordovaToast.showShortTop('Hãy cập nhật địa chỉ đề tìm việc xung quanh')
     } else {
-      $ionicLoading.show({
-        template: '<ion-spinner></ion-spinner><br>' + ' Đang tải công việc...',
-      })
 
       $rootScope.newfilter = {
         job: $rootScope.service.getfirst($rootScope.userData.job),

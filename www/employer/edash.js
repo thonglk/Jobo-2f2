@@ -18,9 +18,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
   , $timeout) {
 
   $scope.init = function () {
-    $ionicLoading.show({
-      template: '<ion-spinner></ion-spinner><br>' + ' Đang tải ứng viên...',
-    })
+
     if ($rootScope.storeData) {
       $scope.initData($rootScope.storeData)
 

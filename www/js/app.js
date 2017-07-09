@@ -431,16 +431,20 @@ var app = angular.module('starter', [
         }, 1000)
       }
       if (data.type == 1) {
-        loadCurrentStore($rootScope.storeId)
+        if($rootScope.storeId){
+          loadCurrentStore($rootScope.storeId)
+          getStoreOnline($rootScope.storeId)
+          $timeout(function () {
+            getProfileOnlineList()
+            getListReact($rootScope.storeId, 'storeId')
+          }, 1000);
+        } else {
+          $state.go('store', {id: null})
+          $cordovaToast.showShortTop('Hãy tạo cửa hàng đầu tiên của bạn')
+        }
         $rootScope.service.getNotification($rootScope.userId);
         loadListStore($rootScope.userId)
-        getStoreOnline($rootScope.storeId)
 
-
-        $timeout(function () {
-          getProfileOnlineList()
-          getListReact($rootScope.storeId, 'storeId')
-        }, 1000);
 
         $rootScope.setCurrentStore = function (storeId) {
           $rootScope.storeId = storeId;
