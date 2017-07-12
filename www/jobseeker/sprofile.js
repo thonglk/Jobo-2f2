@@ -15,7 +15,7 @@ app.controller("sprofileCtrl", function ($scope,
                                          $ionicLoading,
                                          $ionicPopup,
                                          AuthUser,
-                                         $cordovaImagePicker) {
+                                         $cordovaImagePicker, debounce) {
     $scope.$back = function () {
       window.history.back();
     };
@@ -649,10 +649,171 @@ app.controller("sprofileCtrl", function ($scope,
       console.log('clicked', images)
       $scope.userData.photo.splice(images, 1);
     }
+      //autoupdate data
+          $scope.$watchCollection('[$root.userData.name, $root.userData.email, $root.userData.phone, $root.userData.address, $root.userData.birth, $root.userData.job]', debounce(function(){
+              console.log('autoupdate');
+              if ($rootScope.userData.email
+                  && $rootScope.userData.phone
+                  && $rootScope.userData.address
+                  && $rootScope.userData.name
+                  && $rootScope.userData.birth
+                  && $rootScope.userData.job){
+                  // console.log('$rootScope.userData', $rootScope.userData);
+                    console.log('autoupdate Start');
+                  $rootScope.userData.name = $rootScope.service.upperName($rootScope.userData.name);
+                  console.log($rootScope.userData);
+                  $timeout(function () {
+                      // console.log($scope.multiple);
+                        var userInfoUpdate = {
+                          name: $rootScope.userData.name,
+                          phone: $rootScope.userData.phone,
+                          email: $rootScope.userData.email
+                      };
+                      var profileUpdate = $rootScope.userData;
+                      $timeout(function () {
+                          firebase.database().ref('user/'+ $rootScope.userId).update(userInfoUpdate).then(function () {
+                              console.log('save sucess')
+                            }, function () {
+                              console.log('save error')
+                            }, function () {
+                              console.log('process')
 
+                            });
+                        });
+                      $timeout(function () {
+                          firebase.database().ref('profile/'+ $rootScope.userId).update(profileUpdate).then(function () {
+                              console.log('save sucess')
+                            }, function () {
+                              console.log('save error')
+                            }, function () {
+                              console.log('process')
+
+                            });
+                        });
+
+                        $rootScope.service.Ana('autoupdateData');
+                      console.log('autoupdate Complete');
+
+                      }, 1000)
+                }
+            },1000));
+        //update data
+          $scope.indexToShow = 0;
+        $scope.$watch('$root.userData', function () {
+            if ($rootScope.userData.email
+                && $rootScope.userData.phone
+                && $rootScope.userData.address
+                && $rootScope.userData.name
+                && $rootScope.userData.birth
+                && $rootScope.userData.job
+                && $scope.indexToShow === 0){
+                $scope.indexToShow = 2;
+              }
+          });
+        $scope.updateData = function () {
+            $scope.error = {};
+            if ($scope.indexToShow === 0){
+                console.log('Update phone and email');
+                if ($rootScope.userData.email && $rootScope.userData.phone){
+                    console.log($rootScope.userData.phone);
+                    console.log($rootScope.userData.email);
+                    var userInfoUpdate = {
+                        phone: $rootScope.userData.phone,
+                        email: $rootScope.userData.email
+                    };
+                    $timeout(function () {
+                        firebase.database().ref('user/'+ $rootScope.userId).update(userInfoUpdate).then(function () {
+                            console.log('save sucess')
+                          }, function () {
+                            console.log('save error')
+                          }, function () {
+                            console.log('process')
+
+                          });
+                      });
+                    $scope.indexToShow++;
+                    console.log($scope.indexToShow);
+                    $rootScope.service.Ana('Update phone and email');
+                  }
+                else {
+                    if (!$rootScope.userData.email){
+                        $scope.error.email = true;
+                      }
+                    if (!$rootScope.userData.phone){
+                        $scope.error.phone = true;
+                      }
+                  }
+              } else if ($scope.indexToShow === 1){
+                console.log('Update User Profile');
+                if ($rootScope.userData.email
+                    && $rootScope.userData.phone
+                    && $rootScope.userData.address
+                    && $rootScope.userData.name
+                    && $rootScope.userData.birth
+                    && $rootScope.userData.job){
+                    $rootScope.userData.name = $rootScope.service.upperName($rootScope.userData.name);
+                    console.log($rootScope.userData);
+                    var userInfoUpdate = {
+                        name: $rootScope.userData.name,
+                        phone: $rootScope.userData.phone,
+                        email: $rootScope.userData.email
+                    };
+                    var profileUpdate = $rootScope.userData;
+                    $timeout(function () {
+                        firebase.database().ref('user/'+ $rootScope.userId).update(userInfoUpdate).then(function () {
+                            console.log('save sucess')
+                          }, function () {
+                            console.log('save error')
+                          }, function () {
+                            console.log('process')
+
+                          });
+                      });
+                    $timeout(function () {
+                        firebase.database().ref('profile/'+ $rootScope.userId).update(profileUpdate).then(function () {
+                            console.log('save sucess')
+                          }, function () {
+                            console.log('save error')
+                          }, function () {
+                            console.log('process')
+
+                          });
+                      });
+                    $rootScope.service.Ana('Update user profile');
+                    $scope.indexToShow++;
+                    console.log($scope.indexToShow);
+                  } else {
+                    if (!$rootScope.userData.name){
+                        $scope.error.name = true;
+                      }
+                    if (!$rootScope.userData.birth){
+                        $scope.error.birth = true;
+                      }
+                    if (!$rootScope.userData.email){
+                        $scope.error.email = true;
+                      }
+                    if (!$rootScope.userData.phone){
+                        $scope.error.phone = true;
+                      }
+                    if (!$rootScope.userData.address){
+                        $scope.error.address = true;
+                      }
+                    if (!$rootScope.userData.job){
+                        $scope.error.job = true;
+                      }
+                  }
+              }
+          };
+    //submit
     $scope.submit = function () {
       console.log('$rootScope.userData', $rootScope.userData)
-      if ($rootScope.userData.email && $rootScope.userData.phone && $rootScope.userData.address && $rootScope.userData.name && $rootScope.userData.birth) {
+      if ($rootScope.userData.email
+          && $rootScope.userData.phone
+          && $rootScope.userData.address
+          && $rootScope.userData.name
+          && $rootScope.userData.birth
+          && $rootScope.userData.job) {
+
         console.log($rootScope.userData);
         var userInfoUpdate = {
           name: $rootScope.userData.name,
@@ -703,8 +864,11 @@ app.controller("sprofileCtrl", function ($scope,
         if ($rootScope.preApply) {
           $rootScope.service.userLike($rootScope.preApply.card, 0, $rootScope.preApply.jobOffer)
         }
-        $state.go('jobseeker.dash', {}, {reload: true})
+        $state.go('jobseeker.dash', {}, {reload: true});
         $cordovaToast.showShortTop('Cập nhật hồ sơ thành công');
+        if (!$rootScope.userData.avatar){
+          $cordovaToast.showShortTop('Bạn cần cập nhật avatar thì thông tin của bạn mới được hiện thị cho nhà tuyển dụng, hãy cập nhật ngay!');
+        }
 
       } else {
         console.log($rootScope.userData);

@@ -15,6 +15,12 @@ app.controller('DashCtrl', function ($state, $scope, $ionicLoading, $rootScope, 
     console.log(error)
   });
 
+  $scope.calculateAge = function calculateAge(birthday) {
+    var ageDifMs = Date.now() - new Date(birthday).getTime(); // parse string to date
+    var ageDate = new Date(ageDifMs); // miliseconds from epoch
+    return Math.abs(ageDate.getUTCFullYear() - 1970);
+  };
+
   $scope.checkuser = function () {
     console.log('check Auth')
     $ionicLoading.show({

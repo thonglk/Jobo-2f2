@@ -788,8 +788,32 @@ angular.module('starter.services', [])
         });
 
     }
+    this.searchProfile = function (textfull) {
+      $rootScope.searchResults = []
+      var URL = $rootScope.CONFIG.APIURL +'/query?q=' + textfull;
+
+      $http({
+        method: 'GET',
+        url: URL
+      }).then(function successCallback(response) {
+        var i = 0;
+        for (var j = 0; j < response.data.store.length; j++){
+          $rootScope.searchResults[i] = response.data.store[j];
+          i++;
+        }
+        for (var j = 0; j < response.data.profile.length; j++){
+          $rootScope.searchResults[i] = response.data.profile[j];
+          i++;
+        }
+        console.log($rootScope.searchResults);
+      })
+
+    }
 
   });
+
+
+
 
 app.filter('myLimitTo', [function () {
   return function (obj, limit) {
@@ -810,3 +834,16 @@ app.filter('myLimitTo', [function () {
     return ret;
   };
 }]);
+
+app.factory('debounce', function($timeout) {
+    return function(callback, interval) {
+        var timeout = null;
+        return function() {
+            $timeout.cancel(timeout);
+            var args = arguments;
+            timeout = $timeout(function () {
+                callback.apply(this, args);
+              }, interval);
+          };
+      };
+  });
