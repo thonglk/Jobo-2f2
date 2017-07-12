@@ -64,33 +64,41 @@
                 </div> <!-- .content-section -->
               </div> <!-- .content-main -->
               <div class="button-bar">
-                <button ng-click="service.chatToStore[profileData.storeId]"
-                        type="button" ng-if="profileData.act.status == 1"
-                        class="jobo-button jobo-button-block button-vip">Liên hệ
-                </button>
-                <button ng-disabled="!card" ng-click="like(profileData,0,card.job)"
-                        type="button"
-                        ng-if="profileData.act.status == 0 && profileData.act.jobStore[card.job]"
-                        class="jobo-button jobo-button-block button-positive">Chấp nhận công việc
-                </button>
-                <button type="button"
-                        ng-if="profileData.act.status == 0 && profileData.act.jobUser[card.job]"
-                        class="jobo-button jobo-button-block button-energized">Đang chờ phản hồi...
-                </button>
-                <button ng-click="service.userLike(profileData,0,card.job)"
-                        ng-hide="profileData.act.jobUser[card.job] || myself"
-                        type="button"
-                        class="jobo-button jobo-button-block jobo-button-calm">Ứng tuyển
-                </button>
+                <div ng-hide="card.deadline < today" class="row">
+                  <button ng-click="service.chatToStore[profileData.storeId]"
+                          type="button" ng-if="profileData.act.status == 1"
+                          class="jobo-button jobo-button-block button-vip">Liên hệ
+                  </button>
+                  <button ng-disabled="!card" ng-click="like(profileData,0,card.job)"
+                          type="button"
+                          ng-if="profileData.act.status == 0 && profileData.act.jobStore[card.job]"
+                          class="jobo-button jobo-button-block button-positive">Chấp nhận công việc
+                  </button>
+                  <button type="button"
+                          ng-if="profileData.act.status == 0 && profileData.act.jobUser[card.job]"
+                          class="jobo-button jobo-button-block button-energized">Đang chờ phản hồi...
+                  </button>
+                  <button ng-click="service.userLike(profileData,0,card.job)"
+                          ng-hide="profileData.act.jobUser[card.job] || myself"
+                          type="button"
+                          class="jobo-button jobo-button-block jobo-button-calm">Ứng tuyển
+                  </button>
+                </div>
+                <div ng-if="card.deadline < today">
+                  <button type="button"
+                          ng-if="card.deadline < today"
+                          class="jobo-button jobo-button-block button-vip">Hết hạn ứng tuyển
+                  </button>
+                </div>
                 <button ui-sref="store ({id:'job'})"
                         ng-show="myself"
                         type="button"
-                        class="jobo-button jobo-button-block button-assertive">Sửa thông tin
+                        class="jobo-button jobo-button-block">Sửa thông tin
                 </button>
-                <button ng-click="service.shareJob('',profileData.avatar,'http://web.joboapp.com/view/store/'+ profileData.storeId)" class="jobo-button jobo-button-block button-primary"
-                        style="width: 50%; margin: 0">
-                  Chia sẻ
-                </button>
+                <!--<button ng-click="service.shareJob('',profileData.avatar,'http://web.joboapp.com/view/store/'+ profileData.storeId)" class="jobo-button jobo-button-block button-primary"-->
+                        <!--style="width: 50%; margin: 0">-->
+                  <!--Chia sẻ-->
+                <!--</button>-->
               </div>
             </div>
           </div>

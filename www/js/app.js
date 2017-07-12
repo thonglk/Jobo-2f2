@@ -343,6 +343,8 @@ var app = angular.module('starter', [
         device: checkDevice() || ''
       }
       console.log('checkAgent', $rootScope.checkAgent)
+      $rootScope.today = new Date().getTime()
+
       $rootScope.CONFIG = CONFIG;
       firebase.database().ref('config').on('value', function (snap) {
         $rootScope.CONFIG = snap.val()

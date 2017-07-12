@@ -8,18 +8,20 @@
           <input type="text" placeholder="Nhập từ khóa tìm kiếm..." ng-model="searchName" ng-model-options="{debounce: 1000}"
                  ng-change="service.searchProfile(searchName)">
           <ul ng-show="searchName.length"
-              style="background: white; color: #000; height: 150px; width:267.13px;
-               margin-right:60px; margin-top:150px; overflow-y: scroll;">
+              style="background: white; color: #000; height: 300px; width:267.13px;
+                      margin-top:300px; overflow-y: scroll;">
             <li ng-repeat="result in searchResults" style="display:block;clear: both">
-              <img src="{{result.avatar || '/img/macdinh.jpg'}}" class="img-avatar"
-                   alt="admin@bootstrapmaster.com" style="border-radius: 50em;width:40px;height:40px;">
-              <a href="/view/{{result.storeId ? 'store':'profile'}}/{{result.userId||result.storeId}}"
-                 class="text-truncate font-weight-bold"
-                 style="font-size: 15px;">{{result.storeName || result.name}}</a><Br>
-              <small style="color: black; font-size: 1em" ng-repeat="(key,value) in result.job" ng-show="result.job">
-                {{Lang[key] || 'Xem thêm'}}
-              </small>
-            </li><br>
+              <div class="item item-avatar">
+                <img src="{{result.avatar || '/img/macdinh.jpg'}}" class="img-avatar"
+                     alt="admin@bootstrapmaster.com" style="border-radius: 50em;width:40px;height:40px;">
+                <a href="/view/{{result.storeId ? 'store':'profile'}}/{{result.userId||result.storeId}}"
+                   class="text-truncate font-weight-bold"
+                   style="font-size: 15px;">{{result.storeName || result.name}}</a><Br>
+                <small style="color: black; font-size: 1em" ng-repeat="(key,value) in result.job" ng-show="result.job">
+                  {{Lang[key] || 'Xem thêm'}}
+                </small>
+              </div>
+            </li>
           </ul>
         </div>
       </label>
@@ -55,7 +57,7 @@
                 {{card.height ? card.height + " cm - "+ card.weight + ' kg': '' }}
                 <!-- <i class="ion-ios-book color-coral font-150 pull-right"></i> -->
               </p>
-              <p ng-bind="calculateAge(card.birth)"></p>
+              <p>{{calculateAge(card.birth)}}</p>
               <p>
                 <span ng-repeat="(key,value) in card.job">{{Lang[key]}}, </span>
               </p>
