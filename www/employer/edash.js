@@ -32,6 +32,11 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
 
   };
 
+  $scope.calculateAge = function calculateAge(birthday) {
+        var ageDifMs = Date.now() - new Date(birthday).getTime(); // parse string to date
+        var ageDate = new Date(ageDifMs); // miliseconds from epoch
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+      };
   $scope.initData = function (storeData) {
     if (!storeData) {
       $state.go('store', {id: null})

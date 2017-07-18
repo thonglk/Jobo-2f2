@@ -1,4 +1,4 @@
-<ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()">
+<ion-view view-title="Dashboard" hide-nav-bar="true" ng-init="init()" style="background-color: #F2F4F8">
   <ion-header-bar align-title="center" class="bar-light">
 
     <h1 class="title" ng-click="editjob()">{{Lang[newfilter.job] || 'Khám phá'}}
@@ -33,6 +33,7 @@
             <p>
               <span ng-repeat="(key,value) in card.job">{{Lang[key]}}, </span>
             </p>
+            <p>{{calculateAge(card.birth)}}</p>
             <p>
               {{card.distance}} km</p>
           </div>

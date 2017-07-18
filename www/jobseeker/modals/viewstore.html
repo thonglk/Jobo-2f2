@@ -1,9 +1,12 @@
 <ion-modal-view ng-init="init()">
   <ion-content>
-    <i class="back-buttonk ion-ios-close" ng-click="$back()"></i>
+    <i class="back-buttonk ion-chevron-left" ng-click="$back()"
+       style="width: 30px;height: 30px;color: #a8c9ff;border-radius: 50em;background-color: white;font-size: 20px;
+              padding-right: 9px;padding-left: 8px;position: absolute;top: 0;left: 3px;
+              margin-top:10px;margin-left:10px;"></i>
     <div class="list">
       <div class="item item-image">
-        <img ng-src="{{profileData.avatar || '/img/ava-background/ava_'+ card.industry +'.png'}}">
+        <img style="position: relative" ng-src="{{profileData.avatar || '/img/ava-background/ava_'+ card.industry +'.png'}}">
       </div>
       <ion-list class="list-borderless">
         <ion-item class="item-icon-right">

@@ -1,4 +1,4 @@
-<ion-view title="Khám phá" id="page9" style="background-color:#FFFFFF;" hide-nav-bar="true" ng-init="checkuser()">
+<ion-view title="Khám phá" id="page9" style="background-color:#F2F4F8;" hide-nav-bar="true" ng-init="checkuser()">
   <ion-header-bar align-title="center" class="bar-light">
 
     <div class="item-input-inset" style="width:100%">
@@ -14,7 +14,7 @@
               <div class="item item-avatar">
                 <img src="{{result.avatar || '/img/macdinh.jpg'}}" class="img-avatar"
                      alt="admin@bootstrapmaster.com" style="border-radius: 50em;width:40px;height:40px;">
-                <a href="/view/{{result.storeId ? 'store':'profile'}}/{{result.userId||result.storeId}}"
+                <a href="#/view/{{result.storeId ? 'store':'profile'}}/{{result.userId||result.storeId}}"
                    class="text-truncate font-weight-bold"
                    style="font-size: 15px;">{{result.storeName || result.name}}</a><Br>
                 <small style="color: black; font-size: 1em" ng-repeat="(key,value) in result.job" ng-show="result.job">
