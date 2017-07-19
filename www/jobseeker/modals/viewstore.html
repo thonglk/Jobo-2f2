@@ -3,7 +3,7 @@
     <i class="back-buttonk ion-chevron-left" ng-click="$back()"
        style="width: 30px;height: 30px;color: #a8c9ff;border-radius: 50em;background-color: white;font-size: 20px;
               padding-right: 9px;padding-left: 8px;position: absolute;top: 0;left: 3px;
-              margin-top:10px;margin-left:10px;"></i>
+              margin-top:25px;margin-left:25px;"></i>
     <div class="list">
       <div class="item item-image">
         <img style="position: relative" ng-src="{{profileData.avatar || '/img/ava-background/ava_'+ card.industry +'.png'}}">
@@ -87,12 +87,12 @@
                           class="jobo-button jobo-button-block jobo-button-calm">Ứng tuyển
                   </button>
                 </div>
-                <div ng-if="card.deadline < today">
-                  <button type="button"
-                          ng-if="card.deadline < today"
-                          class="jobo-button jobo-button-block button-vip">Hết hạn ứng tuyển
-                  </button>
-                </div>
+                  <div ng-if="card.deadline < today">
+                    <button type="button"
+                            ng-if="card.deadline < today" style="text-align: center;width:23em;"
+                            class="jobo-button jobo-button-block button-vip">Hết hạn ứng tuyển
+                    </button>
+                  </div>
                 <button ui-sref="store ({id:'job'})"
                         ng-show="myself"
                         type="button"

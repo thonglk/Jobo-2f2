@@ -661,7 +661,6 @@ app.controller("sprofileCtrl", function ($scope,
                   && $rootScope.userData.job){
                   // console.log('$rootScope.userData', $rootScope.userData);
                     console.log('autoupdate Start');
-                  $rootScope.userData.name = $rootScope.service.upperName($rootScope.userData.name);
                   console.log($rootScope.userData);
                   $timeout(function () {
                       // console.log($scope.multiple);
