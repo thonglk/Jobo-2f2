@@ -34,6 +34,25 @@
                         <!--<div ng-if="card.description"-->
                                                <!---->
                                                <!--ng-repeat="text in service.nextLine(card.description) track by $index">{{text}}</div>-->
+                        <div style="font-size: 15px;color:gray;">
+                                                    <p style="display: block;display: -webkit-box;max-width: 388px;margin: 0 auto;
+                                    line-height: 1.4;-webkit-line-clamp:5;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">
+                                                      {{card.description}}
+                                                    </p>
+                                                    <p ng-if="card.createdAt">• Ngày đăng: {{card.createdAt | date}}</p>
+                                                    <p ng-if="card.unit">• Số lượng: {{card.unit}}</p>
+                                                    <p ng-if="card.apply">• Đã ứng tuyển: {{card.apply}}</p>
+                                                    <p ng-if="card.viewed">• Lượt xem: {{card.viewed}}</p>
+                                                    <p ng-if="card.deadline">• Hạn chót: {{card.deadline |
+                                                      date}} ({{service.timeAgo(card.deadline)}}) </p>
+                                                    <p ng-if="card.figure || card.experience || card.languages"><em>Yêu cầu khác:</em></p>
+                                                    <p ng-if="card.figure">• {{card.figure ? 'Yêu cầu ngoại hình khá':'Không yêu cầu ngoại hình'}}</p>
+                                                    <p ng-if="card.experience">• {{card.experience ? 'Đã có kinh nghiệm':'Không yêu cầu kinh nghiệm'}}</p>
+                                                    <p ng-if="card.languages">• Ngoại ngữ:
+                                                    <div ng-repeat="(key,value) in card.languages">
+                                                      {{Lang[key]}}
+                                                    </div>
+                                                  </div>
                       </a>
                     </div>
 
