@@ -16,50 +16,49 @@
                          on-release="onRelease(swiper)">
       <ks-swiper-slide class="swiper-slide" ng-repeat="card in jobCard">
 
-        <div class="card" style="border-radius: 1em;height: {{deviceHeight - 220}}px;">
-                    <div class="content" style="padding: 2em;height:343px;">
-                      <a href="#/view/store/{{card.storeId}}" class="item-profile">
-                        <img ng-src="{{card.avatar || 'img/store.png'}}" class="img-round" style="width: 103px;height:103px;border-radius: 50em;margin-left: -3px !important;"><br>
-                        <h3 class="title" style="color:#ffdd69"><i class="color-coral" ng-if="card.act.status == 0 && card.act.type == 2"></i>
-                          {{Lang[card.job]}}
-                        </h3>
-                        <h5 ng-if="card.working_type" style="color:black">
-                          <!--<i class="ion-clock"></i>-->
-                          <b>{{Lang[card.working_type]}}</b></h5>
-                        <p ng-if="card.salary" style="color:gray">{{card.salary ? card.salary + ' triệu' : ' thỏa thuận'}}</p>
-                        <br>
-                        <p style="font-size: 15px;color:gray;
+        <div class="card" style="border-radius: 1em;height: {{deviceHeight - 180}}px;">
+          <div class="content" style="padding: 2em;height:485px;">
+            <a href="#/view/store/{{card.storeId}}" class="item-profile">
+              <img ng-src="{{card.avatar || 'img/store.png'}}" class="img-round" style="width: 103px;height:103px;border-radius: 50em;margin-left: -3px !important;"><br>
+              <h3 class="title" style="color:#ffdd69"><i class="color-coral" ng-if="card.act.status == 0 && card.act.type == 2"></i>
+                {{Lang[card.job]}}
+              </h3>
+              <h5 ng-if="card.working_type" style="color:black">
+                <!--<i class="ion-clock"></i>-->
+                <b>{{Lang[card.working_type]}}</b></h5>
+              <p ng-if="card.salary" style="color:gray">{{card.salary ? card.salary + ' triệu' : ' thỏa thuận'}}</p>
+              <br>
+              <p style="font-size: 15px;color:gray;
                         display: block;display: -webkit-box;max-width: 388px;margin: 0 auto;
                         line-height: 1.4;-webkit-line-clamp:5;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{card.description}}</p>
-                        <!--<div ng-if="card.description"-->
-                                               <!---->
-                                               <!--ng-repeat="text in service.nextLine(card.description) track by $index">{{text}}</div>-->
-                        <div style="font-size: 15px;color:gray;">
-                                                    <p style="display: block;display: -webkit-box;max-width: 388px;margin: 0 auto;
+              <!--<div ng-if="card.description"-->
+              <!---->
+              <!--ng-repeat="text in service.nextLine(card.description) track by $index">{{text}}</div>-->
+              <div style="font-size: 15px;color:gray;">
+                <p style="display: block;display: -webkit-box;max-width: 388px;margin: 0 auto;
                                     line-height: 1.4;-webkit-line-clamp:5;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">
-                                                      {{card.description}}
-                                                    </p>
-                                                    <p ng-if="card.createdAt">• Ngày đăng: {{card.createdAt | date}}</p>
-                                                    <p ng-if="card.unit">• Số lượng: {{card.unit}}</p>
-                                                    <p ng-if="card.apply">• Đã ứng tuyển: {{card.apply}}</p>
-                                                    <p ng-if="card.viewed">• Lượt xem: {{card.viewed}}</p>
-                                                    <p ng-if="card.deadline">• Hạn chót: {{card.deadline |
-                                                      date}} ({{service.timeAgo(card.deadline)}}) </p>
-                                                    <p ng-if="card.figure || card.experience || card.languages"><em>Yêu cầu khác:</em></p>
-                                                    <p ng-if="card.figure">• {{card.figure ? 'Yêu cầu ngoại hình khá':'Không yêu cầu ngoại hình'}}</p>
-                                                    <p ng-if="card.experience">• {{card.experience ? 'Đã có kinh nghiệm':'Không yêu cầu kinh nghiệm'}}</p>
-                                                    <p ng-if="card.languages">• Ngoại ngữ:
-                                                    <div ng-repeat="(key,value) in card.languages">
-                                                      {{Lang[key]}}
-                                                    </div>
-                                                  </div>
-                      </a>
-                    </div>
-
-                    <div class="item job-card" style="padding-right: 2em;padding-left:2em;background-color: #f7f8fa; height:104px">
-                      <h2><b>{{card.storeName || 'Your Store Name'}}</b></h2>
-                      <p style="font-style: italic;font-size: 15px;">{{card.address}}</p>
-                      <p style="font-style: italic;font-size: 15px;">{{card.distance ? +card.distance + ' km':''}}</p>
+                  {{card.description}}
+                </p>
+                <p ng-if="card.createdAt">• Ngày đăng: {{card.createdAt | date}}</p>
+                <p ng-if="card.unit">• Số lượng: {{card.unit}}</p>
+                <p ng-if="card.apply">• Đã ứng tuyển: {{card.apply}}</p>
+                <p ng-if="card.viewed">• Lượt xem: {{card.viewed}}</p>
+                <p ng-if="card.deadline">• Hạn chót: {{card.deadline |
+                  date}} ({{service.timeAgo(card.deadline)}}) </p>
+                <p ng-if="card.figure || card.experience || card.languages"><em>Yêu cầu khác:</em></p>
+                <p ng-if="card.figure">• {{card.figure ? 'Yêu cầu ngoại hình khá':'Không yêu cầu ngoại hình'}}</p>
+                <p ng-if="card.experience">• {{card.experience ? 'Đã có kinh nghiệm':'Không yêu cầu kinh nghiệm'}}</p>
+                <p ng-if="card.languages">• Ngoại ngữ:
+                <div ng-repeat="(key,value) in card.languages">
+                {{Lang[key]}}
+              </div>
+              </div>
+            </a>
+          </div>
+          <div class="item job-card" style="padding-right: 2em;padding-left:2em;background-color: #f7f8fa; height:107px">
+            <h2><b>{{card.storeName || 'Your Store Name'}}</b></h2>
+            <p style="font-style: italic;font-size: 15px;">{{card.address}}</p>
+            <p style="font-style: italic;font-size: 15px;">{{card.distance ? +card.distance + ' km':''}}</p>
           </div>
         </div>
 

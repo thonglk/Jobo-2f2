@@ -86,7 +86,7 @@ angular.module('starter.services', [])
     this.user = function () {
       var output = {},
         deferred = $q.defer();
-      firebase.auth().onAuthStateChanged(function (user) {
+      secondary.auth().onAuthStateChanged(function (user) {
         console.log('Auth')
         if (user) {
           $rootScope.userId = user.uid;
@@ -441,6 +441,7 @@ angular.module('starter.services', [])
     this.JoboApi = function (url, params) {
       var res = {};
       var defer = $q.defer()
+
       $http({
         method: 'GET',
         url: CONFIG.APIURL + '/' + url,
@@ -524,7 +525,7 @@ angular.module('starter.services', [])
       );
 
       function SignInWithCredential(cre) {
-        firebase.auth().signInWithCredential(cre).then(function (result) {
+        secondary.auth().signInWithCredential(cre).then(function (result) {
           $rootScope.userId = result.uid;
 
           console.log("SignInWithCredential", JSON.stringify(result));
@@ -707,7 +708,7 @@ angular.module('starter.services', [])
       $cordovaToast.showShortTop('Bạn đã nhận 500,000đ credit!')
     }
     this.changeEmail = function (email) {
-      var user = firebase.auth().currentUser;
+      var user = secondary.auth().currentUser;
 
       user.updateEmail(email).then(function () {
         // Update successful.
@@ -727,7 +728,7 @@ angular.module('starter.services', [])
       });
     };
     this.changePassword = function (password) {
-      var user = firebase.auth().currentUser;
+      var user = secondary.auth().currentUser;
       if (password.password == password.password2) {
         user.updatePassword(password.password).then(function () {
 
@@ -766,7 +767,7 @@ angular.module('starter.services', [])
     }
 
     this.logout = function () {
-      firebase.auth().signOut().then(function () {
+      secondary.auth().signOut().then(function () {
         // Sign-out successful.
         $state.go("app.dash");
         $window.location.reload();

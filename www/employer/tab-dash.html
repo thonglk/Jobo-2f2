@@ -29,11 +29,10 @@
           </a>
           <div class="item jobseeker-card">
             <i class="ion-flash color-coral font-150 pull-right" ng-if="card.act.status == 0 && card.act.type == 2"></i>
-            <h3 class="title">{{card.name || 'Your Name Here'}} <span class="ion-record color-green" style="font-size: xx-small" ng-if="card.presence.status == 'online'"></span></h3>
+            <h3 class="title">{{card.name || 'Your Name Here'}} , {{calculateAge(card.birth)}}<span class="ion-record color-green" style="font-size: xx-small" ng-if="card.presence.status == 'online'"></span></h3>
             <p>
               <span ng-repeat="(key,value) in card.job">{{Lang[key]}}, </span>
             </p>
-            <p>{{calculateAge(card.birth)}}</p>
             <p>
               {{card.distance}} km</p>
           </div>

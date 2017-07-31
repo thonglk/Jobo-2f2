@@ -4,8 +4,8 @@ app.controller("sSettingCtrl", function ($scope, $ionicModal, $http, $ionicLoadi
   $ionicLoading.show({
     template: '<ion-spinner class="spinner-positive"></ion-spinner>'
   });
-  var uid = firebase.auth().currentUser.uid;
-  $scope.uid = firebase.auth().currentUser.uid;
+  var uid = secondary.auth().currentUser.uid;
+  $scope.uid = secondary.auth().currentUser.uid;
   console.log('im', $scope.uid)
   var userRef = firebase.database().ref('user/employer/' + uid);
   userRef.on("value", function (snapshot) {
@@ -31,7 +31,7 @@ app.controller("sSettingCtrl", function ($scope, $ionicModal, $http, $ionicLoadi
   // to logout
   $scope.doLogout = function () {
 
-    firebase.auth().signOut().then(function () {
+    secondary.auth().signOut().then(function () {
       // Sign-out successful.
       console.log("Logout successful");
       $state.go("intro");

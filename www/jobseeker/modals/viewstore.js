@@ -5,6 +5,16 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
     window.history.back();
   };
 
+  $http({
+    method: 'GET',
+    url: CONFIG.APIURL + '/view/store',
+    params: {storeId : $scope.profileId , userId: $rootScope.userId}
+  }).then(function successCallback(response) {
+    console.log("respond", response);
+    $scope.profileData = response.data
+    $scope.adminData = $scope.profileData.adminData
+  })
+
   $scope.init = function () {
     $ionicLoading.show({
       template: '<ion-spinner></ion-spinner>'

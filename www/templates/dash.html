@@ -52,12 +52,7 @@
             <img ng-src="{{ card.avatar || 'img/macdinh.jpg'}}"
                  ui-sref="viewprofile ({id:card.userId})">
             <div class="item">
-              <h2>{{card.name}}</h2>
-              <p>
-                {{card.height ? card.height + " cm - "+ card.weight + ' kg': '' }}
-                <!-- <i class="ion-ios-book color-coral font-150 pull-right"></i> -->
-              </p>
-              <p>{{calculateAge(card.birth)}}</p>
+              <h2>{{card.name}}, {{calculateAge(card.birth)}}</h2>
               <p>
                 <span ng-repeat="(key,value) in card.job">{{Lang[key]}}, </span>
               </p>

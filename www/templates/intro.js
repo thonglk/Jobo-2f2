@@ -47,9 +47,9 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
     });
     console.log(userLogin);
 
-    firebase.auth().signInWithEmailAndPassword(userLogin.username, userLogin.password).then(function () {
+    secondary.auth().signInWithEmailAndPassword(userLogin.username, userLogin.password).then(function () {
 
-      $rootScope.userId = firebase.auth().currentUser.uid;
+      $rootScope.userId = secondary.auth().currentUser.uid;
       firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
         console.log(snap.val());
         $rootScope.service.Ana($rootScope.userId, 'login', {type: 'normal'})
@@ -109,7 +109,7 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
       if ($document[0].getElementById("ruser_name").value != "") {
 
 
-        firebase.auth().sendPasswordResetEmail(userReset.rusername).then(function () {
+        secondary.auth().sendPasswordResetEmail(userReset.rusername).then(function () {
           // Sign-In successful.
           //console.log("Reset email sent successful");
           $rootScope.service.Ana($rootScope.userId, 'reset_email')
@@ -167,7 +167,7 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
         template: '<p>Loading...</p><ion-spinner></ion-spinner>'
       });
 
-      firebase.auth().createUserWithEmailAndPassword(userSignup.username, 'tuyendungjobo').then(function (user) {
+      secondary.auth().createUserWithEmailAndPassword(userSignup.username, 'tuyendungjobo').then(function (user) {
 
         $rootScope.userId = user.uid
         $scope.usersRef = firebase.database().ref('user/' + user.uid);
@@ -225,7 +225,7 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
       );
 
       function SignInWithCredential(cre) {
-        firebase.auth().signInWithCredential(cre).then(function (result) {
+        secondary.auth().signInWithCredential(cre).then(function (result) {
           $rootScope.userId = result.uid;
 
           console.log("SignInWithCredential", JSON.stringify(result));

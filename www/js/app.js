@@ -143,7 +143,6 @@ var app = angular.module('starter', [
         views: {
           'tab-chats': {
             templateUrl: 'employer/tab-chats.html',
-            controller: 'eChatsCtrl'
           }
         }
       })
@@ -239,8 +238,7 @@ var app = angular.module('starter', [
         url: '/chats',
         views: {
           'tab-chats': {
-            templateUrl: 'jobseeker/tab-chats.html',
-            controller: 'sChatsCtrl'
+            templateUrl: 'jobseeker/tab-chats.html'
           }
         }
       })

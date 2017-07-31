@@ -4,11 +4,23 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
   $scope.$back = function () {
     window.history.back();
   };
+  $scope.loadData = function () {
+    $http({
+      method: 'GET',
+      url: CONFIG.APIURL + '/view/profile',
+      params: {profileId : $scope.profileId , userId: $rootScope.userId}
+    }).then(function successCallback(response) {
+      console.log("respond", response);
+      $scope.profileData = response.data
+      $scope.adminData = $scope.profileData.adminData
+    })
+  }
 
   $scope.init = function () {
     $ionicLoading.show({
       template: '<ion-spinner></ion-spinner>'
-    });    $scope.profileId = $stateParams.id;
+    });
+    $scope.profileId = $stateParams.id;
     $scope.onReadySwiper = function (swiper) {
       console.log('ready');
       $scope.swiper = swiper;
@@ -89,10 +101,11 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
     } else {
       $rootScope.$on('storeListen', function (event,userData) {
         init(userData.userId)
+        $scope.loadData()
       });
       $rootScope.$on('handleBroadcast', function (event,userData) {
         init(userData.userId)
-
+        $scope.loadData()
       });
 
 

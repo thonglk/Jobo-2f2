@@ -26,9 +26,9 @@ app.controller('DashCtrl', function ($state, $scope, $ionicLoading, $rootScope, 
     $ionicLoading.show({
       template: '<p>Loading...</p><ion-spinner></ion-spinner>'
     });
-    firebase.auth().onAuthStateChanged(function (user) {
+    secondary.auth().onAuthStateChanged(function (user) {
         if (user && !$rootScope.registering) {
-          $rootScope.userId = firebase.auth().currentUser.uid;
+          $rootScope.userId = secondary.auth().currentUser.uid;
           firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
             console.log(snap.val());
 

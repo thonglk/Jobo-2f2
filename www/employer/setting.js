@@ -19,7 +19,7 @@ app.controller("eSettingCtrl", function ($scope, $rootScope, AuthUser, $ionicMod
 // to logout
   $scope.doLogout = function () {
 
-    firebase.auth().signOut().then(function () {
+    secondary.auth().signOut().then(function () {
       // Sign-out successful.
       console.log("Logout successful");
       $state.go("intro");
