@@ -122,11 +122,11 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
               $scope.response.data[i].act = snap.val()
             })
           }
-          firebase.database().ref('presence/profile/' + profileData.userId + 'status').on('value', function (snap) {
+          /*firebase.database().ref('presence/profile/' + profileData.userId + 'status').on('value', function (snap) {
             if(snap.val()){
               $scope.response.data[i].presence = snap.val()
             }
-          })
+          })*/
 
         }
         $rootScope.usercard = $rootScope.usercard.concat($scope.response.data);
@@ -259,12 +259,12 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         console.log('newfilter', newfilter)
 
 
-        if ($rootScope.newfilter.public) {
+        /*if ($rootScope.newfilter.public) {
           var newJobRef = firebase.database().ref('store/' + $rootScope.storeId + '/job/' + $rootScope.newfilter.job);
           newJobRef.update(true)
           var jobRef = firebase.database().ref('job/' + $rootScope.storeId + ':' + $rootScope.newfilter.job);
           jobRef.update($rootScope.newfilter)
-        }
+        }*/
         $scope.modalProfile.hide();
         $rootScope.usercard = []
         $scope.getUserFiltered($rootScope.newfilter);
@@ -324,15 +324,21 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
       $scope.modalMatch = modal;
       $scope.modalMatch.show();
 
-      var storeRef = firebase.database().ref('/store/' + storeid);
+      $rootScope.service.JoboApi('on/store',{storeId: storeid}).then(function (data) {
+        $scope.storeData = data.data;
+      });
+      /*var storeRef = firebase.database().ref('/store/' + storeid);
       storeRef.once('value', function (snap) {
         $scope.storeData = snap.val()
-      });
+      });*/
 
-      var userRef = firebase.database().ref('/user/' + userId);
+      $rootScope.service.JoboApi('on/user',{userId: userId}).then(function (data) {
+        $scope.userData = data.data;
+      });
+      /*var userRef = firebase.database().ref('/user/' + userId);
       userRef.once('value', function (snap) {
         $scope.userData = snap.val()
-      });
+      });*/
 
       $scope.chatto = function (id) {
         $state.go("employer.chats", {to: id, slide: 1})

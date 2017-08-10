@@ -26,7 +26,24 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
       }, 0);
     })
 
-    var chatedRef = firebase.database().ref('profile/' + chatedId);
+    $rootScope.service.JoboApi('on/profile',{userId: chatedId}).then(function (data) {
+      $timeout(function () {
+          $rootScope.chatUser = data.data;
+          $rootScope.chatUser.chatedId = $scope.chatedId;
+          likeAct = firebase.database().ref('activity/like/' + $rootScope.storeId + ':' + chatedId);
+          likeAct.on('value', function (snap) {
+            $timeout(function () {
+              $rootScope.chatUser.act = snap.val();
+              console.log('$rootScope.profileData.act', $rootScope.chatUser.act)
+              $rootScope.phoneShow(chatedId)
+              $ionicLoading.hide();
+
+            })
+          });
+        }
+      );
+    });
+    /*var chatedRef = firebase.database().ref('profile/' + chatedId);
     chatedRef.on('value', function (snap) {
       $timeout(function () {
           $rootScope.chatUser = snap.val()
@@ -43,7 +60,7 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
           });
         }
       );
-    });
+    });*/
 
   }
 
@@ -213,7 +230,16 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
 
   $rootScope.phoneShow = function (chatedId) {
     if ($rootScope.chatUser.act && $rootScope.chatUser.act.showContact) {
-      var contactRef = firebase.database().ref('user/' + chatedId)
+      $rootScope.service.JoboApi('on/user',{userId: chatedId}).then(function (data) {
+        $timeout(function () {
+          if (!$rootScope.contact) {
+            $rootScope.contact = {}
+          }
+          $rootScope.contact = data.data;
+
+        })
+      });
+      /*var contactRef = firebase.database().ref('user/' + chatedId)
       contactRef.once('value', function (snap) {
         $timeout(function () {
           if (!$rootScope.contact) {
@@ -222,7 +248,7 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
           $rootScope.contact = snap.val()
 
         })
-      })
+      })*/
     }
   }
 
@@ -233,10 +259,16 @@ app.controller("eChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
         likeAct.update({
           showContact: new Date().getTime()
         })
-        var userRef = firebase.database().ref('user/' + $rootScope.userId)
+        $rootScope.service.JoboApi('update/user',{
+          userId: $rootScope.userId,
+          user: {
+            credit: $rootScope.userData.credit - 30
+          }
+        });
+        /*var userRef = firebase.database().ref('user/' + $rootScope.userId)
         userRef.update({
           credit: $rootScope.userData.credit - 30
-        })
+        })*/
         $rootScope.phoneShow($scope.chatedId)
         $rootScope.service.Ana('confirmShowPhone', {chatedId: $scope.chatedId})
       } else {

@@ -9,31 +9,49 @@ app.controller('eAccountCtrl', function (AuthUser, $timeout, $scope, $rootScope,
 
   $scope.setCurrentStore = function (storeId) {
     $rootScope.storeIdCurrent = storeId;
-    var setCurrent = firebase.database().ref('user/' + $rootScope.userId)
-    setCurrent.update({currentStore: storeId});
+    $rootScope.service.JoboApi('update/user', {
+      userId: $rootScope.userId,
+      user: {
+        currentStore: storeId
+      }
+    });
+    /*var setCurrent = firebase.database().ref('user/' + $rootScope.userId)
+    setCurrent.update({currentStore: storeId});*/
     console.log({currentStore: storeId});
     window.location.reload()
   };
 
   $scope.loadCurrentStore = function (storeId) {
-    var storeDataCurrent = firebase.database().ref('store/' + storeId);
+    $rootScope.service.JoboApi('on/store',{storeId: storeId}).then(function (data) {
+      $timeout(
+        $rootScope.storeData = data.data
+        , 100
+      );
+      console.log($rootScope.storeData);
+    })
+    /*var storeDataCurrent = firebase.database().ref('store/' + storeId);
     storeDataCurrent.on('value', function (snap) {
       $timeout(
         $rootScope.storeData = snap.val()
         , 100
       );
       console.log($rootScope.storeData);
-    });
+    });*/
   };
   $scope.getListStore = function (userId) {
     if (!$scope.storeList) {
-      var storeListRef = firebase.database().ref('store').orderByChild('createdBy').equalTo(userId);
+      $rootScope.service.JoboApi('initData',{userId: userId}).then(function (data) {
+        $timeout(function () {
+          $scope.storeList = data.data.storeList;
+        })
+      });
+      /*var storeListRef = firebase.database().ref('store').orderByChild('createdBy').equalTo(userId);
       storeListRef.on('value', function (snap) {
         $timeout(function () {
           $scope.storeList = snap.val()
           console.log($scope.storeList)
         })
-      })
+      })*/
     }
   };
 

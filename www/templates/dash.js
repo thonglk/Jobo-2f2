@@ -29,7 +29,21 @@ app.controller('DashCtrl', function ($state, $scope, $ionicLoading, $rootScope, 
     secondary.auth().onAuthStateChanged(function (user) {
         if (user && !$rootScope.registering) {
           $rootScope.userId = secondary.auth().currentUser.uid;
-          firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
+          $rootScope.service.JoboApi('on/user',{userId: $rootScope.userId}).then(function (data) {
+            console.log(data.data);
+
+            if (data.data.type == 1) {
+              $state.go('employer.dash')
+            }
+            if (data.data.type == 2) {
+              $state.go('jobseeker.dash')
+            }
+
+            $rootScope.service.Ana('autologin', {type: 'normal'});
+            $ionicLoading.hide();
+            $cordovaToast.showShortTop("Đăng nhập thành công! Đang chuyển hướng...")
+          });
+          /*firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
             console.log(snap.val());
 
             if (snap.val() == 1) {
@@ -42,7 +56,7 @@ app.controller('DashCtrl', function ($state, $scope, $ionicLoading, $rootScope, 
             $rootScope.service.Ana('autologin', {type: 'normal'});
             $ionicLoading.hide();
             $cordovaToast.showShortTop("Đăng nhập thành công! Đang chuyển hướng...")
-          });
+          });*/
         } else {
           console.log("Hãy đăng nhập!");
 

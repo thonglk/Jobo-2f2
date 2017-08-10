@@ -448,8 +448,14 @@ var app = angular.module('starter', [
 
         $rootScope.setCurrentStore = function (storeId) {
           $rootScope.storeId = storeId;
-          var setCurrent = firebase.database().ref('user/' + $rootScope.userId)
-          setCurrent.update({currentStore: storeId});
+          $rootScope.service.JoboApi('update/user',{
+            userId: $rootScope.userId,
+            user: {
+              currentStore: storeId
+            }
+          });
+          /*var setCurrent = firebase.database().ref('user/' + $rootScope.userId)
+          setCurrent.update({currentStore: storeId});*/
           console.log({currentStore: storeId});
           loadCurrentStore($rootScope.storeId)
           getListReact($rootScope.storeId, 'storeId')
@@ -460,7 +466,7 @@ var app = angular.module('starter', [
 
 
       function getUserOnline(userId) {
-        var userRef = firebase.database().ref('profile/' + userId + '/presence');
+        var userOnlineRef = firebase.database().ref('presence/' + userId );
 
 
 // Add ourselves to presence list when online.
@@ -473,17 +479,18 @@ var app = angular.module('starter', [
               at: new Date().getTime()
             }
 
-            userRef.onDisconnect().set(off);
+            userOnlineRef.onDisconnect().set(off);
             var on = {
               status: 'online',
               at: new Date().getTime()
 
             };
-            firebase.database().ref('profile/' + userId + '/name').on('value', function (snap) {
+
+            userOnlineRef.on('value', function (snap) {
               var name = snap.val()
               if (name) {
                 console.log(on);
-                userRef.set(on)
+                userOnlineRef.set(on)
               }
             })
 
@@ -493,10 +500,20 @@ var app = angular.module('starter', [
       }
 
       function loadUserData(userId) {
-        var userRef = firebase.database().ref('profile/' + userId);
+        // var userRef = firebase.database().ref('profile/' + userId);
         var firsttime;
 
-        userRef.on('value', function (snap) {
+        $rootScope.service.JoboApi('on/profile',{userId: userId}).then(function (data) {
+          $timeout(function () {
+            $rootScope.userData = data.data;
+            if (!firsttime) {
+              firsttime = true;
+              console.log('jobseekerTabsCtrl', $rootScope.userData)
+              $rootScope.$broadcast('handleBroadcast', $rootScope.userData);
+            }
+          })
+        });
+        /*userRef.on('value', function (snap) {
           $timeout(function () {
             $rootScope.userData = snap.val()
             if (!firsttime) {
@@ -505,12 +522,12 @@ var app = angular.module('starter', [
               $rootScope.$broadcast('handleBroadcast', $rootScope.userData);
             }
           })
-        })
+        })*/
       }
 
       function getStoreOnlineList() {
         var time = new Date().getTime() - 24 * 60 * 60 * 1000
-        var onlinelistRef = firebase.database().ref('store').orderByChild('presence/at').startAt(time);
+        var onlinelistRef = firebase.database().ref('presence').orderByChild('at').startAt(time);
         onlinelistRef.on("value", function (snap) {
           $rootScope.onlineList = snap.val()
           console.log("# of online users = ", $rootScope.onlineList);
@@ -521,7 +538,7 @@ var app = angular.module('starter', [
 
       function getProfileOnlineList() {
         var time = new Date().getTime() - 24 * 60 * 60 * 1000
-        var onlinelistRef = firebase.database().ref('profile').orderByChild('presence/at').startAt(time);
+        var onlinelistRef = firebase.database().ref('presence').orderByChild('at').startAt(time);
         onlinelistRef.on("value", function (snap) {
           $rootScope.onlineList = snap.val()
           console.log("# of online users = ", $rootScope.onlineList);
@@ -529,7 +546,7 @@ var app = angular.module('starter', [
       }
 
       function getStoreOnline(storeId) {
-        var userRef = firebase.database().ref('store/' + storeId + '/presence');
+        var storeOnlineRef = firebase.database().ref('presence/' + storeId );
 
 
         var presenceRef = firebase.database().ref('.info/connected');
@@ -541,17 +558,17 @@ var app = angular.module('starter', [
               at: new Date().getTime(),
 
             };
-            userRef.onDisconnect().set(off);
+            storeOnlineRef.onDisconnect().set(off);
             var on = {
               status: 'online',
               at: new Date().getTime()
 
-            }
+            };
             firebase.database().ref('store/' + storeId + '/storeName').on('value', function (snap) {
               var storeName = snap.val()
               if (storeName) {
                 console.log(on)
-                userRef.set(on)
+                storeOnlineRef.set(on)
               }
             })
 
@@ -564,17 +581,23 @@ var app = angular.module('starter', [
 
       function loadCurrentStore(storeId) {
 
-        var storeRef = firebase.database().ref('store/' + storeId);
+        $rootScope.service.JoboApi('on/store',{storeId: storeId}).then(function (data) {
+          $timeout(function () {
+            $rootScope.storeData = data.data;
+            $rootScope.$broadcast('storeListen', $rootScope.storeData);
+          })
+        });
+        /*var storeRef = firebase.database().ref('store/' + storeId);
 
         storeRef.on('value', function (snap) {
           $timeout(function () {
             $rootScope.storeData = snap.val()
             $rootScope.$broadcast('storeListen', $rootScope.storeData);
           })
-        })
+        })*/
       }
 
-      function loadListStore(userId) {
+      /*function loadListStore(userId) {
         var storeListRef = firebase.database().ref('store').orderByChild('createdBy').equalTo(userId);
         storeListRef.on('value', function (snap) {
           $timeout(function () {
@@ -583,7 +606,7 @@ var app = angular.module('starter', [
 
           })
         })
-      }
+      }*/
 
       function getListReact(pros, type) {
         if (!$rootScope.reactList) {
@@ -596,12 +619,12 @@ var app = angular.module('starter', [
 
               if (type == 'storeId') {
                 angular.forEach(reactList, function (card) {
-                  firebase.database().ref('presence/profile/' + card.userId).on('value', function (snap) {
+                  /*firebase.database().ref('presence/profile/' + card.userId).on('value', function (snap) {
                     if (snap.val()) {
                       card.presence = snap.val().status
                       card.at = snap.val().at
                     }
-                  })
+                  })*/
                   if (card.status == 1) {
                     $rootScope.reactList.match.push(card)
                   } else if (card.status == 0 && card.type == 1) {
@@ -616,14 +639,14 @@ var app = angular.module('starter', [
               }
               if (type == 'userId') {
                 angular.forEach(reactList, function (card) {
-                  firebase.database().ref('presence/store/' + card.storeId).on('value', function (snap) {
+                  /*firebase.database().ref('presence/store/' + card.storeId).on('value', function (snap) {
                     if (snap.val()) {
                       card.presence = snap.val().status
                       card.at = snap.val().at
                     }
 
 
-                  })
+                  })*/
                   if (card.status == 1) {
                     $rootScope.reactList.match.push(card)
                   } else if (card.status == 0 && card.type == 2) {
