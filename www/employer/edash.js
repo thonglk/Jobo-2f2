@@ -19,7 +19,19 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
 
   $scope.init = function () {
 
-    if ($rootScope.storeData) {
+    $rootScope.service.user().then(function (data) {
+      if ($rootScope.storeData) {
+        $scope.initData($rootScope.storeData)
+
+      } else {
+
+        $scope.$on('storeListen', function (event, storeData) {
+          console.log('Init data', storeData);
+          $scope.initData(storeData)
+        });
+      }
+    });
+    /*if ($rootScope.storeData) {
       $scope.initData($rootScope.storeData)
 
     } else {
@@ -28,7 +40,7 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
         console.log('Init data', storeData);
         $scope.initData(storeData)
       });
-    }
+    }*/
 
   };
 
@@ -93,6 +105,12 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
 
 
   $scope.getUserFiltered = function (newfilter) {
+    if (!newfilter.p){
+      newfilter.p = 1;
+    }
+    if (!newfilter.userId){
+      newfilter.userId = $rootScope.storeId;
+    }
     console.log('filtering..', newfilter)
 
     $scope.loading = true
@@ -122,11 +140,11 @@ app.controller('eDashCtrl', function ($scope, $state, $firebaseArray, $http
               $scope.response.data[i].act = snap.val()
             })
           }
-          /*firebase.database().ref('presence/profile/' + profileData.userId + 'status').on('value', function (snap) {
+          firebase.database().ref('presence/' + profileData.userId).on('value', function (snap) {
             if(snap.val()){
               $scope.response.data[i].presence = snap.val()
             }
-          })*/
+          })
 
         }
         $rootScope.usercard = $rootScope.usercard.concat($scope.response.data);

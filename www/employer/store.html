@@ -109,7 +109,8 @@
 
       <div class="list card" id="profile-card215" ng-repeat="card in jobData">
         <ion-item class="item-icon-left" id="profile-list-item34">
-          <i class="icon ion-compose"></i> Vị trí: {{Lang[card.job]}}
+          <i class="icon ion-compose"></i> Vị trí:<br><strong>{{Lang[card.job] || card.other}}</strong>
+          <button class="button button-assertive pull-right" ng-click="deleteJob($index)" type="button">Xóa</button>
         </ion-item>
 
         <form id="job-form14" class="list">
@@ -122,6 +123,10 @@
           <label class="item item-input" id="job-input9">
             <span class="input-label">Lương (đơn vị: {{card.working_type == 'seasonal' ? 'triệu VNĐ':'triệu VND/tháng'}})</span>
             <input ng-model="card.salary" type="number" placeholder="">
+          </label>
+          <label class="item item-input">
+            <span class="input-label">Lương (đơn vị: {{'nghìn đồng/giờ'}})</span>
+            <input ng-model="card.hourly_wages" type="number" placeholder="">
           </label>
 
 
