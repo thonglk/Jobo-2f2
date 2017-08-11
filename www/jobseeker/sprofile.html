@@ -1,6 +1,10 @@
 <ion-view title="Cập nhật thông tin" hide-back-button="true" ng-init="init()">
   <ion-nav-buttons side="right" class="has-header">
-    <button ng-click="indexToShow > 1 ? submit() : updateData()" class="button button-icon icon No Icon"> Done</button>  </ion-nav-buttons>
+    <button ng-show="indexToShow > 1" ng-click="submit()" type="submit"
+            class="button button-icon icon No Icon">
+      Done
+    </button>
+  </ion-nav-buttons>
   <ion-content padding="true" class="has-header" scroll="true">
 
     <div class="card">
@@ -51,6 +55,12 @@
         </ion-item>
       </div>
     </div>
+    <button ng-hide="indexToShow === 2" ng-click="indexToShow > 1 ? submit() : updateData()" type="submit"
+            class="jobo-button jobo-button-block jobo-button-calm">
+      Tiếp theo
+    </button>
+
+
     <div ng-if="userData.location" ng-show="indexToShow > 1">
       <div class="card">
         <div class="item item-divider">
@@ -117,7 +127,7 @@
         <div class="list form-modify">
           <span class="item-label">Thu nhập mong muốn <i class="icon ion-checkmark-circled" ng-show="userData.expect_salary" style="color: #00ff00"></i></span>
           <div class="input-group">
-            <input ng-model="userData.expect_salary" class="form-control input-number" type="text">
+            <input ng-model="userData.expect_salary" class="form-control input-number" type="tel" size="4" maxlength="4">
             <span class="input-group-addon span-number">triệu đồng/tháng</span>
           </div>
 

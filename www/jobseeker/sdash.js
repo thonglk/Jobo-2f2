@@ -58,12 +58,12 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, $state, CONFIG, $s
               $scope.response.data[i].act = snap.val()
             })
           }
-          firebase.database().ref('presence/store/' + jobData.storeId + '/status').on('value', function (snap) {
+          /*firebase.database().ref('presence/store/' + jobData.storeId + '/status').on('value', function (snap) {
             if (snap.val()) {
               $scope.response.data[i].presence = snap.val()
               console.log(snap.val())
             }
-          })
+          })*/
         }
         $rootScope.jobCard = $rootScope.jobCard.concat($scope.response.data);
 

@@ -31,8 +31,8 @@ app.controller('pricingCtrl', function ($scope, $ionicModal,$rootScope) {
           $scope.unMethod = "Vui lòng chọn"
         } else {
           $scope.unMethod = "";
-          var activityBuykey = firebase.database().ref('activity/buy/').push().key;
-          var activityBuyRef = firebase.database().ref('activity/buy/' + activityBuykey);
+          /*var activityBuykey = firebase.database().ref('activity/buy/').push().key;
+          var activityBuyRef = firebase.database().ref('activity/buy/' + activityBuykey);*/
           activityBuyRef.update({
             key: activityBuykey,
             userId: $rootScope.userId,

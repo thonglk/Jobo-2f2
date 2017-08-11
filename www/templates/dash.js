@@ -29,13 +29,13 @@ app.controller('DashCtrl', function ($state, $scope, $ionicLoading, $rootScope, 
     secondary.auth().onAuthStateChanged(function (user) {
         if (user && !$rootScope.registering) {
           $rootScope.userId = secondary.auth().currentUser.uid;
-          firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
-            console.log(snap.val());
+          $rootScope.service.JoboApi('on/user',{userId: $rootScope.userId}).then(function (data) {
+            console.log(data.data);
 
-            if (snap.val() == 1) {
+            if (data.data.type == 1) {
               $state.go('employer.dash')
             }
-            if (snap.val() == 2) {
+            if (data.data.type == 2) {
               $state.go('jobseeker.dash')
             }
 
@@ -43,6 +43,18 @@ app.controller('DashCtrl', function ($state, $scope, $ionicLoading, $rootScope, 
             $ionicLoading.hide();
             $cordovaToast.showShortTop("Đăng nhập thành công! Đang chuyển hướng...")
           });
+          /*firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
+            console.log(snap.val());
+            if (snap.val() == 1) {
+              $state.go('employer.dash')
+            }
+            if (snap.val() == 2) {
+              $state.go('jobseeker.dash')
+            }
+            $rootScope.service.Ana('autologin', {type: 'normal'});
+            $ionicLoading.hide();
+            $cordovaToast.showShortTop("Đăng nhập thành công! Đang chuyển hướng...")
+          });*/
         } else {
           console.log("Hãy đăng nhập!");
 

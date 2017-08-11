@@ -35,10 +35,9 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
     };
 
     if($scope.profileId){
-      var ProfileRef = firebase.database().ref('profile/' + $scope.profileId);
-      ProfileRef.on('value', function (snap) {
+      $rootScope.service.JoboApi('on/profile',{userId: $scope.profileId}).then(function (data) {
         $timeout(function () {
-          $scope.profileData = snap.val();
+          $scope.profileData = data.data;
           console.log($scope.profileData)
           if($scope.profileData.photo){
             $scope.arrayPhoto = [$scope.profileData.avatar]
@@ -91,7 +90,57 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
           }
 
         })
-      })
+      });
+      /*var ProfileRef = firebase.database().ref('profile/' + $scope.profileId);
+      ProfileRef.on('value', function (snap) {
+        $timeout(function () {
+          $scope.profileData = snap.val();
+          console.log($scope.profileData)
+          if($scope.profileData.photo){
+            $scope.arrayPhoto = [$scope.profileData.avatar]
+            $timeout(function () {
+              $scope.profileData.photo = $scope.arrayPhoto.concat($scope.profileData.photo)
+              $scope.swiper.update();
+              console.log('$scope.profileData.photo',$scope.profileData.photo)
+            })
+          } else {
+            $scope.profileData.photo = [$scope.profileData.avatar]
+            if($scope.swiper){
+              $scope.swiper.update();
+            }else {
+              console.log('no swiper')
+            }
+            console.log('$scope.profileData.photo',$scope.profileData.photo)
+          }
+          var likeAct = firebase.database().ref('activity/like/' + $rootScope.storeId + ':' + $scope.profileId);
+          likeAct.on('value', function (snap) {
+            $timeout(function () {
+              $scope.profileData.act = snap.val();
+              console.log('$scope.profileData.act', $scope.profileData.act)
+              $ionicLoading.hide()
+            })
+          });
+          // for share
+          var profileJob = $rootScope.service.getStringJob($scope.profileData.job);
+          console.log(profileJob);
+          $scope.share = {
+            Url: "web.joboapp.com/view/profile/" + $scope.profileId,
+            Text: 'Ứng viên ' + $scope.profileData.name,
+            Title: "Ứng viên" + $scope.profileData.name,
+            Description: 'Xem thông tin ứng viên ' + $scope.profileData.name + " cho vị trí " + profileJob,
+            Type: 'feed',
+            Media: $scope.profileData.avatar,
+            Via: '295208480879128',
+            Hashtags: 'jobo,timviecnhanh,pg,sale,model',
+            Caption: 'Có ai đang cần tuyển ' + profileJob + ' không nhỉ? Mình vừa mới tìm thấy ứng viên này, thử vào Jobo xem thông tin chi tiết rồi cho mình biết bạn nghĩ sao nhé ;) #jobo #timviecnhanh #pg #sale #model'
+          }
+          $rootScope.og = {
+            title:'Ứng viên ' + $scope.profileData.name,
+            description: 'Xem thông tin ứng viên ' + $scope.profileData.name + " cho vị trí " + profileJob,
+            image: $scope.profileData.avatar
+          }
+        })
+      })*/
 
       $rootScope.service.Ana('viewProfile', {userId: $scope.profileId})
 
@@ -114,12 +163,12 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
       if ($scope.profileId == userId) {
         $timeout(function () {
           $scope.myself = true
-          var staticRef =  firebase.database().ref('static/'+ userId)
+          /*var staticRef =  firebase.database().ref('static/'+ userId)
           staticRef.on('value',function (snap) {
             $timeout(function () {
               $scope.staticData = snap.val()
             })
-          })
+          })*/
         })
 
       }
@@ -138,7 +187,7 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
       }
     }
 
-    var reviewAct = firebase.database().ref('activity/review/' + $scope.profileId);
+    /*var reviewAct = firebase.database().ref('activity/review/' + $scope.profileId);
     reviewAct.on('value', function (snap) {
       $timeout(function () {
         $scope.reviewData = snap.val();
@@ -150,7 +199,7 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
         }
 
       })
-    })
+    })*/
 
   };
 
@@ -172,9 +221,12 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
     };
     console.log('Rating selected: ' + rating);
   };
-  $scope.review = function (reviews, profileId) {
-    var reviewAct = firebase.database().ref('activity/review/' + profileId + '/' + reviews.userId)
-    reviewAct.update(reviews)
+  $scope.review = function (reviews) {
+    $rootScope.service.JoboApi('update/review', {
+      reviews: reviews
+    })
+    /* var reviewAct = firebase.database().ref('activity/review/' + profileId + '/' + reviews.userId)
+     reviewAct.update(reviews)*/
   }
 
   $scope.showVideo = function (user) {

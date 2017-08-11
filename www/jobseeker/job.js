@@ -114,7 +114,7 @@ app.controller('sJobCtrl', function ($scope, $state, $firebaseArray, $http
             })
           }
 
-          firebase.database().ref('profile/' + profileData.userId + '/presence').on('value', function (snap) {
+          firebase.database().ref('presence/' + profileData.userId).on('value', function (snap) {
             if(snap.val()){
               console.log(snap.val())
               $scope.response.data[i].presence = snap.val()
@@ -228,15 +228,21 @@ app.controller('sJobCtrl', function ($scope, $state, $firebaseArray, $http
       $scope.modalMatch = modal;
       $scope.modalMatch.show();
 
-      var storeRef = firebase.database().ref('/store/' + storeid);
+      $rootScope.service.JoboApi('on/store',{storeId: storeid}).then(function (data) {
+        $scope.storeData = data.data;
+      });
+      /*var storeRef = firebase.database().ref('/store/' + storeid);
       storeRef.once('value', function (snap) {
         $scope.storeData = snap.val()
-      });
+      });*/
 
-      var userRef = firebase.database().ref('/user/' + userId);
+      $rootScope.service.JoboApi('on/user', {userId: userId}).then(function (data) {
+        $scope.userData = data.data;
+      });
+      /*var userRef = firebase.database().ref('/user/' + userId);
       userRef.once('value', function (snap) {
         $scope.userData = snap.val()
-      });
+      });*/
 
       $scope.chatto = function (id) {
         $state.go("employer.chats", {to: id, slide: 1})

@@ -123,6 +123,10 @@
             <span class="input-label">Lương (đơn vị: {{card.working_type == 'seasonal' ? 'triệu VNĐ':'triệu VND/tháng'}})</span>
             <input ng-model="card.salary" type="number" placeholder="">
           </label>
+          <label class="item item-input" id="job-input9">
+            <span class="input-label">Lương theo giờ (đơn vị: {{'nghìn đồng/giờ'}})</span>
+            <input ng-model="card.hourly_wages  " type="number" placeholder="">
+          </label>
 
 
           <label class="item item-input" id="job-input15">
@@ -162,6 +166,15 @@
             </select>
           </label>
         </form>
+        <ion-item class="item-divider" id="job-list-item-divider16">
+          <div class="pull-right padding">
+            <button class="button"
+                    style="background-color: #FF2121;color:white;width:66px"
+                    ng-click="deleteJob($index)" type="button">
+              Xóa
+            </button>
+          </div>
+        </ion-item>
       </div>
 
 

@@ -1,7 +1,7 @@
 'use strict';
 app.controller("sSettingCtrl", function ($scope, $ionicModal, $http, $ionicLoading, $state, $cordovaSocialSharing) {
 
-  $ionicLoading.show({
+  /*$ionicLoading.show({
     template: '<ion-spinner class="spinner-positive"></ion-spinner>'
   });
   var uid = secondary.auth().currentUser.uid;
@@ -12,7 +12,7 @@ app.controller("sSettingCtrl", function ($scope, $ionicModal, $http, $ionicLoadi
     $scope.usercurent = snapshot.val();
     console.log('im', $scope.usercurent)
     $ionicLoading.hide()
-  });
+  });*/
 
   $scope.$back = function () {
     window.history.back();
