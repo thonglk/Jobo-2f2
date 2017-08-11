@@ -22,7 +22,46 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
     $scope.profileId = $stateParams.id;
 
     if ($scope.profileId) {
-      var ProfileRef = firebase.database().ref('store/' + $scope.profileId);
+      $rootScope.service.JoboApi('on/store',{storeId: $scope.profileId}).then(function (datastore) {
+        $timeout(function () {
+          $scope.profileData = datastore.data;
+          $rootScope.service.loadJob($scope.profileData).then(function (data) {
+            $scope.profileData.job = data
+          })
+          console.log($scope.profileData)
+
+          var likeAct = firebase.database().ref('activity/like/' + $scope.profileId  + ':' + $rootScope.userId);
+          likeAct.on('value', function (snap) {
+            $timeout(function () {
+              $scope.profileData.act = snap.val();
+              console.log('$scope.profileData.act', $scope.profileData.act)
+              $ionicLoading.hide()
+            })
+          });
+
+
+          // for share
+          var profileJob = $rootScope.service.getStringJob($scope.profileData.job);
+          console.log(profileJob);
+          $scope.share = {
+            Url: "web.joboapp.com/view/profile/" + $scope.profileId,
+            Text: 'Ứng viên ' + $scope.profileData.name,
+            Title: "Ứng viên" + $scope.profileData.name,
+            Description: 'Xem thông tin ứng viên ' + $scope.profileData.name + " cho vị trí " + profileJob,
+            Type: 'feed',
+            Media: $scope.profileData.avatar,
+            Via: '295208480879128',
+            Hashtags: 'jobo,timviecnhanh,pg,sale,model',
+            Caption: 'Có ai đang cần tuyển ' + profileJob + ' không nhỉ? Mình vừa mới tìm thấy ứng viên này, thử vào Jobo xem thông tin chi tiết rồi cho mình biết bạn nghĩ sao nhé ;) #jobo #timviecnhanh #pg #sale #model'
+          }
+          $rootScope.og = {
+            title: 'Ứng viên ' + $scope.profileData.name,
+            description: 'Xem thông tin ứng viên ' + $scope.profileData.name + " cho vị trí " + profileJob,
+            image: $scope.profileData.avatar
+          }
+        })
+      });
+      /*var ProfileRef = firebase.database().ref('store/' + $scope.profileId);
       ProfileRef.on('value', function (snap) {
         $timeout(function () {
           $scope.profileData = snap.val();
@@ -61,7 +100,7 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
             image: $scope.profileData.avatar
           }
         })
-      })
+      })*/
 
       $rootScope.service.Ana('viewStore', {userId: $scope.profileId})
 
@@ -83,12 +122,12 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
       if ($scope.profileId == userId) {
         $timeout(function () {
           $scope.myself = true
-          var staticRef = firebase.database().ref('static/' + userId)
+          /*var staticRef = firebase.database().ref('static/' + userId)
           staticRef.on('value', function (snap) {
             $timeout(function () {
               $scope.staticData = snap.val()
             })
-          })
+          })*/
         })
 
       }
@@ -107,7 +146,7 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
       }
     }
 
-    var reviewAct = firebase.database().ref('activity/review/' + $scope.profileId);
+    /*var reviewAct = firebase.database().ref('activity/review/' + $scope.profileId);
     reviewAct.on('value', function (snap) {
       $timeout(function () {
         $scope.reviewData = snap.val();
@@ -119,7 +158,7 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
         }
 
       })
-    })
+    })*/
 
   };
 
@@ -142,8 +181,11 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
     console.log('Rating selected: ' + rating);
   };
   $scope.review = function (reviews, profileId) {
-    var reviewAct = firebase.database().ref('activity/review/' + profileId + '/' + reviews.userId)
-    reviewAct.update(reviews)
+    $rootScope.service.JoboApi('update/review', {
+      reviews: reviews
+    })
+    /*var reviewAct = firebase.database().ref('activity/review/' + profileId + '/' + reviews.userId)
+     reviewAct.update(reviews)*/
   }
 
   $scope.showVideo = function (user) {

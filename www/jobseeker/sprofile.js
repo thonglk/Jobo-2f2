@@ -15,10 +15,11 @@ app.controller("sprofileCtrl", function ($scope,
                                          $ionicLoading,
                                          $ionicPopup,
                                          AuthUser,
-                                         $cordovaImagePicker, debounce) {
+                                         $cordovaImagePicker) {
     $scope.$back = function () {
       window.history.back();
     };
+    $scope.indexToShow = 0;
     $scope.init = function () {
       $ionicLoading.show({
         template: '<ion-spinner></ion-spinner><br>',
@@ -40,7 +41,39 @@ app.controller("sprofileCtrl", function ($scope,
               console.log($scope.hasNoEmail)
             }
             $scope.userInfo = userInfo;
-            var profileRef = firebase.database().ref('profile/' + $rootScope.userId);
+            $rootScope.service.JoboApi('on/profile',{userId: $rootScope.userId}).then(function (data) {
+              $rootScope.userData = data.data;
+              $timeout(function () {
+                if (!$rootScope.userData) {
+                  $scope.firsttime = true
+                  $rootScope.userData = {
+                    userId: $rootScope.userId,
+                    name: userInfo.name,
+                    photo: []
+                  }
+                }
+                $rootScope.userData.email = userInfo.email;
+                $rootScope.userData.phone = userInfo.phone;
+
+                if ($rootScope.userData.email && $rootScope.userData.phone){
+                  $scope.indexToShow = 1;
+                  if ($rootScope.userData.name && $rootScope.userData.birth && $rootScope.userData.address && $rootScope.userData.job){
+                    $scope.indexToShow = 2;
+                  }
+                }
+                if ($rootScope.userData.experience) {
+                  $scope.tempoExperience = $rootScope.userData.experience
+                } else {
+                  // var experienceRef = firebase.database().ref('profile/' + $rootScope.userId + '/experience');
+                  // var newkey = experienceRef.push().key;
+                  var newkey = 'p' + Math.round(100000000000000 * Math.random());
+                  $scope.tempoExperience[newkey] = {id: newkey}
+                }
+                console.log('done Init', $rootScope.userData)
+                $ionicLoading.hide()
+              })
+            });
+            /*var profileRef = firebase.database().ref('profile/' + $rootScope.userId);
             profileRef.once('value', function (snap) {
               $rootScope.userData = snap.val();
               $timeout(function () {
@@ -65,7 +98,7 @@ app.controller("sprofileCtrl", function ($scope,
                 console.log('done Init', $rootScope.userData)
                 $ionicLoading.hide()
               })
-            })
+            })*/
           }
         )
 
@@ -126,8 +159,9 @@ app.controller("sprofileCtrl", function ($scope,
     };
 
     $scope.addMoreExp = function () {
-      var experienceRef = firebase.database().ref('profile/' + $rootScope.userId + '/experience');
-      var newkey = experienceRef.push().key;
+      // var experienceRef = firebase.database().ref('profile/' + $rootScope.userId + '/experience');
+      // var newkey = experienceRef.push().key;
+      var newkey = 'p' + Math.round(100000000000000 * Math.random());
       $scope.tempoExperience[newkey] = {id: newkey}
     }
     $scope.deleteExp = function (id) {
@@ -651,7 +685,7 @@ app.controller("sprofileCtrl", function ($scope,
     }
 
     //update data
-    $scope.indexToShow = 0;
+    /*$scope.indexToShow = 0;
     $scope.$watch('$root.userData', function () {
       if ($rootScope.userData.email
         && $rootScope.userData.phone
@@ -662,7 +696,7 @@ app.controller("sprofileCtrl", function ($scope,
         && $scope.indexToShow === 0) {
         $scope.indexToShow = 2;
       }
-    });
+    });*/
     $scope.updateData = function () {
       $scope.error = {};
       if ($scope.indexToShow === 0) {
@@ -675,14 +709,24 @@ app.controller("sprofileCtrl", function ($scope,
             email: $rootScope.userData.email
           };
           $timeout(function () {
-            firebase.database().ref('user/' + $rootScope.userId).update(userInfoUpdate).then(function () {
+            $rootScope.service.JoboApi('update/user',{
+              userId: $rootScope.userId,
+              user: userInfoUpdate
+            }).then(function () {
+              console.log('save sucess')
+            }, function () {
+              console.log('save error')
+            }, function () {
+              console.log('process')
+            });
+            /*firebase.database().ref('user/' + $rootScope.userId).update(userInfoUpdate).then(function () {
               console.log('save sucess')
             }, function () {
               console.log('save error')
             }, function () {
               console.log('process')
 
-            });
+            });*/
           });
           $scope.indexToShow++;
           console.log($scope.indexToShow);
@@ -704,15 +748,35 @@ app.controller("sprofileCtrl", function ($scope,
           && $rootScope.userData.name
           && $rootScope.userData.birth
           && $rootScope.userData.job) {
-          $rootScope.userData.name = $rootScope.service.upperName($rootScope.userData.name);
+          // $rootScope.userData.name = $rootScope.service.upperName($rootScope.userData.name);
           console.log($rootScope.userData);
           var userInfoUpdate = {
             name: $rootScope.userData.name,
             phone: $rootScope.userData.phone,
             email: $rootScope.userData.email
           };
-          var profileUpdate = $rootScope.userData;
+          var profileUpdate = {
+            name: $rootScope.userData.name,
+            phone: $rootScope.userData.phone,
+            email: $rootScope.userData.phone,
+            birth: $rootScope.userData.birth,
+            address: $rootScope.userData.address,
+            job: $rootScope.userData.job
+          };
           $timeout(function () {
+            $rootScope.service.JoboApi('update/user',{
+              userId: $rootScope.userId,
+              user: userInfoUpdate,
+              profile: profileUpdate
+            }).then(function () {
+              console.log('save sucess')
+            }, function () {
+              console.log('save error')
+            }, function () {
+              console.log('process')
+            });
+          });
+          /*$timeout(function () {
             firebase.database().ref('user/' + $rootScope.userId).update(userInfoUpdate).then(function () {
               console.log('save sucess')
             }, function () {
@@ -731,7 +795,7 @@ app.controller("sprofileCtrl", function ($scope,
               console.log('process')
 
             });
-          });
+          });*/
           $rootScope.service.Ana('Update user profile');
           $scope.indexToShow++;
           console.log($scope.indexToShow);
@@ -784,6 +848,19 @@ app.controller("sprofileCtrl", function ($scope,
           $rootScope.service.Ana('updateProfile');
         }
         $timeout(function () {
+          $rootScope.service.JoboApi('update/user',{
+            userId: $rootScope.userId,
+            user: userInfoUpdate,
+            profile: profileUpdate
+          }).then(function () {
+            console.log('save sucess')
+          }, function () {
+            console.log('save error')
+          }, function () {
+            console.log('process')
+          });
+        });
+        /*$timeout(function () {
           firebase.database().ref('user/' + $rootScope.userId).update(userInfoUpdate).then(function () {
             console.log('save sucess')
           }, function () {
@@ -802,7 +879,7 @@ app.controller("sprofileCtrl", function ($scope,
             console.log('process')
 
           });
-        })
+        })*/
 
         if ($scope.hasNoEmail) {
           $rootScope.service.changeEmail($rootScope.userData.email)

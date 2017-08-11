@@ -79,13 +79,14 @@ app.controller("storeCtrl", function ($scope,
         if (result.phone) {
           $scope.contact.phone = true
         }
-        var newstoreKey = firebase.database().ref('store').push().key
+        var newstoreKey = 's' + Math.round(100000000000000 * Math.random());
+        // var newstoreKey = firebase.database().ref('store').push().key
         $rootScope.storeData = {
           createdBy: result.userId,
           storeId: newstoreKey,
           createdAt: new Date().getTime(),
-          job: {},
-        }
+          job: {}
+        };
         $scope.jobData = []
 
         $rootScope.userData.currentStore = newstoreKey
@@ -113,7 +114,30 @@ app.controller("storeCtrl", function ($scope,
         console.log(result)
         if (result.currentStore) {
           $scope.ByHand = true
-          firebase.database().ref('store/' + result.currentStore).once('value', function (snap) {
+          $rootScope.service.JoboApi('on/store', {storeId: result.currentStore}).then(function (datastore) {
+            $timeout(function () {
+              $rootScope.storeData = datastore.data;
+              console.log($rootScope.storeData);
+              if ($rootScope.storeData && $rootScope.storeData.job) {
+                $scope.jobData = $rootScope.storeData.jobData;
+                /*$rootScope.service.loadJob($rootScope.storeData)
+                  .then(function (data) {
+                    $timeout(function () {
+                      $scope.jobData = data
+                      console.log($scope.jobData)
+                    })
+                  })*/
+              } else {
+                //chưa có job
+                $rootScope.storeData.job = {}
+                $scope.jobData = []
+              }
+
+              //Đã có, vào để update
+              $scope.autocompleteAddress.text = $scope.storeData.address
+            })
+          });
+          /*firebase.database().ref('store/' + result.currentStore).once('value', function (snap) {
             $timeout(function () {
               $rootScope.storeData = snap.val();
               console.log($rootScope.storeData);
@@ -134,20 +158,21 @@ app.controller("storeCtrl", function ($scope,
               //Đã có, vào để update
               $scope.autocompleteAddress.text = $scope.storeData.address
             })
-          })
+          })*/
         } else {
 
           $scope.firsttime = true;
           //tạo mới đầu
           console.log('Tạo mới');
-          var newstoreKey = firebase.database().ref('store').push().key;
+          var newstoreKey = 's' + Math.round(100000000000000 * Math.random());
+          // var newstoreKey = firebase.database().ref('store').push().key;
           $rootScope.userData.currentStore = newstoreKey
           $rootScope.storeId = newstoreKey
           $rootScope.storeData = {
             createdBy: $rootScope.userId,
             storeId: newstoreKey,
             createdAt: new Date().getTime(),
-            job: {},
+            job: {}
           };
           $scope.jobData = []
         }
@@ -306,7 +331,13 @@ app.controller("storeCtrl", function ($scope,
   }
 
   $scope.addJob = function () {
-    $scope.newJob = {}
+    $scope.newJob = {
+      createdBy: $rootScope.userId,
+      storeId: $rootScope.storeId,
+      address: $rootScope.storeData.address,
+      location: $rootScope.storeData.location,
+      storeName: $rootScope.storeData.storeName
+    }
   }
 
   $scope.calculatemonth = function calculatemonth(birthday) { // birthday is a date
@@ -482,7 +513,7 @@ app.controller("storeCtrl", function ($scope,
     });
   };
   $scope.editjob = function () {
-    $scope.newJob = {}
+    $scope.newJob = {};
 
     if (!$scope.newfilter) {
       $scope.newfilter = {};
@@ -553,7 +584,7 @@ app.controller("storeCtrl", function ($scope,
         });
       };
       $scope.createHospital = function () {
-        $scope.newJob = $scope.newfilter
+        $scope.newJob = $scope.newfilter;
         $scope.saveJob()
         $scope.modalProfile.hide();
       };
@@ -567,16 +598,34 @@ app.controller("storeCtrl", function ($scope,
       $scope.anaJob = []
     }
 
-    console.log($scope.newJob)
+    $scope.newJob.createdBy = $rootScope.userId;
+    $scope.newJob.storeId = $rootScope.storeId;
+    $scope.newJob.address = $rootScope.storeData.address;
+    $scope.newJob.location = $rootScope.storeData.location;
+    $scope.newJob.storeName = $rootScope.storeData.storeName;
+    console.log($scope.newJob);
 
-    $scope.jobData.push($scope.newJob)
-    console.log($scope.jobData)
-    $scope.anaJob.push($scope.newJob.job)
+    if ($scope.newJob.job){
+      $scope.jobData.push($scope.newJob)
+      console.log($scope.jobData)
+      $scope.anaJob.push($scope.newJob.job)
+    } else {
+      $cordovaToast.error("Bạn chưa cập nhật vị trí mong muốn");
+    }
 
     delete $scope.newJob
   }
   $scope.deleteJob = function (id) {
-    delete  $scope.jobData[id]
+    if (confirm("Bạn muốn xoá job " + [$rootScope.Lang[$scope.jobData[id].job] || $scope.jobData[id].other] + "?") === true) {
+      console.log($scope.jobData[id]);
+      delete $rootScope.storeData.job[$scope.jobData[id].job];
+      $rootScope.service.JoboApi('delete/job', {
+        jobId: $scope.jobData[id].storeId + ':' + $scope.jobData[id].job
+      });
+      $scope.jobData.splice(id, 1);
+      console.log($rootScope.storeData);
+      console.log($scope.jobData);
+    }
   };
 
   $scope.showShift = function (key) {
@@ -651,20 +700,33 @@ app.controller("storeCtrl", function ($scope,
       for (var i in $scope.jobData) {
         var job = $scope.jobData[i]
         $rootScope.storeData.job[job.job] = true
-        if (job.deadline) {
-          job.deadline = new Date(job.deadline).getTime()
-          console.log(job.deadline)
+        if ($scope.jobData[i].deadline) {
+          $scope.jobData[i].deadline = new Date($scope.jobData[i].deadline).getTime()
+          console.log($scope.jobData[i].deadline)
         }
-        if(!job.createdAt){
-          job.createdAt = new Date().getTime()
+        if(!$scope.jobData[i].createdAt){
+          $scope.jobData[i].createdAt = new Date().getTime()
         }
-        delete job.$$hashKey
-        firebase.database().ref('job/' + $rootScope.storeId + ":" + job.job).update(job)
+        delete $scope.jobData[i].$$hashKey
+        // firebase.database().ref('job/' + $rootScope.storeId + ":" + job.job).update(job)
       }
-      firebase.database().ref('store/' + $rootScope.storeData.storeId).update($rootScope.storeData)
+
+      $rootScope.service.JoboApi('update/job', {
+        userId: $rootScope.userId,
+        job: JSON.stringify($scope.jobData)
+      });
+
+      // firebase.database().ref('store/' + $rootScope.storeData.storeId).update($rootScope.storeData)
 
 
-      firebase.database().ref('user/' + $rootScope.userId).update($rootScope.userData);
+      // firebase.database().ref('user/' + $rootScope.userId).update($rootScope.userData);
+      delete $rootScope.storeData.jobData;
+      $rootScope.service.JoboApi('update/user',{
+        userId: $rootScope.userId,
+        user: $rootScope.userData,
+        storeId: $rootScope.storeId,
+        store: $rootScope.storeData
+      });
 
       if ($scope.firsttime) {
         $rootScope.service.Ana('createStore');
@@ -679,7 +741,7 @@ app.controller("storeCtrl", function ($scope,
 
 
     } else {
-      toastr.error('Bạn chưa cập nhật đủ thông tin', 'Lỗi');
+      $cordovaToast.error('Bạn chưa cập nhật đủ thông tin', 'Lỗi');
     }
   }
 

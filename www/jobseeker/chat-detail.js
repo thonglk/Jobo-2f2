@@ -26,7 +26,27 @@ app.controller("sChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
       }, 0);
     })
 
-    var chatedRef = firebase.database().ref('store/' + storeId);
+    $rootScope.service.JoboApi('on/store',{storeId: storeId}).then(function (data) {
+      $rootScope.chatUser = data.data;
+      $timeout(function () {
+          if ($rootScope.chatUser) {
+            $rootScope.chatUser.chatedId = storeId;
+            likeAct = firebase.database().ref('activity/like/' + storeId + ':' + userId);
+            likeAct.on('value', function (snap) {
+              $timeout(function () {
+                $rootScope.chatUser.act = snap.val();
+                console.log('$rootScope.profileData.act', $rootScope.chatUser.act)
+                $scope.showphone(storeId)
+                $ionicLoading.hide();
+
+              })
+            });
+          }
+
+        }
+      );
+    });
+    /*var chatedRef = firebase.database().ref('store/' + storeId);
     chatedRef.on('value', function (snap) {
       $rootScope.chatUser = snap.val()
       $timeout(function () {
@@ -46,7 +66,7 @@ app.controller("sChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
 
         }
       );
-    });
+    });*/
 
   }
 
@@ -214,12 +234,17 @@ app.controller("sChatDetailCtrl", ["$scope", '$rootScope', "$stateParams", "Auth
   $scope.showphone = function () {
     console.log('showphone')
     if ($rootScope.chatUser.act && $rootScope.chatUser.act.showContact) {
-      var contactRef = firebase.database().ref('user/' + $rootScope.chatUser.createdBy)
+      $rootScope.service.JoboApi('on/user',{userId: $rootScope.chatUser.createdBy}).then(function (data) {
+        $timeout(function () {
+          $rootScope.chatUser.contact = data.data;
+        })
+      });
+      /*var contactRef = firebase.database().ref('user/' + $rootScope.chatUser.createdBy)
       contactRef.once('value', function (snap) {
         $timeout(function () {
           $rootScope.chatUser.contact = snap.val()
         })
-      })
+      })*/
     } else {
       $cordovaToast.showShortTop('Nhà tuyển dụng này chưa đồng ý kết nối với bạn')
     }

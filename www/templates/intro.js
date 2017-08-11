@@ -50,7 +50,16 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
     secondary.auth().signInWithEmailAndPassword(userLogin.username, userLogin.password).then(function () {
 
       $rootScope.userId = secondary.auth().currentUser.uid;
-      firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
+      $rootScope.service.JoboApi('on/user',{userId: $rootScope.userId}).then(function (data) {
+        $rootScope.service.Ana($rootScope.userId, 'login', {type: 'normal'});
+        if (data.data.type == 1) {
+          $state.go('employer.dash')
+        }
+        if (data.data.type == 2) {
+          $state.go('jobseeker.dash')
+        }
+      });
+      /*firebase.database().ref('user/' + $rootScope.userId + '/type').once('value', function (snap) {
         console.log(snap.val());
         $rootScope.service.Ana($rootScope.userId, 'login', {type: 'normal'})
 
@@ -60,7 +69,7 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
         if (snap.val() == 2) {
           $state.go('jobseeker.dash')
         }
-      })
+      })*/
     }, function (error) {
       $ionicLoading.hide();
 
@@ -170,14 +179,24 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
       secondary.auth().createUserWithEmailAndPassword(userSignup.username, 'tuyendungjobo').then(function (user) {
 
         $rootScope.userId = user.uid
-        $scope.usersRef = firebase.database().ref('user/' + user.uid);
+        $rootScope.service.JoboApi('update/user',{
+          userId: user.uid,
+          user: {
+            type: $scope.type,
+            phone: '',
+            userId: user.uid,
+            email: userSignup.username,
+            createdAt: new Date().getTime()
+          }
+        });
+        /*$scope.usersRef = firebase.database().ref('user/' + user.uid);
         $scope.usersRef.update({
           type: $scope.type,
           phone: '',
           userId: user.uid,
           email: userSignup.username,
           createdAt: new Date().getTime()
-        });
+        });*/
         $rootScope.service.Ana($rootScope.userId, 'signup', {type: 'normal', role: type})
         console.log("create successful");
         $ionicLoading.hide();
@@ -242,7 +261,88 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
       }
 
       function checkSignupOrSignIn(userData, type) {
-        var userRef = firebase.database().ref("user/" + userData.userId);
+        $rootScope.service.JoboApi('on/user',{userId: userData.userId}).then(function (data) {
+          console.log('checkSignupOrSignIn', type, JSON.stringify(data.data));
+          if (data.data) {
+            console.log('Đăng nhập')
+            type = data.data.type;
+            if (type == 1) {
+              console.log('employer go to');
+
+              $state.go('employer.dash')
+            }
+            if (type == 2) {
+              $state.go('jobseeker.dash')
+            }
+          } else {
+            console.log('Đăng ký');
+
+            if (!type) {
+
+              // A confirm dialog
+              var confirmPopup = $ionicPopup.confirm({
+                title: 'Bạn là?',
+                template: 'Hãy chọn đúng vai trò sử dụng của bạn, tác vụ này sẽ không lặp lại vào lần sau?',
+                scope: null, // Scope (optional). A scope to link to the popup content.
+                buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                  text: 'Nhà tuyển dụng',
+                  type: 'button-default',
+                  onTap: function (e) {
+                    type = 1;
+                    return type;
+                  }
+                }, {
+                  text: 'Ứng viên',
+                  type: 'button-positive',
+                  onTap: function (e) {
+                    type = 2;
+                    return type;
+                  }
+                }]
+              });
+
+              confirmPopup.then(function (res) {
+                if (res) {
+                  console.log('You are sure', res);
+                  createDataUser(userData.userId, userData, type)
+                } else {
+                  console.log('You are not sure');
+                }
+              });
+            }
+            if (type) {
+              console.log('has type');
+
+              if (!userData.email) {
+                // A confirm dialog
+                $ionicPopup.confirm({
+                  title: 'Email của bạn?',
+                  template: '<label class="item item-input"><input type="email" ng-model="username" id="user_name" placeholder="Email"></label>',
+                  scope: $scope, // Scope (optional). A scope to link to the popup content.
+                  buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                    text: 'OK',
+                    type: 'button-default',
+                    onTap: function (e) {
+                      userData.email = $scope.username;
+                    }
+                  }]
+                }).then(function (res) {
+                  if (res) {
+                    console.log('You are sure', res);
+                    createDataUser(userData.userId, userData, type)
+                  } else {
+                    console.log('You are not sure');
+                  }
+                });
+              }
+
+              createDataUser(userData.userId, userData, type)
+            }
+
+
+          }
+        });
+        /*var userRef = firebase.database().ref("user/" + userData.userId);
         userRef.once('value', function (snap) {
           console.log('checkSignupOrSignIn', type, JSON.stringify(snap.val()));
           if (snap.val()) {
@@ -323,13 +423,17 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
 
 
           }
-        })
+        })*/
 
       }
 
-      function createDataUser(userRef, userData, type) {
+      function createDataUser(userId, userData, type) {
         userData.type = type;
-        userRef.update(userData);
+        $rootScope.service.JoboApi('update/user',{
+          userId: userId,
+          user: userData
+        });
+        /*userRef.update(userData);
         console.log("create username successful");
         $ionicLoading.hide();
         if (type == 1) {
@@ -337,7 +441,7 @@ app.controller('introController', function ($state, $scope, $ionicLoading, $root
         }
         if (type == 2) {
           $state.go('profile')
-        }
+        }*/
       }
     };
   })

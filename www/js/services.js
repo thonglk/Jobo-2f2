@@ -10,7 +10,7 @@ angular.module('starter.services', [])
 
   .service('AuthUser', function ($rootScope, $q, $http, CONFIG, $timeout, $state, $cordovaSocialSharing, $ionicPopup, $cordovaToast, $ionicLoading, $ionicModal) {
     var messaging = firebase.messaging();
-    var db = firebase.database()
+    // var db = firebase.database()
 
     this.fcm = function () {
       checkFCM()
@@ -60,8 +60,14 @@ angular.module('starter.services', [])
           if (token) {
             $rootScope.tokenuser = token;
             console.log("I got the token: " + token);
-            firebase.database().ref('user/' + $rootScope.userId)
-              .update({mobileToken: token})
+            $rootScope.service.JoboApi('update/user',{
+              userId: $rootScope.userId,
+              user: {
+                mobileToken: token
+              }
+            });
+            /*firebase.database().ref('user/' + $rootScope.userId)
+              .update({mobileToken: token})*/
             $rootScope.service.Ana('get_token', token)
           } else {
             console.log("null token");
@@ -90,17 +96,28 @@ angular.module('starter.services', [])
         console.log('Auth')
         if (user) {
           $rootScope.userId = user.uid;
-          firebase.database().ref('user/' + $rootScope.userId)
-            .once('value', function (snap) {
-              $rootScope.userData = snap.val()
-              $rootScope.type = $rootScope.userData.type;
-              if ($rootScope.userData.currentStore) {
-                $rootScope.storeId = $rootScope.userData.currentStore
-              }
-              output = $rootScope.userData;
-              console.log(output)
-              deferred.resolve(output);
-            })
+          $rootScope.service.JoboApi('initData', {userId: $rootScope.userId}).then(function (res) {
+            console.log(res);
+            var user = res.data;
+            console.log('user', user);
+            $rootScope.userData = user.userData;
+            output = $rootScope.userData;
+            deferred.resolve(output);
+            if (!$rootScope.userData.webToken) {
+              $rootScope.service.saveWebToken();
+            }
+            $rootScope.type = $rootScope.userData.type;
+            if ($rootScope.userData.currentStore) {
+              $rootScope.storeId = $rootScope.userData.currentStore
+            }
+            $rootScope.storeList = user.storeList;
+            $rootScope.storeData = user.storeData;
+            $rootScope.notification = $rootScope.service.ObjectToArray(user.notification);
+            $rootScope.newNoti = $rootScope.service.calNoti($rootScope.notification);
+            $rootScope.reactList = user.reactList;
+            $rootScope.$broadcast('handleBroadcast', $rootScope.userId);
+
+          })
           // User is signed in.
         } else {
           $rootScope.type = 0;
@@ -349,10 +366,10 @@ angular.module('starter.services', [])
       }
 
       data.agent = $rootScope.checkAgent.platform + ':' + $rootScope.checkAgent.device;
-      var logRef = firebase.database().ref('log')
-      var actRef = firebase.database().ref('act')
+      // var logRef = firebase.database().ref('log')
+      // var actRef = firebase.database().ref('act')
 
-      var analyticKey = actRef.push().key
+      var analyticKey = Math.round(100000000000000 * Math.random());
 
       var obj = {
         userId: anany,
@@ -362,7 +379,12 @@ angular.module('starter.services', [])
         id: analyticKey
       }
 
-      logRef.child(analyticKey).set(obj)
+      // logRef.child(analyticKey).set(obj)
+      $rootScope.service.JoboApi('update/log', {
+        userId: anany,
+        key: analyticKey,
+        log: obj
+      });
       console.log("Jobo Analytics", obj);
 
       if (action == 'createProfile'
@@ -395,6 +417,7 @@ angular.module('starter.services', [])
       }
     }
     this.upperName = function (fullname) {
+
       var arrayName = fullname.toLowerCase().split(" ")
       var Name = "";
       for (var i in arrayName) {
@@ -542,7 +565,90 @@ angular.module('starter.services', [])
       }
 
       function checkSignupOrSignIn(userData, type) {
-        var userRef = firebase.database().ref("user/" + userData.userId);
+        $rootScope.service.JoboApi('on/user',{userId: userData.userId}).then(function (data) {
+          console.log('checkSignupOrSignIn', type, JSON.stringify(data.data));
+          if (data.data) {
+            console.log('Đăng nhập')
+            type = data.data.type;
+            if (type == 1) {
+              console.log('employer go to');
+
+              $state.go('employer.dash')
+            }
+            if (type == 2) {
+              $state.go('jobseeker.dash')
+            }
+          } else {
+            console.log('Đăng ký');
+
+            if (!type) {
+
+              // A confirm dialog
+              var confirmPopup = $ionicPopup.confirm({
+                title: 'Bạn là?',
+                cssClass: 'animated bounceInUp dark-popup',
+                template: 'Hãy chọn đúng vai trò sử dụng của bạn,',
+                scope: null, // Scope (optional). A scope to link to the popup content.
+                buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                  text: 'Nhà tuyển dụng',
+                  type: 'button-default',
+                  onTap: function (e) {
+                    type = 1;
+                    return type;
+                  }
+                }, {
+                  text: 'Ứng viên',
+                  type: 'button-positive',
+                  onTap: function (e) {
+                    type = 2;
+                    return type;
+                  }
+                }]
+              });
+
+              confirmPopup.then(function (res) {
+                if (res) {
+                  console.log('You are sure', res);
+                  createDataUser(userRef, userData, type)
+                } else {
+                  console.log('You are not sure');
+                }
+              });
+            }
+            if (type) {
+              console.log('has type');
+
+              if (!userData.email) {
+                // A confirm dialog
+                $ionicPopup.confirm({
+                  title: 'Email của bạn?',
+                  cssClass: 'animated bounceInUp dark-popup',
+                  template: '<label class="item item-input"><input type="email" ng-model="username" id="user_name" placeholder="Email"></label>',
+                  scope: $rootScope, // Scope (optional). A scope to link to the popup content.
+                  buttons: [{ // Array[Object] (optional). Buttons to place in the popup footer.
+                    text: 'OK',
+                    type: 'button-default',
+                    onTap: function (e) {
+                      userData.email = $rootScope.username;
+                    }
+                  }]
+                }).then(function (res) {
+                  if (res) {
+                    console.log('You are sure', res);
+                    createDataUser(userRef, userData, type)
+                  } else {
+                    console.log('You are not sure');
+                  }
+                });
+              }
+
+              createDataUser(userRef, userData, type)
+            }
+
+
+          }
+        });
+        /*var userRef = firebase.database().ref("user/" + userData.userId);
         userRef.once('value', function (snap) {
           console.log('checkSignupOrSignIn', type, JSON.stringify(snap.val()));
           if (snap.val()) {
@@ -625,7 +731,7 @@ angular.module('starter.services', [])
 
 
           }
-        })
+        })*/
 
       }
 
@@ -642,7 +748,7 @@ angular.module('starter.services', [])
         }
       }
     };
-    this.loadJob = function (storeData) {
+    /*this.loadJob = function (storeData) {
       var output = [],
         deferred = $q.defer();
 
@@ -659,7 +765,7 @@ angular.module('starter.services', [])
       }
 
       return deferred.promise;
-    }
+    }*/
     this.readNoti = function (id,card) {
       if ($rootScope.type == 1) {
         db.ref('notification/' + $rootScope.storeId).child(id).update({update: new Date().getTime()})
@@ -700,11 +806,18 @@ angular.module('starter.services', [])
     }
     this.getFreeCredit = function () {
 
-      var userRef = firebase.database().ref('user/' + $rootScope.userId)
+      $rootScope.service.JoboApi('update/user',{
+        userId: $rootScope.userId,
+        user: {
+          firstFreeCredit: true,
+          credit: 500
+        }
+      });
+      /*var userRef = firebase.database().ref('user/' + $rootScope.userId)
       userRef.update({
         firstFreeCredit: true,
         credit: 500
-      })
+      })*/
       $cordovaToast.showShortTop('Bạn đã nhận 500,000đ credit!')
     }
     this.changeEmail = function (email) {
@@ -712,8 +825,14 @@ angular.module('starter.services', [])
 
       user.updateEmail(email).then(function () {
         // Update successful.
-        var userRef = firebase.database().ref('user/' + user.uid)
-        userRef.update({email: email})
+        $rootScope.service.JoboApi('update/user', {
+          userId: user.uid,
+          user: {
+            email: email
+          }
+        });
+        /*var userRef = firebase.database().ref('user/' + user.uid)
+        userRef.update({email: email})*/
         sendVerifyEmail()
         $cordovaToast.showShortTop('Cập nhật email thành công, kiểm tra hòm mail để xác thực', 'Thay đổi email thành công')
 
