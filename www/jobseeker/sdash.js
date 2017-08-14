@@ -2,14 +2,24 @@
 app.controller('sDashCtrl', function ($q, $scope, $rootScope, $state, CONFIG, $stateParams, $ionicActionSheet, $timeout, $ionicScrollDelegate, $ionicSlideBoxDelegate, $firebaseArray, $ionicPopup, $http, $ionicLoading, $ionicModal, $cordovaToast) {
   $scope.init = function () {
 
-    if ($rootScope.userData && $rootScope.userData.location) {
+    $rootScope.service.user().then(function (data) {
+      if ($rootScope.userData && $rootScope.userData.location) {
+        $scope.initData($rootScope.userData)
+      } else {
+        $scope.$on('handleBroadcast', function (event, userData) {
+          console.log('Init data', userData);
+          $scope.initData(userData)
+        })
+      }
+    });
+    /*if ($rootScope.userData && $rootScope.userData.location) {
       $scope.initData($rootScope.userData)
     } else {
       $scope.$on('handleBroadcast', function (event, userData) {
         console.log('Init data', userData);
         $scope.initData(userData)
       })
-    }
+    }*/
   };
 
   $scope.initData = function (userData) {
@@ -33,6 +43,13 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, $state, CONFIG, $s
   }
 
   $scope.getJobFiltered = function (newfilter) {
+    if (!newfilter.p){
+      newfilter.p = 1;
+    }
+    if (!newfilter.userId){
+      newfilter.userId = $rootScope.userId;
+    }
+    console.log('filtering..', newfilter)
     $http({
       method: 'GET',
       url: CONFIG.APIURL + '/api/job',
@@ -58,7 +75,7 @@ app.controller('sDashCtrl', function ($q, $scope, $rootScope, $state, CONFIG, $s
               $scope.response.data[i].act = snap.val()
             })
           }
-          /*firebase.database().ref('presence/store/' + jobData.storeId + '/status').on('value', function (snap) {
+          /*firebase.database().ref('presence/' + jobData.storeId).on('value', function (snap) {
             if (snap.val()) {
               $scope.response.data[i].presence = snap.val()
               console.log(snap.val())

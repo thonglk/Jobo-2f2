@@ -87,12 +87,16 @@
                           class="jobo-button jobo-button-block jobo-button-calm">Ứng tuyển
                   </button>
                 </div>
-                  <div ng-if="card.deadline < today">
-                    <button type="button"
-                            ng-if="card.deadline < today" style="text-align: center;width:23em;"
-                            class="jobo-button jobo-button-block button-vip">Hết hạn ứng tuyển
-                    </button>
-                  </div>
+                <div ng-if="card.deadline < today" class="row">
+                  <button type="button"
+                          ng-if="card.deadline < today"
+                          style="background:linear-gradient(left,#e60000,#ff1a1a,#ff3333);color: white;margin-top: 10px;
+                                 background: -webkit-linear-gradient(left,#e60000,#ff1a1a,#ff3333);
+                                 background: -o-linear-gradient(left,#e60000,#ff1a1a,#ff3333);
+                                 background: -moz-linear-gradient(left,#e60000,#ff1a1a,#ff3333);"
+                          class="jobo-button jobo-button-block">Hết hạn ứng tuyển
+                  </button>
+                </div>
                 <button ui-sref="store ({id:'job'})"
                         ng-show="myself"
                         type="button"

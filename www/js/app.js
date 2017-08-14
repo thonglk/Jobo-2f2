@@ -632,21 +632,18 @@ var app = angular.module('starter', [
 
                   } else if (card.status == 0 && card.type == 2) {
                     $rootScope.reactList.liked.push(card)
-
                   }
                 })
                 console.log($rootScope.reactList)
               }
               if (type == 'userId') {
                 angular.forEach(reactList, function (card) {
-                  /*firebase.database().ref('presence/store/' + card.storeId).on('value', function (snap) {
+                  /*firebase.database().ref('presence/' + card.storeId).on('value', function (snap) {
                     if (snap.val()) {
-                      card.presence = snap.val().status
+                      card.presence = snap.val();
                       card.at = snap.val().at
                     }
-
-
-                  })*/
+                  });*/
                   if (card.status == 1) {
                     $rootScope.reactList.match.push(card)
                   } else if (card.status == 0 && card.type == 2) {

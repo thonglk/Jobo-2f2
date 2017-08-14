@@ -110,6 +110,13 @@
       <div class="list card" id="profile-card215" ng-repeat="card in jobData">
         <ion-item class="item-icon-left" id="profile-list-item34">
           <i class="icon ion-compose"></i> Vị trí: {{Lang[card.job]}}
+          <div class="pull-right padding">
+            <button class="button"
+                    style="background-color: #FF2121;color:white;width:66px"
+                    ng-click="deleteJob($index)" type="button">
+              Xóa
+            </button>
+          </div>
         </ion-item>
 
         <form id="job-form14" class="list">
@@ -166,15 +173,6 @@
             </select>
           </label>
         </form>
-        <ion-item class="item-divider" id="job-list-item-divider16">
-          <div class="pull-right padding">
-            <button class="button"
-                    style="background-color: #FF2121;color:white;width:66px"
-                    ng-click="deleteJob($index)" type="button">
-              Xóa
-            </button>
-          </div>
-        </ion-item>
       </div>
 
 

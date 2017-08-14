@@ -591,12 +591,19 @@ app.controller("storeCtrl", function ($scope,
       $scope.anaJob = []
     }
 
+    $scope.newJob.createdBy = $rootScope.userId;
+    $scope.newJob.storeId = $rootScope.storeId;
+    $scope.newJob.address = $rootScope.storeData.address;
+    $scope.newJob.location = $rootScope.storeData.location;
+    $scope.newJob.storeName = $rootScope.storeData.storeName;
     console.log($scope.newJob)
 
     if ($scope.newJob.job){
       $scope.jobData.push($scope.newJob)
       console.log($scope.jobData)
       $scope.anaJob.push($scope.newJob.job)
+    } else {
+      $cordovaToast.error("Bạn chưa cập nhật vị trí mong muốn");
     }
 
     delete $scope.newJob
@@ -698,6 +705,7 @@ app.controller("storeCtrl", function ($scope,
         // firebase.database().ref('job/' + $rootScope.storeId + ":" + job.job).update(job)
       }
 
+      delete $rootScope.storeData.jobData;
       $rootScope.service.JoboApi('update/job', {
         userId: $rootScope.userId,
         job: JSON.stringify($scope.jobData)
@@ -728,7 +736,7 @@ app.controller("storeCtrl", function ($scope,
 
 
     } else {
-      toastr.error('Bạn chưa cập nhật đủ thông tin', 'Lỗi');
+      $cordovaToast.error('Bạn chưa cập nhật đủ thông tin', 'Lỗi');
     }
   }
 
