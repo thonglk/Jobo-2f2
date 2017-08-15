@@ -489,6 +489,27 @@ angular.module('starter.services', [])
       return defer.promise
 
     }
+
+    this.JoboPost = function (url, params) {
+      var defer = $q.defer();
+
+      axios.post(CONFIG.APIURL + '/' + url, {
+        headers:{'Content-Type':'application/json'},
+        params: params
+      })
+        .then(function (response) {
+          console.log(response);
+          defer.resolve(response)
+        })
+        .catch(function (error) {
+          console.log(error);
+          defer.resolve(error)
+
+        });
+
+      return defer.promise
+
+    }
     this.convertDate = function (date) {
       var str = date;
       var res = str.slice(0, 2);
@@ -759,7 +780,7 @@ angular.module('starter.services', [])
         }*/
       }
     };
-    /*this.loadJob = function (storeData) {
+    this.loadJob = function (storeData) {
       var output = [],
         deferred = $q.defer();
 
@@ -776,7 +797,7 @@ angular.module('starter.services', [])
       }
 
       return deferred.promise;
-    }*/
+    }
     this.readNoti = function (id,card) {
       if ($rootScope.type == 1) {
         db.ref('notification/' + $rootScope.storeId).child(id).update({update: new Date().getTime()})

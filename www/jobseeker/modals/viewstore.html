@@ -30,7 +30,7 @@
           <h4>
             Vị trí đang tuyển
           </h4>
-          <div ng-repeat="card in profileData.job">
+          <div ng-repeat="card in profileData.job | orderBy: '-deadline'">
             <div class="card content content-main js-job-container">
               <div class="content-section job-header">
                 <div class="job-header-details job-header-truncate"><h3

@@ -701,14 +701,14 @@ app.controller("storeCtrl", function ($scope,
         if(!$scope.jobData[i].createdAt){
           $scope.jobData[i].createdAt = new Date().getTime()
         }
-        delete jobData[i].$$hashKey
+        delete $scope.jobData[i].$$hashKey
         // firebase.database().ref('job/' + $rootScope.storeId + ":" + job.job).update(job)
       }
 
       delete $rootScope.storeData.jobData;
       $rootScope.service.JoboApi('update/job', {
         userId: $rootScope.userId,
-        job: JSON.stringify($scope.jobData)
+        job: $scope.jobData
       });
 
       // firebase.database().ref('store/' + $rootScope.storeData.storeId).update($rootScope.storeData)

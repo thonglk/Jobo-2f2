@@ -22,7 +22,9 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
     $scope.profileId = $stateParams.id;
 
     if ($scope.profileId) {
-      $rootScope.service.JoboApi('on/store',{storeId: $scope.profileId}).then(function (datastore) {
+      $rootScope.service.JoboApi('on/store',{
+        storeId: $scope.profileId
+      }).then(function (datastore) {
         $timeout(function () {
           $scope.profileData = datastore.data;
           $rootScope.service.loadJob($scope.profileData).then(function (data) {
