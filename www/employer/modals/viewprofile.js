@@ -4,6 +4,7 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
   $scope.$back = function () {
     window.history.back();
   };
+  $scope.loadData = function () {
     $http({
       method: 'GET',
       url: CONFIG.APIURL + '/view/profile',
@@ -13,7 +14,7 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
       $scope.profileData = response.data
       $scope.adminData = $scope.profileData.adminData
     })
-
+  }
 
   $scope.init = function () {
     $ionicLoading.show({
@@ -153,12 +154,12 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
       $rootScope.$on('storeListen', function (event,userData) {
         init(userData.userId)
         // $scope.init()
-        // $scope.loadData()
+        $scope.loadData()
       });
       $rootScope.$on('handleBroadcast', function (event,userData) {
         init(userData.userId)
         // $scope.init()
-        // $scope.loadData()
+        $scope.loadData()
       });
 
 

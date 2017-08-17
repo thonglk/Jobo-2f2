@@ -16,9 +16,9 @@ app.controller("ViewStoreCtrl", function ($scope, $stateParams, $sce, $ionicModa
   })
 
   $scope.init = function () {
-    $ionicLoading.show({
-      template: '<ion-spinner></ion-spinner>'
-    });
+    // $ionicLoading.show({
+    //   template: '<ion-spinner></ion-spinner>'
+    // });
     $scope.profileId = $stateParams.id;
 
     if ($scope.profileId) {
