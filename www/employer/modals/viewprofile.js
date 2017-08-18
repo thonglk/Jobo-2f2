@@ -20,7 +20,10 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
     $ionicLoading.show({
       template: '<ion-spinner></ion-spinner>'
     });
+    $rootScope.aside = false
     $scope.profileId = $stateParams.id;
+    $scope.admin = $stateParams.admin;
+
     $scope.onReadySwiper = function (swiper) {
       console.log('ready');
       $scope.swiper = swiper;
@@ -150,10 +153,12 @@ app.controller("ViewProfileCtrl",function ($scope, $stateParams, $sce, $ionicMod
     } else {
       $rootScope.$on('storeListen', function (event,userData) {
         init(userData.userId)
+        // $scope.init()
         $scope.loadData()
       });
       $rootScope.$on('handleBroadcast', function (event,userData) {
         init(userData.userId)
+        // $scope.init()
         $scope.loadData()
       });
 

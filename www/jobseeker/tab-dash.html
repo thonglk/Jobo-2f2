@@ -1,7 +1,10 @@
 <ion-view title="Khám phá" id="page9" style="background-color:#F2F4F8;" hide-nav-bar="true" ng-init="init()">
-  <ion-header-bar align-title="left" class="bar-light">
+  <ion-header-bar align-title="center" class="bar-light">
 
-    <h1 class="title" ng-click="editjob()">{{Lang[newfilter.job] || 'Khám phá'}}
+    <button class="button button-outline button-small"  ng-click="editjob()">
+      Lọc Ứng Viên
+    </button>
+    <h1 class="title">{{Lang[newfilter.job] || 'Khám phá'}}
     </h1>
     <button class="button button-outline button-small" ui-sref="jobseeker.job">
       Thương hiệu
@@ -16,8 +19,8 @@
                          on-release="onRelease(swiper)">
       <ks-swiper-slide class="swiper-slide" ng-repeat="card in jobCard">
 
-        <div class="card" style="border-radius: 1em;height: {{deviceHeight - 180}}px;">
-          <div class="content" style="padding: 2em;height:{{deviceHeight - 280}}px;">
+        <div class="card" style="border-radius: 2em;height: {{deviceHeight - 180}}px;">
+          <div class="content" style="overflow: hidden;padding: 2em 2em 0 2em;height:{{deviceHeight - 270}}px">
             <a href="#/view/store/{{card.storeId}}" class="item-profile">
               <div class="row">
                 <img ng-src="{{card.avatar || 'img/store.png'}}" class="img-round" style="width: 103px;height:103px;border-radius: 50em;margin-left:initial">
@@ -29,22 +32,12 @@
               <h2 class="title" style="color:#ffdd69;margin-top: -16px;"><i class="color-coral" ng-if="card.act.status == 0 && card.act.type == 2"></i>
                 {{Lang[card.job]}}
               </h2>
-              <h5 ng-if="card.working_type" style="color:black">
+              <h5 ng-if="card.working_type" style="color:black;">
                 <!--<i class="ion-clock"></i>-->
                 <b>{{Lang[card.working_type]}}</b></h5>
               <p ng-if="card.salary" style="color:gray">{{card.salary ? card.salary + ' triệu' : ' thỏa thuận'}}</p>
-              <br>
-              <p style="font-size: 15px;color:gray;
-                        display: block;display: -webkit-box;max-width: 388px;margin: 0 auto;
-                        line-height: 1.4;-webkit-line-clamp:5;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{card.description}}</p>
-              <!--<div ng-if="card.description"-->
-              <!---->
-              <!--ng-repeat="text in service.nextLine(card.description) track by $index">{{text}}</div>-->
+
               <div style="font-size: 15px;color:gray;">
-                <p style="display: block;display: -webkit-box;max-width: 388px;margin: 0 auto;
-                                    line-height: 1.4;-webkit-line-clamp:4;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">
-                  {{card.description}}
-                </p>
                 <p ng-if="card.createdAt">• Ngày đăng: {{card.createdAt | date}}</p>
                 <p ng-if="card.unit">• Số lượng: {{card.unit}}</p>
                 <p ng-if="card.apply">• Đã ứng tuyển: {{card.apply}}</p>
@@ -57,12 +50,13 @@
                 <p ng-if="card.languages">• Ngoại ngữ:
                 <div ng-repeat="(key,value) in card.languages">
                 {{Lang[key]}}
-              </div>
+                </div>
+                <p style="display: block;display: -webkit-box;max-width: 388px;margin: 0 auto;
+                        line-height: 1.4;-webkit-line-clamp:2;-webkit-box-orient: vertical;overflow: hidden;text-overflow: ellipsis;">{{card.description}}</p>
               </div>
             </a>
           </div>
-          <div class="item job-card"
-               style="padding-right: 2em;padding-left:2em;background-color: #f7f8fa; height:{{deviceHeight - 560}}px">
+          <div class="item job-card" style="padding-right: 2em;padding-left:2em;background-color: #f7f8fa; height:{{deviceHeight - 560}}px">
             <h2><b>{{card.storeName || 'Your Store Name'}}</b></h2>
             <p style="font-style: italic;font-size: 15px;">{{card.address}}</p>
             <p style="font-style: italic;font-size: 15px;">{{card.distance ? +card.distance + ' km':''}}</p>
