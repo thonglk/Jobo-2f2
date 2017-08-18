@@ -48,41 +48,41 @@
       </select>
     </label>
 
-    <div class="filterHeader" id="job-list-item-divider16">
-      <h4>Đăng tin tuyển dụng</h4></div>
-    <ion-toggle style="    background-color: rgb(245, 245, 245);
-    border: hidden;" ng-model="newfilter.public" toggle-class="toggle-positive" id="job-toggle11">Đăng công khai công
-      việc này
-    </ion-toggle>
-    <label class="item item-select" id="job-select6">
-      <span class="input-label">Hình thức</span>
-      <select ng-model="newfilter.working_type">
-        <option ng-repeat="(key,value) in CONFIG.data.working_type" value="{{key}}">
-          {{value}}
-        </option>
-      </select>
-    </label>
-    <label class="item item-input" id="job-input9">
-      <span class="input-label">Lương (đơn vị: triệu đồng)</span>
-      <input ng-model="newfilter.salary" type="number" placeholder="">
-    </label>
+    <!--<div class="filterHeader" id="job-list-item-divider16">-->
+      <!--<h4>Đăng tin tuyển dụng</h4></div>-->
+    <!--<ion-toggle style="    background-color: rgb(245, 245, 245);-->
+    <!--border: hidden;" ng-model="newfilter.public" toggle-class="toggle-positive" id="job-toggle11">Đăng công khai công-->
+      <!--việc này-->
+    <!--</ion-toggle>-->
+    <!--<label class="item item-select" id="job-select6">-->
+      <!--<span class="input-label">Hình thức</span>-->
+      <!--<select ng-model="newfilter.working_type">-->
+        <!--<option ng-repeat="(key,value) in CONFIG.data.working_type" value="{{key}}">-->
+          <!--{{value}}-->
+        <!--</option>-->
+      <!--</select>-->
+    <!--</label>-->
+    <!--<label class="item item-input" id="job-input9">-->
+      <!--<span class="input-label">Lương (đơn vị: triệu đồng)</span>-->
+      <!--<input ng-model="newfilter.salary" type="number" placeholder="">-->
+    <!--</label>-->
 
-    <label class="item item-input" id="job-input15">
-      <span class="input-label">Số lượng</span>
-      <input ng-model="newfilter.unit" type="number" placeholder="">
-    </label>
-    <label class="item item-input" id="job-input15">
-      <span class="input-label">Hạn chót</span>
-      <input ng-model="newfilter.deadline" type="date" placeholder="">
-    </label>
+    <!--<label class="item item-input" id="job-input15">-->
+      <!--<span class="input-label">Số lượng</span>-->
+      <!--<input ng-model="newfilter.unit" type="number" placeholder="">-->
+    <!--</label>-->
+    <!--<label class="item item-input" id="job-input15">-->
+      <!--<span class="input-label">Hạn chót</span>-->
+      <!--<input ng-model="newfilter.deadline" type="date" placeholder="">-->
+    <!--</label>-->
 
 
-    <div>
-      <button id="profile-button57"
-              class="button button-block" style="color: red"
-              ng-click="clearFilter()">Clear
-      </button>
+    <!--<div>-->
+      <!--<button id="profile-button57"-->
+              <!--class="button button-block" style="color: red"-->
+              <!--ng-click="clearFilter()">Clear-->
+      <!--</button>-->
 
-    </div>
+    <!--</div>-->
   </ion-content>
 </ion-modal-view>

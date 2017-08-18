@@ -1,7 +1,10 @@
 <ion-view title="Khám phá" id="page9" style="background-color:#F2F4F8;" hide-nav-bar="true" ng-init="init()">
-  <ion-header-bar align-title="left" class="bar-light">
+  <ion-header-bar align-title="center" class="bar-light">
 
-    <h1 class="title" ng-click="editjob()">{{Lang[newfilter.job] || 'Khám phá'}}
+    <button class="button button-outline button-small"  ng-click="editjob()">
+      Lọc Ứng Viên
+    </button>
+    <h1 class="title">{{Lang[newfilter.job] || 'Khám phá'}}
     </h1>
     <button class="button button-outline button-small" ui-sref="jobseeker.job">
       Thương hiệu

@@ -1,8 +1,11 @@
 <ion-view hide-nav-bar="true" ng-init="init()">
-  <ion-header-bar align-title="center" class="bar-light">
+  <ion-header-bar align-title="left" class="bar-light">
 
-    <h1 ng-click="openPopover($event)" class="title">{{storeData.storeName}}<small class="icon ion-arrow-down-b color-coral"></small>
+    <h1 class="title">{{storeData.storeName}}<small class="icon ion-arrow-down-b color-coral"></small>
     </h1>
+    <a type="button" class="button button-outline button-small"  ng-click="openPopover($event)">
+      Đổi Cửa Hàng
+    </a>
 
   </ion-header-bar>
   <ion-content ng-init="init()">

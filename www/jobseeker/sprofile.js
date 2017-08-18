@@ -57,7 +57,7 @@ app.controller("sprofileCtrl", function ($scope,
 
                 if ($rootScope.userData.email && $rootScope.userData.phone){
                   $scope.indexToShow = 1;
-                  if ($rootScope.userData.name && $rootScope.userData.birth && $rootScope.userData.address && $rootScope.userData.job){
+                  if ($rootScope.userData.name && $rootScope.userData.birthArray && $rootScope.userData.address && $rootScope.userData.job){
                     $scope.indexToShow = 2;
                   }
                 }
@@ -744,7 +744,7 @@ app.controller("sprofileCtrl", function ($scope,
           && $rootScope.userData.phone
           && $rootScope.userData.address
           && $rootScope.userData.name
-          && $rootScope.userData.birth
+          && $rootScope.userData.birthArray
           && $rootScope.userData.job) {
           // $rootScope.userData.name = $rootScope.service.upperName($rootScope.userData.name);
           console.log($rootScope.userData);
@@ -802,7 +802,7 @@ app.controller("sprofileCtrl", function ($scope,
           if (!$rootScope.userData.name) {
             $scope.error.name = true;
           }
-          if (!$rootScope.userData.birth) {
+          if (!$rootScope.userData.birthArray) {
             $scope.error.birth = true;
           }
           if (!$rootScope.userData.email) {
@@ -827,7 +827,7 @@ app.controller("sprofileCtrl", function ($scope,
         && $rootScope.userData.phone
         && $rootScope.userData.address
         && $rootScope.userData.name
-        && $rootScope.userData.birth
+        && $rootScope.userData.birthArray
         && $rootScope.userData.job) {
 
         console.log($rootScope.userData);
